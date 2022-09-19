@@ -78,12 +78,12 @@ img{
 export const GlobalStyle = createGlobalStyle`
 html {
   box-sizing: border-box;
-  font-size:20px;
+  font-size:14px;
   position: relative;
   min-height: 100%;
   font-family: 'Noto Sans TC', sans-serif;
   @media(max-width:1279px){
-    font-size:12px;
+    /* font-size:12px; */
   }
 }
 `
