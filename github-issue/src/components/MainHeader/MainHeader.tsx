@@ -35,6 +35,10 @@ const RepoWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  @media (max-width: 959px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `
 const RepoBookIcon = styled(RepoIcon)`
   margin-right: 5px;
@@ -51,12 +55,20 @@ const RepoTag = styled.a<FontType>`
 `
 const ActionWrapper = styled.div`
   display: flex;
+  @media (max-width: 959px) {
+    margin-top: 20px;
+    align-self: flex-end;
+  }
+  @media (max-width: 767px) {
+    display: none;
+  }
 `
 
 const RepoNavbarList = styled.ul`
   display: flex;
   align-items: center;
   margin-left: 10px;
+  overflow-x: auto;
 `
 
 const repoNavArr = [

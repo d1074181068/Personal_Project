@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 type NavbarButton = {
@@ -18,6 +18,9 @@ const RepoNavbarItem = styled.li<TypeActive>`
   border-bottom: ${(props) => (props.$isActive ? '2px solid orange' : 'none')};
   font-weight: ${(props) => (props.$isActive ? 'bolder' : 'normal')};
   cursor: pointer;
+  :nth-child(3) {
+    white-space: nowrap;
+  }
 `
 const IconWrapper = styled.div`
   margin-right: 10px;
