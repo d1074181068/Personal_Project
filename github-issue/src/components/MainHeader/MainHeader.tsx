@@ -1,5 +1,5 @@
 //Libraries
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import {
   CodeIcon,
@@ -28,13 +28,13 @@ type FontType = {
 }
 const Wrapper = styled.div`
   background-color: rgb(246, 248, 250);
-  padding: 16px 32px;
+  padding: 16px 32px 0px;
 `
 const RepoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `
 const RepoBookIcon = styled(RepoIcon)`
   margin-right: 5px;
@@ -53,7 +53,13 @@ const ActionWrapper = styled.div`
   display: flex;
 `
 
-const repoNavText = [
+const RepoNavbarList = styled.ul`
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+`
+
+const repoNavArr = [
   [<CodeIcon />, 'Code'],
   [<IssueOpenedIcon />, 'Issues'],
   [<GitPullRequestIcon />, 'Pull requests'],
@@ -72,6 +78,19 @@ const pageActionArr = [
   [<StarIcon />, 'Star', 0, <TriangleDownIcon />]
 ]
 function MainHeader() {
+  const [clickItem, setClickItem] = useState('')
+  function isClick(event: EventTarget) {
+    if ((event as HTMLElement).tagName === 'svg') {
+      setClickItem(
+        (
+          ((event as HTMLElement).parentElement as HTMLElement)
+            .parentElement as HTMLElement
+        ).textContent as string
+      )
+      return
+    }
+    setClickItem((event as HTMLLIElement).textContent as string)
+  }
   return (
     <Wrapper>
       <RepoWrapper>
@@ -102,11 +121,28 @@ function MainHeader() {
           })}
         </ActionWrapper>
       </RepoWrapper>
-      <RepoNavbar />
+      <RepoNavbarList>
+        {repoNavArr.map((item, index) => {
+          return clickItem === item[1] ? (
+            <RepoNavbar
+              key={index}
+              iconComponent={item[0] as JSX.Element}
+              $text={item[1] as string}
+              isClick={isClick}
+              $isActive={true}
+            />
+          ) : (
+            <RepoNavbar
+              key={index}
+              iconComponent={item[0] as JSX.Element}
+              $text={item[1] as string}
+              isClick={isClick}
+              $isActive={false}
+            />
+          )
+        })}
+      </RepoNavbarList>
     </Wrapper>
   )
 }
-// {repoNavText.map((item, index) => {
-//   return item[0]
-// })}
 export default MainHeader
