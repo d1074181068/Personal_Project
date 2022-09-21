@@ -105,7 +105,7 @@ function HandleLabel({
   undoButtonText,
   cancelClickFn
 }: PropsType) {
-  const [colorCode, setColorCode] = useState('bfdadc')
+  const [colorCode, setColorCode] = useState(randomHexColor())
   const [labelText, setLabelText] = useState('Label preview')
   return (
     <Wrapper>
@@ -126,7 +126,7 @@ function HandleLabel({
           <SubInput placeholder={subPlaceholder} />
         </SubInputWrapper>
         <ColorSelectWrapper>
-          <Title>Color</Title>
+          <Title>ColorCode (without "#")</Title>
           <RandomWrapper>
             <RandomColorBtn
               colorCode={colorCode}
@@ -137,7 +137,16 @@ function HandleLabel({
             >
               <SyncIcon />
             </RandomColorBtn>
-            <RandomColorInput value={`#${colorCode}`} />
+            <RandomColorInput
+              value={colorCode}
+              onChange={(e) => {
+                if (e.target.value.length > 6) {
+                  e.target.value = e.target.value.slice(0, 5)
+                  return
+                }
+                setColorCode(e.target.value)
+              }}
+            />
           </RandomWrapper>
         </ColorSelectWrapper>
         <ControlBtnWrapper>
