@@ -9,8 +9,8 @@ type PropsType = {
   searchBarStyle: boolean
   userPhoto: string
   setSearchBarStyle: React.Dispatch<React.SetStateAction<boolean>>
-  signOut: Promise<void>
-  signInGithub: Promise<void>
+  signOut: () => {}
+  signInGithub: () => {}
 }
 const Wrapper = styled.ul<TypeClick>`
   display: none;
@@ -70,6 +70,21 @@ const MobileSignBtn = styled.button`
   margin: 15px 0px 5px;
   cursor: pointer;
 `
+
+const SearchBarIcon = styled.span`
+  display: block;
+  position: absolute;
+  color: rgba(255, 255, 255, 0.4);
+  top: 5px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  text-align: center;
+  padding-top: 3.5px;
+  font-size: 10px;
+`
 const mobileNavBarTxt: string[] = [
   '',
   'Dashboard',
@@ -102,7 +117,7 @@ function MobileLink({
                   onFocus={() => setSearchBarStyle(true)}
                   onBlur={() => setSearchBarStyle(false)}
                 />
-                {/* <SearchBarIcon>/</SearchBarIcon> */}
+                <SearchBarIcon>/</SearchBarIcon>
               </MobileSearchWrapper>
             </li>
           )
@@ -110,7 +125,7 @@ function MobileLink({
           return (
             <li key={index}>
               <MobileSignBtn
-              // onClick={userPhoto ? () => signOut() : () => signInGithub()}
+                onClick={userPhoto ? () => signOut() : () => signInGithub()}
               >
                 {userPhoto ? 'signOut' : 'signIn'}
               </MobileSignBtn>
