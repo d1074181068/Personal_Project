@@ -9,7 +9,7 @@ type LabelPropsType = {
   colorCode: string
 }
 const Label = styled.span<LabelPropsType>`
-  background-color: #${(props) => props.colorCode};
+  background-color: ${(props) => props.colorCode};
   color: white;
   border-radius: 24px;
   padding: 4px 10px;

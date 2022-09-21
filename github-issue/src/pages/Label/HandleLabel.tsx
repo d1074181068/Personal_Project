@@ -65,7 +65,7 @@ const RandomWrapper = styled.div`
 const RandomColorBtn = styled.button<ColorBtnType>`
   width: 42px;
   height: 32px;
-  background-color: #${(props) => props.colorCode};
+  background-color: ${(props) => props.colorCode};
   border-radius: 6px;
   margin-right: 10px;
   cursor: pointer;
@@ -93,7 +93,7 @@ function randomHexColor() {
   while (hex.length < 6) {
     hex = '0' + hex
   }
-  return hex
+  return '#' + hex
 }
 
 function HandleLabel({
@@ -140,8 +140,11 @@ function HandleLabel({
             <RandomColorInput
               value={colorCode}
               onChange={(e) => {
-                if (e.target.value.length > 6) {
-                  e.target.value = e.target.value.slice(0, 5)
+                if (e.target.value.length > 7) {
+                  e.target.value = e.target.value.slice(0, 6)
+                  return
+                } else if (e.target.value.length === 0) {
+                  setColorCode(randomHexColor())
                   return
                 }
                 setColorCode(e.target.value)
