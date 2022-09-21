@@ -6,9 +6,13 @@ import { TagIcon, MilestoneIcon, SearchIcon } from '@primer/octicons-react'
 import GithubBtn from '../../components/Content/GithubBtn'
 import Dropdown from '../../components/Content/Dropdown'
 import LabelListItem from './LabelListItem'
+import HandleLabel from './HandleLabel'
 
 type SubNavType = {
   $isAcitve: boolean
+}
+type LabelControlerType = {
+  display: string
 }
 const Wrapper = styled.main`
   padding: 24px 32px;
@@ -70,6 +74,12 @@ const SearchBarIcon = styled(SearchIcon)`
   top: 8px;
   fill: rgb(87, 96, 106);
 `
+
+const NewLabelBtnWrapper = styled.div`
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+`
 const LabelListWrapper = styled.div`
   border-radius: 6px;
   border: 1px solid rgb(208, 215, 222);
@@ -89,8 +99,16 @@ const LabelQuantity = styled.h3`
 
 const LabelList = styled.ul``
 
+const CreateLabelWrapper = styled.div<LabelControlerType>`
+  display: ${(props) => props.display};
+  max-width: 1216px;
+  margin: 0 auto;
+  background-color: rgb(245, 248, 250);
+`
+
 function Label() {
   const [subNavActive, setSubNavActive] = useState(true)
+  const [handleLabelOpen, setHandleLabelOpen] = useState(false)
   return (
     <Wrapper>
       <Navbar>
@@ -114,12 +132,26 @@ function Label() {
           <SearchBar />
           <SearchBarIcon />
         </SearchBarWrapper>
-        <GithubBtn
-          bgcolor={'rgb(46,164,78)'}
-          textColor={'white'}
-          $text={'New Label'}
-        />
+        <NewLabelBtnWrapper onClick={() => setHandleLabelOpen((prev) => !prev)}>
+          <GithubBtn
+            bgcolor={'rgb(46,164,78)'}
+            textColor={'white'}
+            $text={'New Label'}
+          />
+        </NewLabelBtnWrapper>
       </Navbar>
+      <CreateLabelWrapper display={handleLabelOpen ? 'block' : 'none'}>
+        <HandleLabel
+          mainTitle={'Label name'}
+          mainPlaceholder={'Label name'}
+          subTitle={'Description'}
+          subPlaceholder={'Description (optional)'}
+          confirmButtonText={'Create label'}
+          undoButtonText={'Cancel'}
+          cancelClickFn={() => setHandleLabelOpen(false)}
+        />
+      </CreateLabelWrapper>
+
       <LabelListWrapper>
         <LabelListHeader>
           <LabelQuantity>8 labels</LabelQuantity>
