@@ -1,7 +1,9 @@
 //Libraries
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { TagIcon, MilestoneIcon, SearchIcon } from '@primer/octicons-react'
+
+import api from '../../utils/api'
 
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
@@ -15,6 +17,16 @@ type SubNavType = {
 type LabelControlerType = {
   display: string
 }
+type LabelsArrType = {
+  color: string
+  default: boolean
+  description: string | null
+  id: number
+  name: string
+  node_id: string
+  url: string
+}[]
+
 const Wrapper = styled.main`
   padding: 24px 32px 142px;
 `
@@ -112,6 +124,14 @@ const CreateLabelWrapper = styled.div<LabelControlerType>`
 function Label() {
   const [subNavActive, setSubNavActive] = useState(true)
   const [handleLabelOpen, setHandleLabelOpen] = useState(false)
+  const [allLabels, setAllLabels] = useState<LabelsArrType>()
+  useEffect(() => {
+    async function getLabels() {
+      const data = await api.getAllLabels()
+      setAllLabels(data)
+    }
+    getLabels()
+  }, [])
   return (
     <Wrapper>
       <Navbar>
@@ -146,6 +166,7 @@ function Label() {
       </Navbar>
       <CreateLabelWrapper display={handleLabelOpen ? 'block' : 'none'}>
         <HandleLabel
+          initLabelText={'Label preview'}
           mainTitle={'Label name'}
           mainPlaceholder={'Label name'}
           subTitle={'Description'}
@@ -171,18 +192,18 @@ function Label() {
           />
         </LabelListHeader>
         <LabelList>
-          <LabelListItem
-            labelName={'Frank'}
-            labelDesc={'Frank is coming'}
-            useLabelIssueQty={2}
-            colorCode={'#FF0000'}
-          />
-          <LabelListItem
-            labelName={'Frank'}
-            labelDesc={'Frank is coming'}
-            useLabelIssueQty={2}
-            colorCode={'#FF0000'}
-          />
+          {allLabels &&
+            allLabels.map(({ name, description, color }, index) => {
+              return (
+                <LabelListItem
+                  labelName={name}
+                  labelDesc={description ? description : ''}
+                  useLabelIssueQty={2}
+                  colorCode={`#${color}`}
+                  key={`${name}-${color}-${index}`}
+                />
+              )
+            })}
         </LabelList>
       </LabelListWrapper>
     </Wrapper>

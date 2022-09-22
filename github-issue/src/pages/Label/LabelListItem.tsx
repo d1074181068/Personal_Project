@@ -1,10 +1,15 @@
 //Libraries
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { KebabHorizontalIcon } from '@primer/octicons-react'
+
+//custom
+import { lightOrDark } from './HandleLabel'
+
 //components
 import LabelItem from './LabelItem'
 import HandleLabel from './HandleLabel'
+import ActionBtn from './ActionBtn'
+import MobileAction from './MobileAction'
 
 type PropsType = {
   labelName: string
@@ -12,23 +17,28 @@ type PropsType = {
   useLabelIssueQty: number
   colorCode: string
 }
-type MoreActionBtnType = {
-  bgColor: string
-  fillColor: string
-}
-type MoreActionWrapperPropsType = {
+
+type Display = {
   display: string
 }
-
 const Item = styled.li`
-  display: flex;
+  border-bottom: 1px solid rgb(208, 215, 222);
+  :last-child {
+    border-bottom: none;
+  }
+`
+const LabelWrapper = styled.div<Display>`
+  display: ${(props) => props.display};
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  border-bottom: 1px solid rgb(208, 215, 222);
   padding: 20px 0px 20px 20px;
-  :last-child {
-    border-bottom: none;
+`
+const FixedRapper = styled.div`
+  width: 25%;
+  :nth-child(4) {
+    display: flex;
+    justify-content: flex-end;
   }
 `
 const LabelDesc = styled.span`
@@ -51,69 +61,25 @@ const LabelUserStatus = styled.a`
 `
 
 const ActionBtnWrapper = styled.div`
-  display: block;
+  display: flex;
   @media (max-width: 1011px) {
     display: none;
   }
 `
-
-const ActionBtn = styled.a`
+const MarginWrapper = styled.div`
   margin-right: 20px;
-  font-size: 12px;
-  color: rgb(87, 96, 106);
 `
 
-const MobileMoreBtnWrapper = styled.div`
-  position: relative;
+const MobileBtnWrapper = styled.div`
+  margin-right: 20px;
   display: none;
   @media (max-width: 1011px) {
     display: block;
   }
 `
-const MobileActionBtnIcon = styled(KebabHorizontalIcon)``
 
-const MobileMoreActionBtn = styled.button<MoreActionBtnType>`
-  display: block;
-  padding: 6px 12px;
-  border: 1px solid rgb(208, 215, 222);
-  border-radius: 6px;
-  margin-right: 20px;
-  cursor: pointer;
-  background-color: ${(props) => props.bgColor};
-  & > ${MobileActionBtnIcon} {
-    fill: ${(props) => props.fillColor};
-  }
-  :hover {
-    background-color: #0969da;
-    & > ${MobileActionBtnIcon} {
-      fill: white;
-    }
-  }
-`
-const MobileActionBtnWrapper = styled.div<MoreActionWrapperPropsType>`
-  position: absolute;
-  top: 35px;
-  right: 20px;
-  z-index: 10;
-  background-color: white;
-  border: 1px solid rgb(208, 215, 222);
-  border-radius: 6px;
-  width: 158px;
+const HandleLabelWrapper = styled.div<Display>`
   display: ${(props) => props.display};
-`
-const MobileActionBtn = styled.a`
-  padding: 10px;
-  display: block;
-  :hover {
-    background-color: #0969da;
-    color: white;
-  }
-  :first-child {
-    border-radius: 6px 6px 0px 0px;
-  }
-  :last-child {
-    border-radius: 0px 0px 6px 6px;
-  }
 `
 
 function LabelListItem({
@@ -122,44 +88,62 @@ function LabelListItem({
   useLabelIssueQty,
   colorCode
 }: PropsType) {
-  const [moreActionBtnActive, setMoreActionBtnActive] = useState(false)
+  const [areaOfEditLabel, setAreaOfEditLabel] = useState(false)
+  const textColor = lightOrDark(colorCode)
   return (
     <>
       <Item>
-        <LabelItem labelName={labelName} colorCode={colorCode} />
-        <LabelDesc>{labelDesc}</LabelDesc>
-        <LabelUserStatus>
-          {useLabelIssueQty} open issue or pull request
-        </LabelUserStatus>
-        <ActionBtnWrapper>
-          <ActionBtn>Edit</ActionBtn>
-          <ActionBtn>Delete</ActionBtn>
-        </ActionBtnWrapper>
-        <MobileMoreBtnWrapper>
-          <MobileMoreActionBtn
-            onClick={() => setMoreActionBtnActive((prev) => !prev)}
-            onBlur={() => setMoreActionBtnActive(false)}
-            bgColor={moreActionBtnActive ? '#0969da' : 'white'}
-            fillColor={moreActionBtnActive ? 'white' : 'black'}
-          >
-            <MobileActionBtnIcon />
-          </MobileMoreActionBtn>
-          <MobileActionBtnWrapper
-            display={moreActionBtnActive ? 'block' : 'none'}
-          >
-            <MobileActionBtn>Edit</MobileActionBtn>
-            <MobileActionBtn>Delete</MobileActionBtn>
-          </MobileActionBtnWrapper>
-        </MobileMoreBtnWrapper>
+        <LabelWrapper display={areaOfEditLabel ? 'none' : 'flex'}>
+          <FixedRapper>
+            <LabelItem
+              labelName={labelName}
+              colorCode={colorCode}
+              textColor={textColor}
+            />
+          </FixedRapper>
+          <FixedRapper>
+            <LabelDesc>{labelDesc}</LabelDesc>
+          </FixedRapper>
+          <FixedRapper>
+            <LabelUserStatus>
+              {useLabelIssueQty} open issue or pull request
+            </LabelUserStatus>
+          </FixedRapper>
+          <FixedRapper>
+            <ActionBtnWrapper>
+              <MarginWrapper>
+                <ActionBtn
+                  btnText={'Edit'}
+                  clickFn={() => setAreaOfEditLabel((prev) => !prev)}
+                />
+              </MarginWrapper>
+              <MarginWrapper>
+                <ActionBtn btnText={'Delete'} />
+              </MarginWrapper>
+            </ActionBtnWrapper>
+            <MobileBtnWrapper>
+              <MobileAction
+                btnTextList={['Edit', 'Delete']}
+                btnFn={[() => setAreaOfEditLabel((prev) => !prev)]}
+              />
+            </MobileBtnWrapper>
+          </FixedRapper>
+        </LabelWrapper>
+        <HandleLabelWrapper display={areaOfEditLabel ? 'block' : 'none'}>
+          <HandleLabel
+            initLabelText={labelName}
+            initLabelColorCode={colorCode}
+            moreBtnTextList={['Delete']}
+            mainTitle={'Label name'}
+            mainPlaceholder={'Label name'}
+            subTitle={'Description'}
+            subPlaceholder={'Description (optional)'}
+            confirmButtonText={'Create label'}
+            undoButtonText={'Cancel'}
+            cancelClickFn={() => setAreaOfEditLabel(false)}
+          />
+        </HandleLabelWrapper>
       </Item>
-      <HandleLabel
-        mainTitle={'Label name'}
-        mainPlaceholder={'Label name'}
-        subTitle={'Description'}
-        subPlaceholder={'Description (optional)'}
-        confirmButtonText={'Create label'}
-        undoButtonText={'Cancel'}
-      />
     </>
   )
 }

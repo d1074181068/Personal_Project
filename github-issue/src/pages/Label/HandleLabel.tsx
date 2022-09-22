@@ -6,8 +6,13 @@ import { SyncIcon } from '@primer/octicons-react'
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
 import LabelItem from './LabelItem'
+import MobileAction from './MobileAction'
+import ActionBtn from './ActionBtn'
 
 type PropsType = {
+  initLabelText: string
+  initLabelColorCode?: string
+  moreBtnTextList?: string[]
   mainTitle: string
   subTitle: string
   confirmButtonText: string
@@ -19,6 +24,9 @@ type PropsType = {
 
 type ColorBtnType = {
   colorCode: string
+}
+type FillColoeType = {
+  fillColor: string
 }
 
 const Wrapper = styled.div`
@@ -34,6 +42,17 @@ const UserControlWrapper = styled.div`
     flex-direction: column;
     align-items: flex-start;
   }
+`
+const ActionWrapper = styled.div`
+  @media (max-width: 1011px) {
+    display: none;
+  }
+`
+
+const LabelWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 const MainInputWrapper = styled.div`
   width: 271px;
@@ -88,7 +107,11 @@ const RandomColorBtn = styled.button<ColorBtnType>`
   margin-right: 10px;
   cursor: pointer;
 `
-const RandomColorInput = styled.input.attrs({ type: 'text', maxlength: '6' })`
+const RandomColorBtnIcon = styled(SyncIcon)<FillColoeType>`
+  fill: ${(props) => props.fillColor};
+`
+
+const RandomColorInput = styled.input`
   width: 100%;
   height: 32px;
   border: 1px solid rgb(208, 215, 222);
@@ -123,7 +146,7 @@ const CancelCreateWrapper = styled.div`
   }
 `
 
-function randomHexColor() {
+export function randomHexColor() {
   let hex = Math.floor(Math.random() * 16777216).toString(16)
   while (hex.length < 6) {
     hex = '0' + hex
@@ -131,7 +154,22 @@ function randomHexColor() {
   return '#' + hex
 }
 
+export function lightOrDark(bgcolor: string): string {
+  const r = parseInt(bgcolor.slice(1, 3), 16)
+  const g = parseInt(bgcolor.slice(3, 5), 16)
+  const b = parseInt(bgcolor.slice(5, 7), 16)
+  const hsp = r * 0.3 + g * 0.6 + b * 0.1
+  if (hsp > 127.5) {
+    return 'black'
+  } else {
+    return 'white'
+  }
+}
+
 function HandleLabel({
+  initLabelText,
+  initLabelColorCode,
+  moreBtnTextList,
   mainTitle,
   mainPlaceholder,
   subTitle,
@@ -140,14 +178,31 @@ function HandleLabel({
   undoButtonText,
   cancelClickFn
 }: PropsType) {
-  const [colorCode, setColorCode] = useState(randomHexColor())
-  const [labelText, setLabelText] = useState('Label preview')
+  const [colorCode, setColorCode] = useState(
+    initLabelColorCode || randomHexColor()
+  )
+  const [textColor, setTextcolor] = useState('white')
+  const [labelText, setLabelText] = useState(initLabelText)
+
   return (
     <Wrapper>
-      <LabelItem
-        labelName={labelText === '' ? 'Label preview' : labelText}
-        colorCode={colorCode}
-      />
+      <LabelWrapper>
+        <LabelItem
+          labelName={labelText === '' ? 'Label preview' : labelText}
+          colorCode={colorCode}
+          textColor={textColor}
+        />
+        {moreBtnTextList &&
+          moreBtnTextList.map((item, index) => {
+            return (
+              <ActionWrapper key={index}>
+                <ActionBtn btnText={item} />
+              </ActionWrapper>
+            )
+          })}
+        {moreBtnTextList && <MobileAction btnTextList={moreBtnTextList} />}
+      </LabelWrapper>
+
       <UserControlWrapper>
         <MainInputWrapper>
           <Title>{mainTitle}</Title>
@@ -167,10 +222,12 @@ function HandleLabel({
               colorCode={colorCode}
               onClick={() => {
                 const colorCode = randomHexColor()
+                const textColor = lightOrDark(colorCode)
                 setColorCode(colorCode)
+                setTextcolor(textColor)
               }}
             >
-              <SyncIcon />
+              <RandomColorBtnIcon fillColor={lightOrDark(colorCode)} />
             </RandomColorBtn>
             <RandomColorInput
               value={colorCode}

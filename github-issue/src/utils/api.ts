@@ -1,10 +1,14 @@
 const api = {
-  hostname: 'https://api.github.com/repos/',
-  async getToken(code: string, client_id: string, client_secret: string) {
+  hostname: 'https://api.github.com/repos',
+  async getAllLabels() {
     const response = await fetch(
-      `https://github.com/login/oauth/access_token?client_id=${client_id}&client_secret=${client_secret}&code=${code}`,
+      `${this.hostname}/d1074181068/webdesign/labels`,
       {
-        method: 'POST'
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: 'token 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'
+        }),
+        method: 'GET'
       }
     )
     return await response.json()
