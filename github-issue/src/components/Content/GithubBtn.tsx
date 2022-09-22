@@ -22,6 +22,7 @@ const CreateNewLabelBtn = styled.button<BuutonProps>`
   background-color: ${(props) => props.bgcolor};
   border: ${(props) => props.border};
   cursor: pointer;
+  white-space: nowrap;
 `
 function GithubBtn({ bgcolor, $text, textColor, border, clickFn }: ButtonType) {
   return (

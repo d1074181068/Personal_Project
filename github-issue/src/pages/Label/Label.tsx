@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { TagIcon, MilestoneIcon, SearchIcon } from '@primer/octicons-react'
+
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
 import Dropdown from '../../components/Content/Dropdown'
@@ -15,7 +16,7 @@ type LabelControlerType = {
   display: string
 }
 const Wrapper = styled.main`
-  padding: 24px 32px;
+  padding: 24px 32px 142px;
 `
 const Navbar = styled.div`
   display: flex;
@@ -102,8 +103,10 @@ const LabelList = styled.ul``
 const CreateLabelWrapper = styled.div<LabelControlerType>`
   display: ${(props) => props.display};
   max-width: 1216px;
-  margin: 0 auto;
+  margin: 20px auto 0px;
   background-color: rgb(245, 248, 250);
+  border: 1px solid rgb(208, 215, 222);
+  border-radius: 6px;
 `
 
 function Label() {
@@ -132,11 +135,12 @@ function Label() {
           <SearchBar />
           <SearchBarIcon />
         </SearchBarWrapper>
-        <NewLabelBtnWrapper onClick={() => setHandleLabelOpen((prev) => !prev)}>
+        <NewLabelBtnWrapper>
           <GithubBtn
             bgcolor={'rgb(46,164,78)'}
             textColor={'white'}
             $text={'New Label'}
+            clickFn={() => setHandleLabelOpen((prev) => !prev)}
           />
         </NewLabelBtnWrapper>
       </Navbar>
@@ -171,13 +175,13 @@ function Label() {
             labelName={'Frank'}
             labelDesc={'Frank is coming'}
             useLabelIssueQty={2}
-            colorCode={'FF0000'}
+            colorCode={'#FF0000'}
           />
           <LabelListItem
             labelName={'Frank'}
             labelDesc={'Frank is coming'}
             useLabelIssueQty={2}
-            colorCode={'FF0000'}
+            colorCode={'#FF0000'}
           />
         </LabelList>
       </LabelListWrapper>

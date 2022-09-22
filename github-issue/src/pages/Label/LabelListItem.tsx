@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { KebabHorizontalIcon } from '@primer/octicons-react'
 //components
 import LabelItem from './LabelItem'
+import HandleLabel from './HandleLabel'
 
 type PropsType = {
   labelName: string
@@ -123,33 +124,43 @@ function LabelListItem({
 }: PropsType) {
   const [moreActionBtnActive, setMoreActionBtnActive] = useState(false)
   return (
-    <Item>
-      <LabelItem labelName={labelName} colorCode={colorCode} />
-      <LabelDesc>{labelDesc}</LabelDesc>
-      <LabelUserStatus>
-        {useLabelIssueQty} open issue or pull request
-      </LabelUserStatus>
-      <ActionBtnWrapper>
-        <ActionBtn>Edit</ActionBtn>
-        <ActionBtn>Delete</ActionBtn>
-      </ActionBtnWrapper>
-      <MobileMoreBtnWrapper>
-        <MobileMoreActionBtn
-          onClick={() => setMoreActionBtnActive((prev) => !prev)}
-          onBlur={() => setMoreActionBtnActive(false)}
-          bgColor={moreActionBtnActive ? '#0969da' : 'white'}
-          fillColor={moreActionBtnActive ? 'white' : 'black'}
-        >
-          <MobileActionBtnIcon />
-        </MobileMoreActionBtn>
-        <MobileActionBtnWrapper
-          display={moreActionBtnActive ? 'block' : 'none'}
-        >
-          <MobileActionBtn>Edit</MobileActionBtn>
-          <MobileActionBtn>Delete</MobileActionBtn>
-        </MobileActionBtnWrapper>
-      </MobileMoreBtnWrapper>
-    </Item>
+    <>
+      <Item>
+        <LabelItem labelName={labelName} colorCode={colorCode} />
+        <LabelDesc>{labelDesc}</LabelDesc>
+        <LabelUserStatus>
+          {useLabelIssueQty} open issue or pull request
+        </LabelUserStatus>
+        <ActionBtnWrapper>
+          <ActionBtn>Edit</ActionBtn>
+          <ActionBtn>Delete</ActionBtn>
+        </ActionBtnWrapper>
+        <MobileMoreBtnWrapper>
+          <MobileMoreActionBtn
+            onClick={() => setMoreActionBtnActive((prev) => !prev)}
+            onBlur={() => setMoreActionBtnActive(false)}
+            bgColor={moreActionBtnActive ? '#0969da' : 'white'}
+            fillColor={moreActionBtnActive ? 'white' : 'black'}
+          >
+            <MobileActionBtnIcon />
+          </MobileMoreActionBtn>
+          <MobileActionBtnWrapper
+            display={moreActionBtnActive ? 'block' : 'none'}
+          >
+            <MobileActionBtn>Edit</MobileActionBtn>
+            <MobileActionBtn>Delete</MobileActionBtn>
+          </MobileActionBtnWrapper>
+        </MobileMoreBtnWrapper>
+      </Item>
+      <HandleLabel
+        mainTitle={'Label name'}
+        mainPlaceholder={'Label name'}
+        subTitle={'Description'}
+        subPlaceholder={'Description (optional)'}
+        confirmButtonText={'Create label'}
+        undoButtonText={'Cancel'}
+      />
+    </>
   )
 }
 

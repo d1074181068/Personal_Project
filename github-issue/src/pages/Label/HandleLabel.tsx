@@ -25,16 +25,23 @@ const Wrapper = styled.div`
   margin-top: 20px;
   padding: 20px;
   border-radius: 6px;
-  border: 1px solid rgb(208, 215, 222);
 `
 const UserControlWrapper = styled.div`
   display: flex;
   align-items: center;
   margin: 40px 0px 10px;
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `
 const MainInputWrapper = styled.div`
   width: 271px;
   margin-right: 20px;
+  @media (max-width: 767px) {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 `
 const Title = styled.label`
   font-weight: 500;
@@ -52,11 +59,22 @@ const MainInput = styled.input`
 const SubInputWrapper = styled.div`
   width: 367px;
   margin-right: 15px;
+  @media (max-width: 1011px) {
+    width: 231px;
+  }
+  @media (max-width: 767px) {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 `
 const SubInput = styled(MainInput)``
 
 const ColorSelectWrapper = styled.div`
   width: 191px;
+  @media (max-width: 767px) {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 `
 const RandomWrapper = styled.div`
   display: flex;
@@ -70,7 +88,7 @@ const RandomColorBtn = styled.button<ColorBtnType>`
   margin-right: 10px;
   cursor: pointer;
 `
-const RandomColorInput = styled.input`
+const RandomColorInput = styled.input.attrs({ type: 'text', maxlength: '6' })`
   width: 100%;
   height: 32px;
   border: 1px solid rgb(208, 215, 222);
@@ -83,9 +101,26 @@ const ControlBtnWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-self: flex-end;
+  @media (max-width: 767px) {
+    flex-grow: unset;
+    align-self: flex-start;
+  }
+`
+const CreateLabelWrapper = styled.div`
+  @media (max-width: 767px) {
+    order: 2;
+  }
 `
 const Space = styled.div`
   width: 10px;
+  @media (max-width: 767px) {
+    order: 1;
+  }
+`
+const CancelCreateWrapper = styled.div`
+  @media (max-width: 767px) {
+    order: -1;
+  }
 `
 
 function randomHexColor() {
@@ -126,7 +161,7 @@ function HandleLabel({
           <SubInput placeholder={subPlaceholder} />
         </SubInputWrapper>
         <ColorSelectWrapper>
-          <Title>ColorCode (without "#")</Title>
+          <Title>ColorCode</Title>
           <RandomWrapper>
             <RandomColorBtn
               colorCode={colorCode}
@@ -153,19 +188,23 @@ function HandleLabel({
           </RandomWrapper>
         </ColorSelectWrapper>
         <ControlBtnWrapper>
-          <GithubBtn
-            bgcolor={'#ffffff'}
-            $text={undoButtonText}
-            textColor={'#000000'}
-            border={'1px solid rgba(27,31,36,0.15)'}
-            clickFn={cancelClickFn ? cancelClickFn : () => {}}
-          />
+          <CreateLabelWrapper>
+            <GithubBtn
+              bgcolor={'#ffffff'}
+              $text={undoButtonText}
+              textColor={'#000000'}
+              border={'1px solid rgba(27,31,36,0.15)'}
+              clickFn={cancelClickFn ? cancelClickFn : () => {}}
+            />
+          </CreateLabelWrapper>
           <Space />
-          <GithubBtn
-            bgcolor={'#2DA44F'}
-            $text={confirmButtonText}
-            textColor={'#ffffff'}
-          />
+          <CancelCreateWrapper>
+            <GithubBtn
+              bgcolor={'#2DA44F'}
+              $text={confirmButtonText}
+              textColor={'#ffffff'}
+            />
+          </CancelCreateWrapper>
         </ControlBtnWrapper>
       </UserControlWrapper>
     </Wrapper>
