@@ -20,6 +20,8 @@ const Wrapper = styled.div`
 const Btn = styled.button`
   color: rgb(87, 96, 106);
   cursor: pointer;
+  border: 0;
+  background-color: transparent;
 `
 
 const DropdownList = styled.ul<DropdownPropsType>`
@@ -31,6 +33,8 @@ const DropdownList = styled.ul<DropdownPropsType>`
   right: 0;
   border: 1px solid rgb(208, 215, 222);
   border-radius: 6px;
+  list-style: none;
+  padding-left: 0px;
 `
 const DropdownItem = styled.li`
   position: relative;
