@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "personal-project-94fe9"
-  }
+  },
+  "targets": {
+    "personal-project-94fe9": {
+      "hosting": {
+        "github-issue": [
+          "personal-project-94fe9"
+        ],
+        "storybook": [
+          "storybook-add59"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

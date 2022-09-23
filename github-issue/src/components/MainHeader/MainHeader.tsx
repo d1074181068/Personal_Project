@@ -34,7 +34,7 @@ const RepoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   @media (max-width: 959px) {
     flex-direction: column;
     align-items: flex-start;
@@ -66,6 +66,7 @@ const ActionWrapper = styled.div`
 
 const RepoNavbarList = styled.ul`
   display: flex;
+  gap: 8px;
   align-items: center;
   margin-left: 10px;
   overflow-x: auto;

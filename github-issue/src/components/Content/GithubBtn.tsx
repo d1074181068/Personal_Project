@@ -7,12 +7,14 @@ type ButtonType = {
   $text: string
   textColor: string
   border?: string
+  hoverColor?: string
   clickFn?: () => void
 }
 type BuutonProps = {
   bgcolor: string
   textColor: string
   border: string
+  hoverColor: string
 }
 
 const CreateNewLabelBtn = styled.button<BuutonProps>`
@@ -23,13 +25,24 @@ const CreateNewLabelBtn = styled.button<BuutonProps>`
   border: ${(props) => props.border};
   cursor: pointer;
   white-space: nowrap;
+  :hover {
+    background-color: ${(props) => props.hoverColor};
+  }
 `
-function GithubBtn({ bgcolor, $text, textColor, border, clickFn }: ButtonType) {
+function GithubBtn({
+  bgcolor,
+  $text,
+  textColor,
+  border,
+  clickFn,
+  hoverColor
+}: ButtonType) {
   return (
     <CreateNewLabelBtn
       bgcolor={bgcolor}
       textColor={textColor}
       border={border ? border : 'none'}
+      hoverColor={hoverColor ? hoverColor : bgcolor}
       onClick={clickFn ? () => clickFn() : () => {}}
     >
       {$text}

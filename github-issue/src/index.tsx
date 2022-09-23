@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Provider } from 'react-redux'
-
+import { ApiProvider } from '@reduxjs/toolkit/query/react'
 //components
 import App from './App'
 import IssueList from './pages/IssueList/IssueList'
@@ -14,10 +14,11 @@ import Issue from './pages/Issue/Issue'
 
 //custom
 import { store } from './redux/store'
+import { apiSlice } from './redux/labelApiSlice'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
-  <Provider store={store}>
+  <ApiProvider api={apiSlice}>
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<App />}>
@@ -29,7 +30,7 @@ root.render(
         </Route>
       </Routes>
     </BrowserRouter>
-  </Provider>
+  </ApiProvider>
 )
 
 // If you want to start measuring performance in your app, pass a function

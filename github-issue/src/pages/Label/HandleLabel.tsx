@@ -131,7 +131,7 @@ const ControlBtnWrapper = styled.div`
 `
 const CreateLabelWrapper = styled.div`
   @media (max-width: 767px) {
-    order: 2;
+    order: -1;
   }
 `
 const Space = styled.div`
@@ -141,8 +141,10 @@ const Space = styled.div`
   }
 `
 const CancelCreateWrapper = styled.div`
+  margin-left: 10px;
   @media (max-width: 767px) {
-    order: -1;
+    order: 2;
+    margin-left: 0px;
   }
 `
 
@@ -151,7 +153,7 @@ export function randomHexColor() {
   while (hex.length < 6) {
     hex = '0' + hex
   }
-  return '#' + hex
+  return '#' + hex.toUpperCase()
 }
 
 export function lightOrDark(bgcolor: string): string {
@@ -210,6 +212,7 @@ function HandleLabel({
         <MainInputWrapper>
           <Title>{mainTitle}</Title>
           <MainInput
+            value={labelText}
             placeholder={mainPlaceholder}
             onChange={(e) => setLabelText(e.target.value)}
           />
@@ -233,13 +236,13 @@ function HandleLabel({
               <RandomColorBtnIcon fillColor={textColor} />
             </RandomColorBtn>
             <RandomColorInput
-              value={colorCode}
+              value={colorCode.toUpperCase()}
               onChange={(e) => {
                 if (e.target.value.length > 7) {
                   e.target.value = e.target.value.slice(0, 6)
                   return
                 } else if (e.target.value.length === 0) {
-                  setColorCode(randomHexColor())
+                  setColorCode('#')
                   return
                 }
                 setColorCode(e.target.value)
@@ -248,23 +251,39 @@ function HandleLabel({
           </RandomWrapper>
         </ColorSelectWrapper>
         <ControlBtnWrapper>
-          <CreateLabelWrapper>
+          <CancelCreateWrapper>
             <GithubBtn
               bgcolor={'#ffffff'}
               $text={undoButtonText}
               textColor={'#000000'}
+              hoverColor={'#f3f4f6'}
               border={'1px solid rgba(27,31,36,0.15)'}
-              clickFn={cancelClickFn ? cancelClickFn : () => {}}
+              clickFn={
+                cancelClickFn
+                  ? () => {
+                      console.log(initLabelText)
+
+                      setLabelText(initLabelText)
+                      setColorCode(
+                        (initLabelColorCode as string)
+                          ? (initLabelColorCode as string)
+                          : randomHexColor()
+                      )
+                      cancelClickFn()
+                    }
+                  : () => {}
+              }
             />
-          </CreateLabelWrapper>
+          </CancelCreateWrapper>
           <Space />
-          <CancelCreateWrapper>
+          <CreateLabelWrapper>
             <GithubBtn
               bgcolor={'#2DA44F'}
               $text={confirmButtonText}
               textColor={'#ffffff'}
+              hoverColor={'#2c974b'}
             />
-          </CancelCreateWrapper>
+          </CreateLabelWrapper>
         </ControlBtnWrapper>
       </UserControlWrapper>
     </Wrapper>

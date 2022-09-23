@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux'
+import { createAction, createSlice } from '@reduxjs/toolkit'
 
 const initialLabelState: string[] = []
 const initialIssueState: string[] = []
@@ -13,7 +13,29 @@ type LabelActionDEL = {
 type LabelActionUPDATE = {
   type: 'UPDATE_LABEL'
 }
-function handleLabelreducer(
+
+export const labelSlice = createSlice({
+  name: 'label',
+  initialState: initialLabelState,
+  reducers: {
+    getLabel: (state) => {
+      return [...state, 'getLabel']
+    },
+    createLabel: (state) => {
+      return [...state, 'createLabel']
+    },
+    deleteLabel: (state) => {
+      return [...state, 'deleteLabel']
+    },
+    updateLabel: (state) => {
+      return [...state, 'updateLabel']
+    }
+  }
+})
+export const { getLabel, createLabel, deleteLabel, updateLabel } =
+  labelSlice.actions
+
+export function handleLabelreducer(
   state = initialLabelState,
   action: LabelActionADD | LabelActionDEL | LabelActionUPDATE
 ) {
@@ -44,7 +66,7 @@ type IssueActionUPDATE = {
 type IssueActionFILTER = {
   type: 'FILTER_ISSUE'
 }
-function handleIssueReducer(
+export function handleIssueReducer(
   state = initialIssueState,
   action:
     | IssueActionADD
@@ -80,7 +102,7 @@ type CommentActionUPDATE = {
   type: 'UPDATE_COMMENT'
 }
 
-function handleCommentReducer(
+export function handleCommentReducer(
   state = initialCommentState,
   action: CommentActionADD | CommentActionDEL | CommentActionUPDATE
 ) {
@@ -98,9 +120,3 @@ function handleCommentReducer(
       return state
   }
 }
-
-export const rootReducer = combineReducers({
-  label: handleLabelreducer,
-  issue: handleIssueReducer,
-  comment: handleCommentReducer
-})

@@ -1,10 +1,8 @@
 //Libraries
 import React, { useState } from 'react'
 import styled from 'styled-components'
-
 //custom
 import { lightOrDark } from './HandleLabel'
-
 //components
 import LabelItem from './LabelItem'
 import HandleLabel from './HandleLabel'
@@ -90,6 +88,7 @@ function LabelListItem({
 }: PropsType) {
   const [areaOfEditLabel, setAreaOfEditLabel] = useState(false)
   const textColor = lightOrDark(colorCode)
+
   return (
     <>
       <Item>
@@ -138,7 +137,7 @@ function LabelListItem({
             mainPlaceholder={'Label name'}
             subTitle={'Description'}
             subPlaceholder={'Description (optional)'}
-            confirmButtonText={'Create label'}
+            confirmButtonText={'Save Change'}
             undoButtonText={'Cancel'}
             cancelClickFn={() => setAreaOfEditLabel(false)}
           />

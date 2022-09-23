@@ -2,14 +2,13 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { TagIcon, MilestoneIcon, SearchIcon } from '@primer/octicons-react'
-
-import api from '../../utils/api'
-
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
 import Dropdown from '../../components/Content/Dropdown'
 import LabelListItem from './LabelListItem'
 import HandleLabel from './HandleLabel'
+//custom
+import { useGetLabelQuery } from '../../redux/labelApiSlice'
 
 type SubNavType = {
   $isAcitve: boolean
@@ -17,15 +16,6 @@ type SubNavType = {
 type LabelControlerType = {
   display: string
 }
-type LabelsArrType = {
-  color: string
-  default: boolean
-  description: string | null
-  id: number
-  name: string
-  node_id: string
-  url: string
-}[]
 
 const Wrapper = styled.main`
   padding: 24px 32px 142px;
@@ -39,9 +29,9 @@ const Navbar = styled.div`
 `
 const SubNavButtonWrapper = styled.div``
 const SubNavLabelBtn = styled.button<SubNavType>`
+  border: 1px solid rgb(208, 215, 222);
   padding: 8px 16px;
   border-radius: 6px 0px 0px 6px;
-  border: 1px solid rgba(0, 0, 0, 0.4);
   cursor: pointer;
   background-color: ${(props) =>
     props.$isAcitve ? 'rgb(9,105,218)' : 'white'};
@@ -51,9 +41,9 @@ const LabelBtnIcon = styled(TagIcon)`
   margin-right: 5px;
 `
 const SubNavMilestonesBtn = styled.button<SubNavType>`
+  border: 1px solid rgb(208, 215, 222);
   padding: 8px 16px;
   border-radius: 0px 6px 6px 0px;
-  border: 1px solid rgba(0, 0, 0, 0.4);
   border-left: none;
   cursor: pointer;
   background-color: ${(props) =>
@@ -124,14 +114,14 @@ const CreateLabelWrapper = styled.div<LabelControlerType>`
 function Label() {
   const [subNavActive, setSubNavActive] = useState(true)
   const [handleLabelOpen, setHandleLabelOpen] = useState(false)
-  const [allLabels, setAllLabels] = useState<LabelsArrType>()
-  useEffect(() => {
-    async function getLabels() {
-      const data = await api.getAllLabels()
-      setAllLabels(data)
-    }
-    getLabels()
-  }, [])
+  const { data, isLoading, isSuccess, isError, error } = useGetLabelQuery({
+    name: 'd1074181068',
+    repo: 'webdesign'
+  })
+  if (isLoading) {
+    return <>Loading...</>
+  }
+  if (!isSuccess && !isLoading) return <>Oops!</>
   return (
     <Wrapper>
       <Navbar>
@@ -158,6 +148,7 @@ function Label() {
         <NewLabelBtnWrapper>
           <GithubBtn
             bgcolor={'rgb(46,164,78)'}
+            hoverColor={'#2c974b'}
             textColor={'white'}
             $text={'New Label'}
             clickFn={() => setHandleLabelOpen((prev) => !prev)}
@@ -166,7 +157,7 @@ function Label() {
       </Navbar>
       <CreateLabelWrapper display={handleLabelOpen ? 'block' : 'none'}>
         <HandleLabel
-          initLabelText={'Label preview'}
+          initLabelText={''}
           mainTitle={'Label name'}
           mainPlaceholder={'Label name'}
           subTitle={'Description'}
@@ -192,8 +183,8 @@ function Label() {
           />
         </LabelListHeader>
         <LabelList>
-          {allLabels &&
-            allLabels.map(({ name, description, color }, index) => {
+          {data &&
+            data.map(({ name, description, color }, index) => {
               return (
                 <LabelListItem
                   labelName={name}
