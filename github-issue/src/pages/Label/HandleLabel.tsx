@@ -181,7 +181,10 @@ function HandleLabel({
   const [colorCode, setColorCode] = useState(
     initLabelColorCode || randomHexColor()
   )
-  const [textColor, setTextcolor] = useState('white')
+  const [textColor, setTextcolor] = useState(
+    lightOrDark(`#${initLabelColorCode}` as string)
+  )
+
   const [labelText, setLabelText] = useState(initLabelText)
 
   return (
@@ -227,7 +230,7 @@ function HandleLabel({
                 setTextcolor(textColor)
               }}
             >
-              <RandomColorBtnIcon fillColor={lightOrDark(colorCode)} />
+              <RandomColorBtnIcon fillColor={textColor} />
             </RandomColorBtn>
             <RandomColorInput
               value={colorCode}

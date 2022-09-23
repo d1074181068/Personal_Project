@@ -6,7 +6,7 @@ const api = {
       {
         headers: new Headers({
           'Content-Type': 'application/json',
-          Authorization: 'token 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'
+          Authorization: ''
         }),
         method: 'GET'
       }
