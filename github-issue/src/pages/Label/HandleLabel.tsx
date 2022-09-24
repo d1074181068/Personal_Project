@@ -1,5 +1,5 @@
 //Libraries
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { SyncIcon } from '@primer/octicons-react'
 
@@ -28,9 +28,11 @@ type ColorBtnType = {
 type FillColoeType = {
   fillColor: string
 }
+type ErrorColorType = {
+  errorColorStatus: string
+}
 
 const Wrapper = styled.div`
-  margin-top: 20px;
   padding: 20px;
   border-radius: 6px;
 `
@@ -111,13 +113,14 @@ const RandomColorBtnIcon = styled(SyncIcon)<FillColoeType>`
   fill: ${(props) => props.fillColor};
 `
 
-const RandomColorInput = styled.input`
+const RandomColorInput = styled.input<ErrorColorType>`
   width: 100%;
   height: 32px;
   border: 1px solid rgb(208, 215, 222);
   border-radius: 6px;
   background-color: rgb(245, 248, 250);
   padding-left: 15px;
+  color: ${(props) => props.errorColorStatus};
 `
 const ControlBtnWrapper = styled.div`
   flex-grow: 1;
@@ -160,6 +163,9 @@ export function lightOrDark(bgcolor: string): string {
   const r = parseInt(bgcolor.slice(1, 3), 16)
   const g = parseInt(bgcolor.slice(3, 5), 16)
   const b = parseInt(bgcolor.slice(5, 7), 16)
+  if (isNaN(r) || isNaN(g) || isNaN(b)) {
+    return 'error'
+  }
   const hsp = r * 0.3 + g * 0.6 + b * 0.1
   if (hsp > 127.5) {
     return 'black'
@@ -186,15 +192,52 @@ function HandleLabel({
   const [textColor, setTextcolor] = useState(
     lightOrDark(`#${initLabelColorCode}` as string)
   )
-
   const [labelText, setLabelText] = useState(initLabelText)
-
+  const [errorColorCodeStatus, setErrorColorCodeStatus] = useState(false)
+  const currentColorCode = useRef<string>(colorCode)
+  console.log(currentColorCode.current)
+  function checkAndSetColorCode(eventTarget: HTMLInputElement) {
+    let inputValue = eventTarget.value
+    let colorMode = ''
+    if (inputValue.length > 7) {
+      inputValue = inputValue.slice(0, 6)
+      return
+    }
+    if (inputValue.length === 0) {
+      setColorCode('#')
+      return
+    }
+    if (inputValue.length === 4 || inputValue.length === 7) {
+      setErrorColorCodeStatus(false)
+      if (inputValue.length === 4) {
+        inputValue = `#${inputValue.slice(1, 2)}${inputValue.slice(
+          1,
+          2
+        )}${inputValue.slice(2, 3)}${inputValue.slice(2, 3)}${inputValue.slice(
+          3,
+          4
+        )}${inputValue.slice(3, 4)}`
+        colorMode = lightOrDark(inputValue)
+      } else {
+        colorMode = lightOrDark(inputValue)
+      }
+      if (colorMode === 'error') {
+        setErrorColorCodeStatus(true)
+        setColorCode(inputValue)
+        return
+      }
+      currentColorCode.current = inputValue
+    } else {
+      setErrorColorCodeStatus(true)
+    }
+    setColorCode(eventTarget.value)
+  }
   return (
     <Wrapper>
       <LabelWrapper>
         <LabelItem
           labelName={labelText === '' ? 'Label preview' : labelText}
-          colorCode={colorCode}
+          colorCode={currentColorCode.current}
           textColor={textColor}
         />
         {moreBtnTextList &&
@@ -225,10 +268,11 @@ function HandleLabel({
           <Title>ColorCode</Title>
           <RandomWrapper>
             <RandomColorBtn
-              colorCode={colorCode}
+              colorCode={currentColorCode.current}
               onClick={() => {
                 const colorCode = randomHexColor()
                 const textColor = lightOrDark(colorCode)
+                currentColorCode.current = colorCode
                 setColorCode(colorCode)
                 setTextcolor(textColor)
               }}
@@ -237,15 +281,9 @@ function HandleLabel({
             </RandomColorBtn>
             <RandomColorInput
               value={colorCode.toUpperCase()}
+              errorColorStatus={errorColorCodeStatus ? 'red' : 'black'}
               onChange={(e) => {
-                if (e.target.value.length > 7) {
-                  e.target.value = e.target.value.slice(0, 6)
-                  return
-                } else if (e.target.value.length === 0) {
-                  setColorCode('#')
-                  return
-                }
-                setColorCode(e.target.value)
+                checkAndSetColorCode(e.target)
               }}
             />
           </RandomWrapper>
@@ -261,14 +299,14 @@ function HandleLabel({
               clickFn={
                 cancelClickFn
                   ? () => {
-                      console.log(initLabelText)
-
                       setLabelText(initLabelText)
                       setColorCode(
                         (initLabelColorCode as string)
                           ? (initLabelColorCode as string)
                           : randomHexColor()
                       )
+                      currentColorCode.current = initLabelColorCode as string
+                      setErrorColorCodeStatus(false)
                       cancelClickFn()
                     }
                   : () => {}

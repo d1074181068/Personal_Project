@@ -25,7 +25,7 @@ export const apiSlice = createApi({
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
-          Authorization: 'token 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'
+          Authorization: 'token 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'
         })
       })
     })

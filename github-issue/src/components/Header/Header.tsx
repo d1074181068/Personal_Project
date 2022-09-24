@@ -12,8 +12,6 @@ import {
 //components
 import MobileLink from './MobileLink'
 
-//custom
-import api from '../../utils/api'
 import { supabase } from '../../utils/client'
 import { UserType, Session } from '../../types/supabaseType'
 
