@@ -31,6 +31,9 @@ type FillColoeType = {
 type ErrorColorType = {
   errorColorStatus: string
 }
+type ColorPickerPropsType = {
+  $display: string
+}
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -99,6 +102,7 @@ const ColorSelectWrapper = styled.div`
 `
 const RandomWrapper = styled.div`
   display: flex;
+  position: relative;
 `
 
 const RandomColorBtn = styled.button<ColorBtnType>`
@@ -121,6 +125,69 @@ const RandomColorInput = styled.input<ErrorColorType>`
   background-color: rgb(245, 248, 250);
   padding-left: 15px;
   color: ${(props) => props.errorColorStatus};
+`
+const ColorPickerWrapper = styled.div<ColorPickerPropsType>`
+  position: absolute;
+  top: 35px;
+  left: 41px;
+  padding: 8px;
+  border: 1px solid rgb(208, 215, 222);
+  border-radius: 6px;
+  background-color: white;
+  display: ${(props) => props.$display};
+  &:after {
+    border-right: solid 8px transparent;
+    border-left: solid 8px transparent;
+    border-bottom: solid 8px #ffffff;
+    transform: translateX(-50%);
+    position: absolute;
+    outline: 1px red;
+    z-index: 1;
+    content: '';
+    top: -8px;
+    left: 25px;
+    height: 0;
+    width: 0;
+  }
+
+  &:before {
+    border-right: solid 9px transparent;
+    border-left: solid 9px transparent;
+    border-bottom: solid 9px #e6eaee;
+    transform: translateX(-50%);
+    position: absolute;
+    outline: 1px red;
+    z-index: 1;
+    content: '';
+    top: -8.6px;
+    left: 25px;
+    height: 0;
+    width: 0;
+  }
+`
+const ColorPickerTitle = styled.h3`
+  color: rgb(87, 96, 106);
+  font-size: 12px;
+  white-space: nowrap;
+  margin-bottom: 10px;
+`
+
+const ColorPickerList = styled.ul`
+  display: flex;
+  width: 214px;
+  margin-bottom: 5px;
+  gap: 3px;
+  :last-child {
+    margin-bottom: 0;
+  }
+`
+const ColorPickerBtn = styled.button<ColorBtnType>`
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background-color: ${(props) => props.colorCode};
+  border-color: ${(props) => props.colorCode};
+  cursor: pointer;
 `
 const ControlBtnWrapper = styled.div`
   flex-grow: 1;
@@ -174,6 +241,28 @@ export function lightOrDark(bgcolor: string): string {
   }
 }
 
+const commonColorPickerArr = [
+  '#B60205',
+  '#D93F0B',
+  '#FBCA04',
+  '#0E8A16',
+  '#006B75',
+  '#1D76DB',
+  '#0052CC',
+  '#5319E7'
+]
+
+const lightColorPickerArr = [
+  '#E99695',
+  '#F9D0C4',
+  '#FEF2C0',
+  '#C2E0C6',
+  '#BFDADC',
+  '#C5DEF5',
+  '#BFD4F2',
+  '#D4C5F9'
+]
+
 function HandleLabel({
   initLabelText,
   initLabelColorCode,
@@ -194,8 +283,9 @@ function HandleLabel({
   )
   const [labelText, setLabelText] = useState(initLabelText)
   const [errorColorCodeStatus, setErrorColorCodeStatus] = useState(false)
+  const [colorPickerShow, setColorPickerShow] = useState(false)
+
   const currentColorCode = useRef<string>(colorCode)
-  console.log(currentColorCode.current)
   function checkAndSetColorCode(eventTarget: HTMLInputElement) {
     let inputValue = eventTarget.value
     let colorMode = ''
@@ -285,7 +375,45 @@ function HandleLabel({
               onChange={(e) => {
                 checkAndSetColorCode(e.target)
               }}
+              onClick={() => setColorPickerShow(true)}
             />
+            <ColorPickerWrapper $display={colorPickerShow ? 'block' : 'none'}>
+              <ColorPickerTitle>Choose from default colors:</ColorPickerTitle>
+              <ColorPickerList>
+                {commonColorPickerArr.map((color, index) => {
+                  return (
+                    <li key={index}>
+                      <ColorPickerBtn
+                        colorCode={color}
+                        onClick={() => {
+                          setColorCode(color)
+                          currentColorCode.current = color
+                          setTextcolor(lightOrDark(color))
+                          setColorPickerShow(false)
+                        }}
+                      />
+                    </li>
+                  )
+                })}
+              </ColorPickerList>
+              <ColorPickerList>
+                {lightColorPickerArr.map((color, index) => {
+                  return (
+                    <li key={index}>
+                      <ColorPickerBtn
+                        colorCode={color}
+                        onClick={() => {
+                          setColorCode(color)
+                          currentColorCode.current = color
+                          setTextcolor(lightOrDark(color))
+                          setColorPickerShow(false)
+                        }}
+                      />
+                    </li>
+                  )
+                })}
+              </ColorPickerList>
+            </ColorPickerWrapper>
           </RandomWrapper>
         </ColorSelectWrapper>
         <ControlBtnWrapper>

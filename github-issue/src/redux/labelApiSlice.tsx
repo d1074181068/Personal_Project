@@ -24,8 +24,7 @@ export const apiSlice = createApi({
         url: `/${name}/${repo}/labels`,
         method: 'GET',
         headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: 'token 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'
+          'Content-Type': 'application/json'
         })
       })
     })
