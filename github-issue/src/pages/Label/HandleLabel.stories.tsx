@@ -4,6 +4,7 @@ import HandleLabel from './HandleLabel'
 
 type StorybookType = {
   initLabelText: string
+  initDesctext: string
   initLabelColorCode: string
   moreBtnTextList: string[]
   mainTitle: string
@@ -34,6 +35,7 @@ export const Default = Template.bind({})
 Default.args = {
   initLabelText: 'Frank',
   initLabelColorCode: '#FF0000',
+  initDesctext: 'hello',
   moreBtnTextList: ['Delete'],
   mainTitle: 'Label name',
   mainPlaceholder: 'Label name',

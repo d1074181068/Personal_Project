@@ -13,6 +13,7 @@ import { OutSideWrapper } from '../../components/Content/Dropdown'
 type PropsType = {
   initLabelText: string
   initLabelColorCode?: string
+  initDesctext: string
   moreBtnTextList?: string[]
   mainTitle: string
   subTitle: string
@@ -31,6 +32,7 @@ type PropsType = {
     labelColor: string,
     labelDescription: string
   ) => void
+  deleteClickFn?: () => void
 }
 
 type ColorBtnType = {
@@ -277,6 +279,7 @@ const lightColorPickerArr = [
 
 function HandleLabel({
   initLabelText,
+  initDesctext,
   initLabelColorCode,
   moreBtnTextList,
   mainTitle,
@@ -287,7 +290,8 @@ function HandleLabel({
   undoButtonText,
   cancelClickFn,
   createlabelFn,
-  updatelabelFn
+  updatelabelFn,
+  deleteClickFn
 }: PropsType) {
   const [colorCode, setColorCode] = useState(
     initLabelColorCode || randomHexColor()
@@ -304,7 +308,7 @@ function HandleLabel({
     initLabelText ? false : true
   )
   const [colorPickerShow, setColorPickerShow] = useState(false)
-
+  const [description, setDescription] = useState(initDesctext)
   const currentColorCode = useRef<string>(colorCode)
   function checkAndSetColorCode(eventTarget: HTMLInputElement) {
     let inputValue = eventTarget.value
@@ -354,7 +358,7 @@ function HandleLabel({
           moreBtnTextList.map((item, index) => {
             return (
               <ActionWrapper key={index}>
-                <ActionBtn btnText={item} />
+                <ActionBtn btnText={item} clickFn={deleteClickFn} />
               </ActionWrapper>
             )
           })}
@@ -379,7 +383,11 @@ function HandleLabel({
         </MainInputWrapper>
         <SubInputWrapper>
           <Title>{subTitle}</Title>
-          <SubInput placeholder={subPlaceholder} />
+          <SubInput
+            value={description}
+            placeholder={subPlaceholder}
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </SubInputWrapper>
         <ColorSelectWrapper>
           <Title>ColorCode</Title>
@@ -497,12 +505,20 @@ function HandleLabel({
                       currentColorCode.current = initLabelColorCode
                         ? initLabelColorCode
                         : randomHexColor()
-                      createlabelFn(labelText, colorCode.split('#')[1], '')
+                      createlabelFn(
+                        labelText,
+                        colorCode.split('#')[1],
+                        description
+                      )
                     }
                   : updatelabelFn
                   ? () => {
                       if (cancelClickFn) cancelClickFn()
-                      updatelabelFn(labelText, colorCode.split('#')[1], '')
+                      updatelabelFn(
+                        labelText,
+                        colorCode.split('#')[1],
+                        description
+                      )
                     }
                   : () => {}
               }
