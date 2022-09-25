@@ -22,6 +22,7 @@ import {
 //components
 import PageHeaderAction from './PageHeaderAction'
 import RepoNavbar from './RepoNavbar'
+import LabelItem from '../../pages/Label/LabelItem'
 
 type FontType = {
   fontBold: boolean
@@ -91,7 +92,7 @@ const pageActionArr = [
   [<StarIcon />, 'Star', 0, <TriangleDownIcon />]
 ]
 function MainHeader() {
-  const [clickItem, setClickItem] = useState('')
+  const [clickItem, setClickItem] = useState('Issues')
   function isClick(event: EventTarget) {
     if ((event as HTMLElement).tagName === 'svg') {
       setClickItem(
@@ -136,21 +137,13 @@ function MainHeader() {
       </RepoWrapper>
       <RepoNavbarList>
         {repoNavArr.map((item, index) => {
-          return clickItem === item[1] ? (
+          return (
             <RepoNavbar
               key={index}
               iconComponent={item[0] as JSX.Element}
               $text={item[1] as string}
               isClick={isClick}
-              $isActive={true}
-            />
-          ) : (
-            <RepoNavbar
-              key={index}
-              iconComponent={item[0] as JSX.Element}
-              $text={item[1] as string}
-              isClick={isClick}
-              $isActive={false}
+              $isActive={clickItem === item[1] ? true : false}
             />
           )
         })}

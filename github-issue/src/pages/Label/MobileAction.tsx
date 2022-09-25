@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { KebabHorizontalIcon } from '@primer/octicons-react'
+
+//custom
+import { OutSideWrapper } from '../../components/Content/Dropdown'
+
 type PropsType = {
   btnTextList: string[]
   btnFn?: (() => void)[]
@@ -44,7 +48,7 @@ const MobileActionBtnWrapper = styled.div<MoreActionWrapperPropsType>`
   position: absolute;
   top: 35px;
   right: 20px;
-  z-index: 10;
+  z-index: 199;
   background-color: white;
   border: 1px solid rgb(208, 215, 222);
   border-radius: 6px;
@@ -94,6 +98,10 @@ function MobileAction({ btnTextList, btnFn }: PropsType) {
           return <MobileActionBtn key={index}>{item}</MobileActionBtn>
         })}
       </MobileActionBtnWrapper>
+      <OutSideWrapper
+        open={moreActionBtnActive ? 'block' : 'none'}
+        onClick={() => setMoreActionBtnActive(false)}
+      />
     </MobileMoreBtnWrapper>
   )
 }

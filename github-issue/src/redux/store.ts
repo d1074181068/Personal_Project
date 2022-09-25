@@ -1,13 +1,11 @@
-import {
-  handleCommentReducer,
-  handleIssueReducer,
-  handleLabelreducer,
-  labelSlice
-} from './reducer'
+import { apiSlice } from './labelApiSlice'
 import { configureStore } from '@reduxjs/toolkit'
 export const store = configureStore({
   reducer: {
-    label: labelSlice.reducer
+    [apiSlice.reducerPath]: apiSlice.reducer
+  },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat(apiSlice.middleware)
   }
 })
 // Infer the `RootState` and `AppDispatch` types from the store itself

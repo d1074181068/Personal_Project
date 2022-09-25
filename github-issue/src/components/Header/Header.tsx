@@ -1,5 +1,6 @@
 //Libraries
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import {
   MarkGithubIcon,
@@ -15,11 +16,15 @@ import MobileLink from './MobileLink'
 import { supabase } from '../../utils/client'
 import { UserType, Session } from '../../types/supabaseType'
 
+type PropsType = {
+  signClickFn: () => void
+}
+
 const Wrapper = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: black;
+  background-color: #24292f;
   color: white;
   padding: 16px;
 `
@@ -38,6 +43,9 @@ const HumbergerBtn = styled.a`
   }
 `
 const HumbergerBtnSVG = styled(ThreeBarsIcon)`
+  :hover {
+    fill: rgb(255, 255, 255, 0.7);
+  }
   @media (max-width: 768px) {
     display: block;
     width: 24px;
@@ -73,7 +81,7 @@ const SearchBar = styled.input.attrs({
   placeholder: 'Search or jump to...'
 })<TypeFocus>`
   position: relative;
-  background-color: ${(props) => (props.$isFocus ? 'white' : 'black')};
+  background-color: ${(props) => (props.$isFocus ? 'white' : '#24292f')};
   width: 100%;
   color: ${(props) => (props.$isFocus ? 'black' : 'white')};
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -81,6 +89,7 @@ const SearchBar = styled.input.attrs({
   height: 30px;
   padding: 0px 12px;
   font-size: 14px;
+
   ::placeholder {
     color: ${(props) =>
       props.$isFocus ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'};
@@ -156,7 +165,7 @@ const MoreActionButton = styled.a`
 const SignBtn = styled.button`
   border: 1px solid white;
   color: white;
-  background-color: black;
+  background-color: #24292f;
   padding: 4px 8px;
   cursor: pointer;
   @media (max-width: 767px) {
@@ -164,10 +173,11 @@ const SignBtn = styled.button`
   }
 `
 const navBarTxt: string[] = ['Pull', 'Issues', 'Marketplace', 'Explore']
-function Header() {
+function Header({ signClickFn }: PropsType) {
   const [userPhoto, setUserPhoto] = useState('')
   const [searchBarStyle, setSearchBarStyle] = useState(false)
   const [listActive, setListActive] = useState(false)
+  const navigate = useNavigate()
   useEffect(() => {
     checkUser()
     window.addEventListener('hashchange', () => checkUser())
@@ -177,6 +187,19 @@ function Header() {
     if (user) {
       supabase.auth.session() as Session
       setUserPhoto(user.identities[0].identity_data.avatar_url)
+      const userLoginObj = JSON.parse(
+        localStorage.getItem('supabase.auth.token') as string
+      )
+      if (userLoginObj) {
+        localStorage.setItem(
+          'userToken',
+          userLoginObj.currentSession.provider_token
+        )
+      }
+
+      navigate('/label')
+    } else {
+      signClickFn()
     }
   }
   async function signInGithub(): Promise<void> {
@@ -192,68 +215,72 @@ function Header() {
   async function signOut() {
     await supabase.auth.signOut()
     setUserPhoto('')
+    localStorage.clear()
+    navigate('/')
   }
   return (
-    <Wrapper>
-      <NavBarWrapper>
-        <HumbergerBtn
-          onClick={() => {
-            setListActive((prev) => !prev)
-          }}
-        >
-          <HumbergerBtnSVG />
-        </HumbergerBtn>
-        <Icon />
-        <SearchWrapper $isFocus={searchBarStyle}>
-          <SearchBar
-            $isFocus={searchBarStyle}
-            onFocus={() => setSearchBarStyle(true)}
-            onBlur={() => setSearchBarStyle(false)}
-          />
-          <SearchBarIcon>/</SearchBarIcon>
-        </SearchWrapper>
-        <Link>
-          {navBarTxt.map((navTxt, index) => {
-            if (index === 0) {
+    <>
+      <Wrapper>
+        <NavBarWrapper>
+          <HumbergerBtn
+            onClick={() => {
+              setListActive((prev) => !prev)
+            }}
+          >
+            <HumbergerBtnSVG />
+          </HumbergerBtn>
+          <Icon />
+          <SearchWrapper $isFocus={searchBarStyle}>
+            <SearchBar
+              $isFocus={searchBarStyle}
+              onFocus={() => setSearchBarStyle(true)}
+              onBlur={() => setSearchBarStyle(false)}
+            />
+            <SearchBarIcon>/</SearchBarIcon>
+          </SearchWrapper>
+          <Link>
+            {navBarTxt.map((navTxt, index) => {
+              if (index === 0) {
+                return (
+                  <li key={index}>
+                    <LinkBtn>
+                      {navTxt}
+                      <LinkText> request</LinkText>s
+                    </LinkBtn>
+                  </li>
+                )
+              }
               return (
                 <li key={index}>
-                  <LinkBtn>
-                    {navTxt}
-                    <LinkText> request</LinkText>s
-                  </LinkBtn>
+                  <LinkBtn>{navTxt}</LinkBtn>
                 </li>
               )
-            }
-            return (
-              <li key={index}>
-                <LinkBtn>{navTxt}</LinkBtn>
-              </li>
-            )
-          })}
-        </Link>
-        <MobileLink
-          listActive={listActive}
-          searchBarStyle={searchBarStyle}
-          userPhoto={userPhoto}
-          setSearchBarStyle={setSearchBarStyle}
-          signOut={signOut}
-          signInGithub={signInGithub}
-        />
-      </NavBarWrapper>
-      <UserWrapper>
-        <NotificationsBtn />
-        <MoreActionButton>
-          <MoreActionBtnIcon />
-          <DropDown />
-        </MoreActionButton>
+            })}
+          </Link>
+        </NavBarWrapper>
+        <UserWrapper>
+          <NotificationsBtn />
+          <MoreActionButton>
+            <MoreActionBtnIcon />
+            <DropDown />
+          </MoreActionButton>
 
-        {userPhoto ? (
-          <SignBtn onClick={() => signOut()}>signOut</SignBtn>
-        ) : (
-          <SignBtn onClick={() => signInGithub()}>signIn</SignBtn>
-        )}
-      </UserWrapper>
-    </Wrapper>
+          {userPhoto ? (
+            <SignBtn onClick={() => signOut()}>signOut</SignBtn>
+          ) : (
+            <SignBtn onClick={() => signInGithub()}>signIn</SignBtn>
+          )}
+        </UserWrapper>
+      </Wrapper>
+      <MobileLink
+        listActive={listActive}
+        searchBarStyle={searchBarStyle}
+        userPhoto={userPhoto}
+        setSearchBarStyle={setSearchBarStyle}
+        signOut={signOut}
+        signInGithub={signInGithub}
+      />
+    </>
   )
 }
 

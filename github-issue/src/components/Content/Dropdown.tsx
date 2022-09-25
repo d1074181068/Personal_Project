@@ -11,7 +11,7 @@ type PropType = {
 type IconPropsType = {
   isClick: string
 }
-type DropdownPropsType = {
+export type DropdownPropsType = {
   open: string
 }
 const Wrapper = styled.div`
@@ -35,6 +35,7 @@ const DropdownList = styled.ul<DropdownPropsType>`
   border-radius: 6px;
   list-style: none;
   padding-left: 0px;
+  z-index: 199;
 `
 const DropdownItem = styled.li`
   position: relative;
@@ -58,6 +59,16 @@ const DropdownCheckIcon = styled(CheckIcon)<IconPropsType>`
   left: 8px;
   top: 9px;
 `
+export const OutSideWrapper = styled.div<DropdownPropsType>`
+  display: ${(props) => props.open};
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 99;
+`
+
 function Dropdown({ text, dropdownText }: PropType) {
   const [currentClickItem, setCurrentClickItem] = useState(1)
   const [dropdownStatus, setDropdownStatus] = useState(false)
@@ -67,6 +78,10 @@ function Dropdown({ text, dropdownText }: PropType) {
         {text}
         <TriangleDownIcon />
       </Btn>
+      <OutSideWrapper
+        open={dropdownStatus ? 'block' : 'none'}
+        onClick={() => setDropdownStatus((prev) => !prev)}
+      />
       <DropdownList open={dropdownStatus ? 'block' : 'none'}>
         {dropdownText.map((item, index) => {
           return index === 0 ? (

@@ -8,7 +8,10 @@ import Dropdown from '../../components/Content/Dropdown'
 import LabelListItem from './LabelListItem'
 import HandleLabel from './HandleLabel'
 //custom
-import { useGetLabelQuery } from '../../redux/labelApiSlice'
+import {
+  useGetLabelQuery,
+  useCreateLabelMutation
+} from '../../redux/labelApiSlice'
 
 type SubNavType = {
   $isAcitve: boolean
@@ -110,18 +113,30 @@ const CreateLabelWrapper = styled.div<LabelControlerType>`
   border: 1px solid rgb(208, 215, 222);
   border-radius: 6px;
 `
+const NotLogin = styled.div`
+  padding: 40px;
+  text-align: center;
+  font-size: 30px;
+`
 
 function Label() {
+  const userToken = localStorage.getItem('userToken') as string
   const [subNavActive, setSubNavActive] = useState(true)
   const [handleLabelOpen, setHandleLabelOpen] = useState(false)
   const { data, isLoading, isSuccess, isError, error } = useGetLabelQuery({
     name: 'd1074181068',
-    repo: 'webdesign'
+    repo: 'webdesign',
+    token: userToken
   })
+  const [createLabel] = useCreateLabelMutation()
   if (isLoading) {
     return <>Loading...</>
   }
-  if (!isSuccess && !isLoading) return <>Oops!</>
+  if (!isSuccess && !isLoading) return <NotLogin>你尚未登入</NotLogin>
+  const renderData = [...data]
+
+  // renderData.splice(0, 0, renderData.splice(renderData.length - 1, 1)[0])
+  // console.log(renderData)
   return (
     <Wrapper>
       <Navbar>
@@ -151,7 +166,9 @@ function Label() {
             hoverColor={'#2c974b'}
             textColor={'white'}
             $text={'New Label'}
-            clickFn={() => setHandleLabelOpen((prev) => !prev)}
+            clickFn={() => {
+              setHandleLabelOpen((prev) => !prev)
+            }}
           />
         </NewLabelBtnWrapper>
       </Navbar>
@@ -165,12 +182,28 @@ function Label() {
           confirmButtonText={'Create label'}
           undoButtonText={'Cancel'}
           cancelClickFn={() => setHandleLabelOpen(false)}
+          createlabelFn={(
+            labelName: string,
+            labelColor: string,
+            labelDescription: string
+          ) =>
+            createLabel({
+              name: 'd1074181068',
+              repo: 'webdesign',
+              token: userToken,
+              body: {
+                name: labelName,
+                color: labelColor,
+                description: labelDescription
+              }
+            })
+          }
         />
       </CreateLabelWrapper>
 
       <LabelListWrapper>
         <LabelListHeader>
-          <LabelQuantity>8 labels</LabelQuantity>
+          <LabelQuantity>{renderData.length} labels</LabelQuantity>
           <Dropdown
             text={'Sort'}
             dropdownText={[
@@ -184,7 +217,7 @@ function Label() {
         </LabelListHeader>
         <LabelList>
           {data &&
-            data.map(({ name, description, color }, index) => {
+            renderData.map(({ name, description, color }, index) => {
               return (
                 <LabelListItem
                   labelName={name}

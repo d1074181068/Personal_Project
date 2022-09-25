@@ -9,6 +9,7 @@ type PropsType = {
 const Btn = styled.a`
   font-size: 12px;
   color: rgb(87, 96, 106);
+  cursor: pointer;
   :hover {
     text-decoration: underline;
     color: #0969da;

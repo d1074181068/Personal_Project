@@ -16,11 +16,7 @@ const Wrapper = styled.ul<TypeClick>`
   display: none;
   @media (max-width: 768px) {
     display: ${(props) => (props.$isActive ? 'block' : 'none')};
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    background-color: black;
+    background-color: #24292f;
     padding: 10px 20px;
   }
 `
@@ -44,7 +40,7 @@ const MobileSearchWrapper = styled.div<TypeFocus>`
 const MobileSearchBar = styled.input.attrs({
   placeholder: 'Search or jump to...'
 })<TypeFocus>`
-  background-color: ${(props) => (props.$isFocus ? 'white' : 'black')};
+  background-color: ${(props) => (props.$isFocus ? 'white' : '#24292f')};
   width: 100%;
   color: ${(props) => (props.$isFocus ? 'black' : 'white')};
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -65,7 +61,7 @@ const MobileSearchBar = styled.input.attrs({
 const MobileSignBtn = styled.button`
   border: 1px solid white;
   color: white;
-  background-color: black;
+  background-color: #24292f;
   padding: 4px 8px;
   margin: 15px 0px 5px;
   cursor: pointer;

@@ -1,8 +1,12 @@
 //Libraries
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 //custom
 import { lightOrDark } from './HandleLabel'
+import {
+  useUpdateLabelMutation,
+  useDeleteLabelMutation
+} from '../../redux/labelApiSlice'
 //components
 import LabelItem from './LabelItem'
 import HandleLabel from './HandleLabel'
@@ -88,7 +92,11 @@ function LabelListItem({
 }: PropsType) {
   const [areaOfEditLabel, setAreaOfEditLabel] = useState(false)
   const textColor = lightOrDark(colorCode)
-
+  const [updateLabel] = useUpdateLabelMutation()
+  const [deleteLabel] = useDeleteLabelMutation()
+  const userToken = localStorage.getItem('userToken') as string
+  const tagName = useRef('')
+  tagName.current = labelName
   return (
     <>
       <Item>
@@ -117,13 +125,33 @@ function LabelListItem({
                 />
               </MarginWrapper>
               <MarginWrapper>
-                <ActionBtn btnText={'Delete'} />
+                <ActionBtn
+                  btnText={'Delete'}
+                  clickFn={() => {
+                    deleteLabel({
+                      name: 'd1074181068',
+                      repo: 'webdesign',
+                      labelName: tagName.current,
+                      token: userToken
+                    })
+                  }}
+                />
               </MarginWrapper>
             </ActionBtnWrapper>
             <MobileBtnWrapper>
               <MobileAction
                 btnTextList={['Edit', 'Delete']}
-                btnFn={[() => setAreaOfEditLabel((prev) => !prev)]}
+                btnFn={[
+                  () => setAreaOfEditLabel((prev) => !prev),
+                  () => {
+                    deleteLabel({
+                      name: 'd1074181068',
+                      repo: 'webdesign',
+                      labelName: tagName.current,
+                      token: userToken
+                    })
+                  }
+                ]}
               />
             </MobileBtnWrapper>
           </FixedRapper>
@@ -140,6 +168,23 @@ function LabelListItem({
             confirmButtonText={'Save Change'}
             undoButtonText={'Cancel'}
             cancelClickFn={() => setAreaOfEditLabel(false)}
+            updatelabelFn={(
+              labelName: string,
+              labelColor: string,
+              labelDescription: string
+            ) => {
+              updateLabel({
+                name: 'd1074181068',
+                repo: 'webdesign',
+                labelName: tagName.current,
+                token: userToken,
+                body: {
+                  name: labelName,
+                  color: labelColor,
+                  description: labelDescription
+                }
+              })
+            }}
           />
         </HandleLabelWrapper>
       </Item>

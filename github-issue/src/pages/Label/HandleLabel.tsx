@@ -8,6 +8,8 @@ import GithubBtn from '../../components/Content/GithubBtn'
 import LabelItem from './LabelItem'
 import MobileAction from './MobileAction'
 import ActionBtn from './ActionBtn'
+import { DropdownPropsType } from '../../components/Content/Dropdown'
+import { OutSideWrapper } from '../../components/Content/Dropdown'
 
 type PropsType = {
   initLabelText: string
@@ -20,6 +22,16 @@ type PropsType = {
   mainPlaceholder: string
   subPlaceholder: string
   cancelClickFn?: () => void
+  createlabelFn?: (
+    labelName: string,
+    labelColor: string,
+    labelDescription: string
+  ) => void
+  updatelabelFn?: (
+    labelName: string,
+    labelColor: string,
+    labelDescription: string
+  ) => void
 }
 
 type ColorBtnType = {
@@ -134,6 +146,7 @@ const ColorPickerWrapper = styled.div<ColorPickerPropsType>`
   border: 1px solid rgb(208, 215, 222);
   border-radius: 6px;
   background-color: white;
+  z-index: 199;
   display: ${(props) => props.$display};
   &:after {
     border-right: solid 8px transparent;
@@ -273,16 +286,24 @@ function HandleLabel({
   subPlaceholder,
   confirmButtonText,
   undoButtonText,
-  cancelClickFn
+  cancelClickFn,
+  createlabelFn,
+  updatelabelFn
 }: PropsType) {
   const [colorCode, setColorCode] = useState(
     initLabelColorCode || randomHexColor()
   )
+
   const [textColor, setTextcolor] = useState(
-    lightOrDark(`#${initLabelColorCode}` as string)
+    initLabelColorCode
+      ? lightOrDark(initLabelColorCode as string)
+      : lightOrDark(colorCode)
   )
   const [labelText, setLabelText] = useState(initLabelText)
   const [errorColorCodeStatus, setErrorColorCodeStatus] = useState(false)
+  const [inputEmptyStatus, setInputEmptyStatus] = useState(
+    initLabelText ? false : true
+  )
   const [colorPickerShow, setColorPickerShow] = useState(false)
 
   const currentColorCode = useRef<string>(colorCode)
@@ -347,7 +368,14 @@ function HandleLabel({
           <MainInput
             value={labelText}
             placeholder={mainPlaceholder}
-            onChange={(e) => setLabelText(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length === 0) {
+                setInputEmptyStatus(true)
+              } else {
+                setInputEmptyStatus(false)
+              }
+              setLabelText(e.target.value)
+            }}
           />
         </MainInputWrapper>
         <SubInputWrapper>
@@ -390,6 +418,7 @@ function HandleLabel({
                           currentColorCode.current = color
                           setTextcolor(lightOrDark(color))
                           setColorPickerShow(false)
+                          setErrorColorCodeStatus(false)
                         }}
                       />
                     </li>
@@ -414,6 +443,10 @@ function HandleLabel({
                 })}
               </ColorPickerList>
             </ColorPickerWrapper>
+            <OutSideWrapper
+              open={colorPickerShow ? 'block' : 'none'}
+              onClick={() => setColorPickerShow(false)}
+            />
           </RandomWrapper>
         </ColorSelectWrapper>
         <ControlBtnWrapper>
@@ -433,8 +466,11 @@ function HandleLabel({
                           ? (initLabelColorCode as string)
                           : randomHexColor()
                       )
-                      currentColorCode.current = initLabelColorCode as string
+                      currentColorCode.current = initLabelColorCode
+                        ? initLabelColorCode
+                        : randomHexColor()
                       setErrorColorCodeStatus(false)
+                      setInputEmptyStatus(initLabelText ? false : true)
                       cancelClickFn()
                     }
                   : () => {}
@@ -448,6 +484,29 @@ function HandleLabel({
               $text={confirmButtonText}
               textColor={'#ffffff'}
               hoverColor={'#2c974b'}
+              $disabled={inputEmptyStatus || errorColorCodeStatus}
+              clickFn={
+                createlabelFn
+                  ? () => {
+                      if (cancelClickFn) cancelClickFn()
+                      setLabelText(initLabelText)
+                      setColorCode(
+                        (initLabelColorCode as string)
+                          ? (initLabelColorCode as string)
+                          : randomHexColor()
+                      )
+                      currentColorCode.current = initLabelColorCode
+                        ? initLabelColorCode
+                        : randomHexColor()
+                      createlabelFn(labelText, colorCode.split('#')[1], '')
+                    }
+                  : updatelabelFn
+                  ? () => {
+                      if (cancelClickFn) cancelClickFn()
+                      updatelabelFn(labelText, colorCode.split('#')[1], '')
+                    }
+                  : () => {}
+              }
             />
           </CreateLabelWrapper>
         </ControlBtnWrapper>
