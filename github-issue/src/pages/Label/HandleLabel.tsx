@@ -8,7 +8,6 @@ import GithubBtn from '../../components/Content/GithubBtn'
 import LabelItem from './LabelItem'
 import MobileAction from './MobileAction'
 import ActionBtn from './ActionBtn'
-import { DropdownPropsType } from '../../components/Content/Dropdown'
 import { OutSideWrapper } from '../../components/Content/Dropdown'
 
 type PropsType = {

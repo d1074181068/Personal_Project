@@ -1,5 +1,5 @@
 //Libraries
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { TagIcon, MilestoneIcon, SearchIcon } from '@primer/octicons-react'
 //components
@@ -134,9 +134,6 @@ function Label() {
   }
   if (!isSuccess && !isLoading) return <NotLogin>你尚未登入</NotLogin>
   const renderData = [...data]
-
-  // renderData.splice(0, 0, renderData.splice(renderData.length - 1, 1)[0])
-  // console.log(renderData)
   return (
     <Wrapper>
       <Navbar>
