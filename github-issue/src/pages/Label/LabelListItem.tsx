@@ -159,6 +159,7 @@ function LabelListItem({
         <HandleLabelWrapper display={areaOfEditLabel ? 'block' : 'none'}>
           <HandleLabel
             initLabelText={labelName}
+            initDesctext={labelDesc}
             initLabelColorCode={colorCode}
             moreBtnTextList={['Delete']}
             mainTitle={'Label name'}
@@ -168,6 +169,14 @@ function LabelListItem({
             confirmButtonText={'Save Change'}
             undoButtonText={'Cancel'}
             cancelClickFn={() => setAreaOfEditLabel(false)}
+            deleteClickFn={() =>
+              deleteLabel({
+                name: 'd1074181068',
+                repo: 'webdesign',
+                labelName: tagName.current,
+                token: userToken
+              })
+            }
             updatelabelFn={(
               labelName: string,
               labelColor: string,

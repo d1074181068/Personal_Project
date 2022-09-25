@@ -172,6 +172,7 @@ function Label() {
       <CreateLabelWrapper display={handleLabelOpen ? 'block' : 'none'}>
         <HandleLabel
           initLabelText={''}
+          initDesctext={''}
           mainTitle={'Label name'}
           mainPlaceholder={'Label name'}
           subTitle={'Description'}
