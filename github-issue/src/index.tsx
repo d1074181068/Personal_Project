@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import './index.css'
 //components
 import App from './App'
 import IssueList from './pages/IssueList/IssueList'

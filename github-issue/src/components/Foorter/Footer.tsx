@@ -8,6 +8,9 @@ const Wrapper = styled.footer`
   bottom: 0;
   left: 0;
   right: 0;
+  @media (max-width: 767px) {
+    position: relative;
+  }
 `
 const LinkWrapper = styled.div`
   max-width: 1280px;

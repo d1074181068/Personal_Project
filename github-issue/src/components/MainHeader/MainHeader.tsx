@@ -93,6 +93,7 @@ const pageActionArr = [
 ]
 function MainHeader() {
   const [clickItem, setClickItem] = useState('Issues')
+  const userToken = localStorage.getItem('userToken')
   function isClick(event: EventTarget) {
     if ((event as HTMLElement).tagName === 'svg') {
       setClickItem(
@@ -104,6 +105,11 @@ function MainHeader() {
       return
     }
     setClickItem((event as HTMLLIElement).textContent as string)
+  }
+  console.log(userToken)
+
+  if (!userToken) {
+    return <></>
   }
   return (
     <Wrapper>
