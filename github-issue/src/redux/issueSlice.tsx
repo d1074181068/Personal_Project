@@ -1,4 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { apiSlice } from './apiSlice'
 import { issueList } from '../types/issueType'
 

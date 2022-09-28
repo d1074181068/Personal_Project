@@ -4,13 +4,6 @@ import { MarkGithubIcon } from '@primer/octicons-react'
 
 const Wrapper = styled.footer`
   padding: 0px 40px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  @media (max-width: 767px) {
-    position: relative;
-  }
 `
 const LinkWrapper = styled.div`
   max-width: 1280px;

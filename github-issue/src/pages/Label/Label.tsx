@@ -86,7 +86,7 @@ const CreateLabelWrapper = styled.div<LabelControlerType>`
   border: 1px solid rgb(208, 215, 222);
   border-radius: 6px;
 `
-const NotLogin = styled.div`
+export const NotLogin = styled.div`
   padding: 40px;
   text-align: center;
   font-size: 30px;
@@ -96,7 +96,7 @@ function Label() {
   const userToken = localStorage.getItem('userToken') as string
 
   const [handleLabelOpen, setHandleLabelOpen] = useState(false)
-  const { data, isLoading, isSuccess, isError, error } = useGetLabelQuery({
+  const { data, isLoading, isSuccess } = useGetLabelQuery({
     name: 'd1074181068',
     repo: 'webdesign',
     token: userToken

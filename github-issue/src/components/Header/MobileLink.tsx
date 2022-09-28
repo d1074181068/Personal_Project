@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-// import { SearchBarIcon } from './Header'
 type TypeClick = { $isActive: boolean }
 type TypeFocus = { $isFocus: boolean }
 type PropsType = {

@@ -15,6 +15,10 @@ import Dropdown from '../../components/Content/Dropdown'
 import PopMenu from './DesktopPopMenu'
 import MobilePopMenu from './MobilePopMenu'
 import IssueItem from './IssueItem'
+import { NotLogin } from '../Label/Label'
+
+//custom
+import { useGetAllIssueQuery } from '../../redux/issueSlice'
 
 const headerTextArr = ['Label', 'Assignee', 'Sort']
 const sortTextArr = [
@@ -26,11 +30,23 @@ const sortTextArr = [
   'Least recently updated'
 ]
 function IssueList() {
+  const userToken = localStorage.getItem('userToken') as string
   const [menuOpenStatus, setMenuOpenStatus] = useState(false)
   const [popMenuPos, setPopMenuPos] = useState({
     top: 'top-[100px]',
     left: 'left-[16px]'
   })
+  const { data, isLoading, isSuccess } = useGetAllIssueQuery({
+    name: 'd1074181068',
+    repo: 'webdesign',
+    token: userToken
+  })
+  if (isLoading) {
+    return <>Loading...</>
+  }
+  if (!isSuccess && !isLoading) return <NotLogin>你尚未登入</NotLogin>
+  const renderData = [...data]
+
   return (
     <div className='mx-auto my-3 sm:max-w-[1216px] sm:px-2 md:px-3 lg:px-4 '>
       <div className='px-2 sm:px-0 md:mb-3'>
@@ -103,17 +119,16 @@ function IssueList() {
                         if (
                           (e.target as HTMLDivElement).textContent === 'Label'
                         ) {
-                          console.log((e.target as HTMLDivElement).textContent)
                           setPopMenuPos({
                             ...popMenuPos,
                             top: 'top-[25px]',
-                            left: 'left-[0px]'
+                            left: 'left-[-10px]'
                           })
                         } else {
                           setPopMenuPos({
                             ...popMenuPos,
                             top: 'top-[25px]',
-                            left: 'left-[50px]'
+                            left: 'left-[-20px]'
                           })
                         }
                         setMenuOpenStatus(true)
@@ -129,6 +144,7 @@ function IssueList() {
               </li>
             )
           })}
+
           <PopMenu
             menuOpenStatus={menuOpenStatus}
             setMenuStatusFn={setMenuOpenStatus}
@@ -136,17 +152,48 @@ function IssueList() {
             left={popMenuPos.left}
           />
         </ul>
-
+        <div
+          className={`${
+            menuOpenStatus ? 'block' : 'hidden'
+          } fixed top-0 left-0 right-0 bottom-0`}
+          onClick={() => setMenuOpenStatus(false)}
+        ></div>
         <MobilePopMenu
           menuOpenStatus={menuOpenStatus}
           setMenuStatusFn={setMenuOpenStatus}
         />
       </div>
       <ul>
-        <IssueItem icon={<IssueOpenedIcon fill={'#1a7f37'} />} />
-        <IssueItem icon={<IssueOpenedIcon fill={'#1a7f37'} />} />
-        <IssueItem icon={<IssueOpenedIcon fill={'#1a7f37'} />} />
-        <IssueItem icon={<IssueOpenedIcon fill={'#1a7f37'} />} />
+        {renderData.map(
+          ({ title, labels, id, number, assignees, comments }) => {
+            return (
+              <IssueItem
+                key={number}
+                icon={<IssueOpenedIcon fill={'#1a7f37'} key={id} />}
+                title={title}
+                labels={
+                  labels &&
+                  labels.map((data) => {
+                    return {
+                      name: data.name,
+                      bgColor: data.color,
+                      desc: data.description,
+                      id: data.id
+                    }
+                  })
+                }
+                number={number}
+                assignees={
+                  assignees &&
+                  assignees.map((user) => {
+                    return { userImage: user.avatar_url, userName: user.login }
+                  })
+                }
+                commentsQty={comments}
+              />
+            )
+          }
+        )}
       </ul>
     </div>
   )

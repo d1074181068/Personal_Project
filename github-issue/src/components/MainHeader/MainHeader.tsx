@@ -22,7 +22,6 @@ import {
 //components
 import PageHeaderAction from './PageHeaderAction'
 import RepoNavbar from './RepoNavbar'
-import LabelItem from '../../pages/Label/LabelItem'
 
 type FontType = {
   fontBold: boolean
