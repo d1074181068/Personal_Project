@@ -34,9 +34,9 @@ function Filters({ headerText }: PropsType) {
   const [mobileFilterCurrentCheck, setMobileFilterCurrentCheck] = useState(0)
 
   return (
-    <div className='w-full mt-3 md:mt-0'>
-      <div className='mb-3 md:mb-0 flex'>
-        <div className='hidden md:block h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray pt-[9px] pb-[5px] px-2'>
+    <div className='mt-3 w-full md:mt-0'>
+      <div className='mb-3 flex md:mb-0'>
+        <div className='hidden h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray px-2 pt-[9px] pb-[5px] md:block'>
           <Dropdown
             text='Filters'
             dropdownText={filterDropdownText}
@@ -45,7 +45,7 @@ function Filters({ headerText }: PropsType) {
           />
         </div>
         <button
-          className='block md:hidden h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray py-[5px] px-2'
+          className='block h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray py-[5px] px-2 md:hidden'
           onClick={() => setFilterListOpen(true)}
         >
           Filters
@@ -65,10 +65,10 @@ function Filters({ headerText }: PropsType) {
       <div
         className={`${
           filterListOpen ? 'block' : 'hidden'
-        }  fixed top-0 bottom-0 left-0 right-0 z-199 bg-maskBlack  px-2`}
+        } fixed top-0 bottom-0 left-0 right-0 z-199 bg-maskBlack px-2  md:hidden`}
       >
         <div className=' absolute top-[33%] left-2 right-2 rounded-lg bg-white '>
-          <div className='flex justify-between items-center rounded-tl-lg border-b-[1px] border-solid border-borderGray rounded-tr-lg bg-white py-2 px-2'>
+          <div className='flex items-center justify-between rounded-tl-lg rounded-tr-lg border-b-[1px] border-solid border-borderGray bg-white py-2 px-2'>
             <h3>{headerText}</h3>
             <a
               href='/'
@@ -94,7 +94,7 @@ function Filters({ headerText }: PropsType) {
               />
             )
           })}
-          <button className='flex w-full items-center border-b-0 rounded-br-lg rounded-bl-lg hover:bg-commonBgGray py-2 pl-2'>
+          <button className='flex w-full items-center rounded-br-lg rounded-bl-lg border-b-0 py-2 pl-2 hover:bg-commonBgGray'>
             <LinkExternalIcon className='mr-1' />
             View advanced search syntax
           </button>

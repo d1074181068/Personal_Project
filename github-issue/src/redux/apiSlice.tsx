@@ -1,0 +1,8 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+
+export const apiSlice = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.github.com/repos' }),
+  tagTypes: ['labels', 'issue'],
+  endpoints: (build) => ({})
+})

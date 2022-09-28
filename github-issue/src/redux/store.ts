@@ -1,4 +1,4 @@
-import { apiSlice } from './labelApiSlice'
+import { apiSlice } from './apiSlice'
 import { configureStore } from '@reduxjs/toolkit'
 export const store = configureStore({
   reducer: {

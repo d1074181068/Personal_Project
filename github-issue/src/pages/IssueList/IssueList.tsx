@@ -67,7 +67,7 @@ function IssueList() {
         <StatusButton icon={<IssueOpenedIcon />} text={'open'} length={8} />
         <StatusButton icon={<CheckIcon />} text={'closed'} length={4} />
       </div>
-      <div className='mt-2 flex items-center justify-between border-t border-b border-solid border-borderGray bg-commonBgGray px-4 py-2 sm:justify-start sm:rounded-tr sm:rounded-tl sm:border-x lg:justify-between'>
+      <div className='mt-2 flex items-center justify-between border-t border-b border-solid border-borderGray bg-commonBgGray px-4 py-2 sm:justify-start sm:rounded-tr sm:rounded-tl sm:border-x lg:justify-between lg:px-0'>
         <div className='hidden lg:block'>
           <div className='flex items-center px-2'>
             <StatusButton icon={<IssueOpenedIcon />} text={'open'} length={8} />
@@ -143,6 +143,9 @@ function IssueList() {
         />
       </div>
       <ul>
+        <IssueItem icon={<IssueOpenedIcon fill={'#1a7f37'} />} />
+        <IssueItem icon={<IssueOpenedIcon fill={'#1a7f37'} />} />
+        <IssueItem icon={<IssueOpenedIcon fill={'#1a7f37'} />} />
         <IssueItem icon={<IssueOpenedIcon fill={'#1a7f37'} />} />
       </ul>
     </div>

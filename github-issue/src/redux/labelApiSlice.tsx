@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
+import { apiSlice } from './apiSlice'
 type LabelsType = {
   color: string
   default: boolean
@@ -29,10 +29,7 @@ interface DeleteQueryparams extends QueryParams {
   labelName: string
 }
 
-export const apiSlice = createApi({
-  reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.github.com/repos' }),
-  tagTypes: ['labels'],
+export const labelApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getLabel: builder.query<LabelsType[], QueryParams>({
       query: ({ name, repo, token }) => ({
@@ -88,4 +85,4 @@ export const {
   useCreateLabelMutation,
   useUpdateLabelMutation,
   useDeleteLabelMutation
-} = apiSlice
+} = labelApiSlice
