@@ -196,8 +196,6 @@ function Header({ signClickFn }: PropsType) {
           userLoginObj.currentSession.provider_token
         )
       }
-
-      navigate('/label')
     } else {
       signClickFn()
     }

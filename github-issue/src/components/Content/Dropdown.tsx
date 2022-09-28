@@ -7,12 +7,18 @@ import { TriangleDownIcon, CheckIcon } from '@primer/octicons-react'
 type PropType = {
   text: string
   dropdownText: string[]
+  top?: string
+  left?: string
+  right?: string
 }
 type IconPropsType = {
   isClick: string
 }
 export type DropdownPropsType = {
   open: string
+  top?: string
+  left?: string
+  right?: string
 }
 const Wrapper = styled.div`
   position: relative;
@@ -22,6 +28,8 @@ const Btn = styled.button`
   cursor: pointer;
   border: 0;
   background-color: transparent;
+  display: flex;
+  align-items: center;
 `
 
 const DropdownList = styled.ul<DropdownPropsType>`
@@ -29,8 +37,9 @@ const DropdownList = styled.ul<DropdownPropsType>`
   width: 300px;
   background-color: white;
   position: absolute;
-  top: 20px;
-  right: 0;
+  top: ${(props) => (props.top ? props.top : 'unset')};
+  right: ${(props) => (props.right ? props.right : 'unset')};
+  left: ${(props) => (props.left ? props.left : 'unset')};
   border: 1px solid rgb(208, 215, 222);
   border-radius: 6px;
   list-style: none;
@@ -41,6 +50,7 @@ const DropdownItem = styled.li`
   position: relative;
   padding: 10px 30px;
   border-bottom: 1px solid rgb(208, 215, 222);
+  text-align: left;
   cursor: pointer;
   :hover {
     background-color: rgb(246, 248, 250);
@@ -69,7 +79,7 @@ export const OutSideWrapper = styled.div<DropdownPropsType>`
   z-index: 99;
 `
 
-function Dropdown({ text, dropdownText }: PropType) {
+function Dropdown({ text, dropdownText, top, left, right }: PropType) {
   const [currentClickItem, setCurrentClickItem] = useState(1)
   const [dropdownStatus, setDropdownStatus] = useState(false)
   return (
@@ -82,15 +92,18 @@ function Dropdown({ text, dropdownText }: PropType) {
         open={dropdownStatus ? 'block' : 'none'}
         onClick={() => setDropdownStatus((prev) => !prev)}
       />
-      <DropdownList open={dropdownStatus ? 'block' : 'none'}>
+      <DropdownList
+        open={dropdownStatus ? 'block' : 'none'}
+        top={top}
+        right={right}
+        left={left}>
         {dropdownText.map((item, index) => {
           return index === 0 ? (
             <DropdownItem key={index}>{text}</DropdownItem>
           ) : (
             <DropdownItem
               key={index}
-              onClick={() => setCurrentClickItem(index)}
-            >
+              onClick={() => setCurrentClickItem(index)}>
               <DropdownCheckIcon
                 isClick={index === currentClickItem ? 'block' : 'none'}
               />

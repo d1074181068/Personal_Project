@@ -35,16 +35,14 @@ function PageHeaderAction({
   dropdownIcon
 }: PropsType) {
   return (
-    <>
-      <ActionButton>
-        {iconComponent}
-        <ActionButtonTxt>{$text}</ActionButtonTxt>
-        {$number === undefined ? null : (
-          <ActionButtonNumber>{$number}</ActionButtonNumber>
-        )}
-        {dropdownIcon}
-      </ActionButton>
-    </>
+    <ActionButton>
+      {iconComponent}
+      <ActionButtonTxt>{$text}</ActionButtonTxt>
+      {$number === undefined ? null : (
+        <ActionButtonNumber>{$number}</ActionButtonNumber>
+      )}
+      {dropdownIcon}
+    </ActionButton>
   )
 }
 

@@ -106,7 +106,6 @@ function MainHeader() {
     }
     setClickItem((event as HTMLLIElement).textContent as string)
   }
-  console.log(userToken)
 
   if (!userToken) {
     return <></>

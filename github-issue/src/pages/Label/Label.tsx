@@ -1,21 +1,19 @@
 //Libraries
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { TagIcon, MilestoneIcon, SearchIcon } from '@primer/octicons-react'
+import { SearchIcon } from '@primer/octicons-react'
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
 import Dropdown from '../../components/Content/Dropdown'
 import LabelListItem from './LabelListItem'
 import HandleLabel from './HandleLabel'
+import SubNavButton from './SubNavButtonWrapper'
 //custom
 import {
   useGetLabelQuery,
   useCreateLabelMutation
 } from '../../redux/labelApiSlice'
 
-type SubNavType = {
-  $isAcitve: boolean
-}
 type LabelControlerType = {
   display: string
 }
@@ -30,32 +28,7 @@ const Navbar = styled.div`
   margin: 0 auto;
   flex-wrap: wrap;
 `
-const SubNavButtonWrapper = styled.div``
-const SubNavLabelBtn = styled.button<SubNavType>`
-  border: 1px solid rgb(208, 215, 222);
-  padding: 8px 16px;
-  border-radius: 6px 0px 0px 6px;
-  cursor: pointer;
-  background-color: ${(props) =>
-    props.$isAcitve ? 'rgb(9,105,218)' : 'white'};
-  color: ${(props) => (props.$isAcitve ? 'white' : 'black')};
-`
-const LabelBtnIcon = styled(TagIcon)`
-  margin-right: 5px;
-`
-const SubNavMilestonesBtn = styled.button<SubNavType>`
-  border: 1px solid rgb(208, 215, 222);
-  padding: 8px 16px;
-  border-radius: 0px 6px 6px 0px;
-  border-left: none;
-  cursor: pointer;
-  background-color: ${(props) =>
-    props.$isAcitve ? 'rgb(9,105,218)' : 'white'};
-  color: ${(props) => (props.$isAcitve ? 'white' : 'black')};
-`
-const MilestonesBtnIcon = styled(MilestoneIcon)`
-  margin-right: 5px;
-`
+
 const SearchBarWrapper = styled.div`
   position: relative;
   margin-left: 10px;
@@ -121,7 +94,7 @@ const NotLogin = styled.div`
 
 function Label() {
   const userToken = localStorage.getItem('userToken') as string
-  const [subNavActive, setSubNavActive] = useState(true)
+
   const [handleLabelOpen, setHandleLabelOpen] = useState(false)
   const { data, isLoading, isSuccess, isError, error } = useGetLabelQuery({
     name: 'd1074181068',
@@ -137,22 +110,7 @@ function Label() {
   return (
     <Wrapper>
       <Navbar>
-        <SubNavButtonWrapper>
-          <SubNavLabelBtn
-            $isAcitve={subNavActive}
-            onClick={() => setSubNavActive((prev) => !prev)}
-          >
-            <LabelBtnIcon />
-            Labels
-          </SubNavLabelBtn>
-          <SubNavMilestonesBtn
-            $isAcitve={!subNavActive}
-            onClick={() => setSubNavActive((prev) => !prev)}
-          >
-            <MilestonesBtnIcon />
-            Milestones
-          </SubNavMilestonesBtn>
-        </SubNavButtonWrapper>
+        <SubNavButton />
         <SearchBarWrapper>
           <SearchBar />
           <SearchBarIcon />
@@ -211,6 +169,8 @@ function Label() {
               'Most issues',
               'Fewest issues'
             ]}
+            top={'20px'}
+            right={'0px'}
           />
         </LabelListHeader>
         <LabelList>

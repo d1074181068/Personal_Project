@@ -98,106 +98,104 @@ function LabelListItem({
   const tagName = useRef('')
   tagName.current = labelName
   return (
-    <>
-      <Item>
-        <LabelWrapper display={areaOfEditLabel ? 'none' : 'flex'}>
-          <FixedRapper>
-            <LabelItem
-              labelName={labelName}
-              colorCode={colorCode}
-              textColor={textColor}
-            />
-          </FixedRapper>
-          <FixedRapper>
-            <LabelDesc>{labelDesc}</LabelDesc>
-          </FixedRapper>
-          <FixedRapper>
-            <LabelUserStatus>
-              {useLabelIssueQty} open issue or pull request
-            </LabelUserStatus>
-          </FixedRapper>
-          <FixedRapper>
-            <ActionBtnWrapper>
-              <MarginWrapper>
-                <ActionBtn
-                  btnText={'Edit'}
-                  clickFn={() => setAreaOfEditLabel((prev) => !prev)}
-                />
-              </MarginWrapper>
-              <MarginWrapper>
-                <ActionBtn
-                  btnText={'Delete'}
-                  clickFn={() => {
-                    deleteLabel({
-                      name: 'd1074181068',
-                      repo: 'webdesign',
-                      labelName: tagName.current,
-                      token: userToken
-                    })
-                  }}
-                />
-              </MarginWrapper>
-            </ActionBtnWrapper>
-            <MobileBtnWrapper>
-              <MobileAction
-                btnTextList={['Edit', 'Delete']}
-                btnFn={[
-                  () => setAreaOfEditLabel((prev) => !prev),
-                  () => {
-                    deleteLabel({
-                      name: 'd1074181068',
-                      repo: 'webdesign',
-                      labelName: tagName.current,
-                      token: userToken
-                    })
-                  }
-                ]}
-              />
-            </MobileBtnWrapper>
-          </FixedRapper>
-        </LabelWrapper>
-        <HandleLabelWrapper display={areaOfEditLabel ? 'block' : 'none'}>
-          <HandleLabel
-            initLabelText={labelName}
-            initDesctext={labelDesc}
-            initLabelColorCode={colorCode}
-            moreBtnTextList={['Delete']}
-            mainTitle={'Label name'}
-            mainPlaceholder={'Label name'}
-            subTitle={'Description'}
-            subPlaceholder={'Description (optional)'}
-            confirmButtonText={'Save Change'}
-            undoButtonText={'Cancel'}
-            cancelClickFn={() => setAreaOfEditLabel(false)}
-            deleteClickFn={() =>
-              deleteLabel({
-                name: 'd1074181068',
-                repo: 'webdesign',
-                labelName: tagName.current,
-                token: userToken
-              })
-            }
-            updatelabelFn={(
-              labelName: string,
-              labelColor: string,
-              labelDescription: string
-            ) => {
-              updateLabel({
-                name: 'd1074181068',
-                repo: 'webdesign',
-                labelName: tagName.current,
-                token: userToken,
-                body: {
-                  name: labelName,
-                  color: labelColor,
-                  description: labelDescription
-                }
-              })
-            }}
+    <Item>
+      <LabelWrapper display={areaOfEditLabel ? 'none' : 'flex'}>
+        <FixedRapper>
+          <LabelItem
+            labelName={labelName}
+            colorCode={colorCode}
+            textColor={textColor}
           />
-        </HandleLabelWrapper>
-      </Item>
-    </>
+        </FixedRapper>
+        <FixedRapper>
+          <LabelDesc>{labelDesc}</LabelDesc>
+        </FixedRapper>
+        <FixedRapper>
+          <LabelUserStatus>
+            {useLabelIssueQty} open issue or pull request
+          </LabelUserStatus>
+        </FixedRapper>
+        <FixedRapper>
+          <ActionBtnWrapper>
+            <MarginWrapper>
+              <ActionBtn
+                btnText={'Edit'}
+                clickFn={() => setAreaOfEditLabel((prev) => !prev)}
+              />
+            </MarginWrapper>
+            <MarginWrapper>
+              <ActionBtn
+                btnText={'Delete'}
+                clickFn={() => {
+                  deleteLabel({
+                    name: 'd1074181068',
+                    repo: 'webdesign',
+                    labelName: tagName.current,
+                    token: userToken
+                  })
+                }}
+              />
+            </MarginWrapper>
+          </ActionBtnWrapper>
+          <MobileBtnWrapper>
+            <MobileAction
+              btnTextList={['Edit', 'Delete']}
+              btnFn={[
+                () => setAreaOfEditLabel((prev) => !prev),
+                () => {
+                  deleteLabel({
+                    name: 'd1074181068',
+                    repo: 'webdesign',
+                    labelName: tagName.current,
+                    token: userToken
+                  })
+                }
+              ]}
+            />
+          </MobileBtnWrapper>
+        </FixedRapper>
+      </LabelWrapper>
+      <HandleLabelWrapper display={areaOfEditLabel ? 'block' : 'none'}>
+        <HandleLabel
+          initLabelText={labelName}
+          initDesctext={labelDesc}
+          initLabelColorCode={colorCode}
+          moreBtnTextList={['Delete']}
+          mainTitle={'Label name'}
+          mainPlaceholder={'Label name'}
+          subTitle={'Description'}
+          subPlaceholder={'Description (optional)'}
+          confirmButtonText={'Save Change'}
+          undoButtonText={'Cancel'}
+          cancelClickFn={() => setAreaOfEditLabel(false)}
+          deleteClickFn={() =>
+            deleteLabel({
+              name: 'd1074181068',
+              repo: 'webdesign',
+              labelName: tagName.current,
+              token: userToken
+            })
+          }
+          updatelabelFn={(
+            labelName: string,
+            labelColor: string,
+            labelDescription: string
+          ) => {
+            updateLabel({
+              name: 'd1074181068',
+              repo: 'webdesign',
+              labelName: tagName.current,
+              token: userToken,
+              body: {
+                name: labelName,
+                color: labelColor,
+                description: labelDescription
+              }
+            })
+          }}
+        />
+      </HandleLabelWrapper>
+    </Item>
   )
 }
 
