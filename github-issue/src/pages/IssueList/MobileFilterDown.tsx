@@ -16,7 +16,7 @@ function MobileFilterDown({
 }: PropsType) {
   return (
     <button
-      className=' flex w-full items-center border-0 border-b-[1px] border-solid border-borderGray py-2 pr-3 pl-2 hover:bg-commonBgGray'
+      className=' flex w-full items-center border-0 border-b-[1px] border-solid border-borderGray py-2 pr-3 pl-2 last:rounded-br-lg last:rounded-bl-lg last:border-b-0 hover:bg-commonBgGray'
       onClick={(e) => {
         e.preventDefault()
         setCurrentCheckFn(index)

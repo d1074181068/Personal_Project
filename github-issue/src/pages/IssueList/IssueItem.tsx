@@ -12,6 +12,33 @@ type PropsType = {
   number: number
   assignees: { userName: string; userImage: string }[]
   commentsQty: number
+  createBy: string
+  createTime: string
+}
+
+export function calculateTime(createTime: string): string {
+  const currentTime = Date.now()
+  const inputTime = new Date(createTime)
+  const timeLag = currentTime - inputTime.getTime()
+  if (Math.floor(timeLag / (12 * 30 * 24 * 3600 * 1000)) > 0) {
+    return `${Math.floor(timeLag / (12 * 30 * 24 * 3600 * 1000))} years`
+  }
+  if (Math.floor(timeLag / (30 * 24 * 3600 * 1000)) > 0) {
+    return `${Math.floor(timeLag / (30 * 24 * 3600 * 1000))} months`
+  }
+  if (Math.floor(timeLag / (24 * 3600 * 1000)) > 0) {
+    return `${Math.floor(timeLag / (24 * 3600 * 1000))} days`
+  }
+  if (Math.floor(timeLag / (3600 * 1000)) > 0) {
+    return `${Math.floor(timeLag / (3600 * 1000))} hours`
+  }
+  if (Math.floor(timeLag / (60 * 1000)) > 0) {
+    return `${Math.floor(timeLag / (60 * 1000))} minutes`
+  }
+  if (Math.floor(timeLag / 1000) > 0) {
+    return `${Math.floor(timeLag / 1000)} seconds`
+  }
+  return ''
 }
 
 function IssueItem({
@@ -20,7 +47,9 @@ function IssueItem({
   labels,
   number,
   assignees,
-  commentsQty
+  commentsQty,
+  createBy,
+  createTime
 }: PropsType) {
   return (
     <li className='flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
@@ -42,7 +71,7 @@ function IssueItem({
             })}
         </div>
         <span className='text-[12px] text-textGray md:w-full'>
-          #{number} opened 10 days ago by Frank
+          #{number} opened {calculateTime(createTime)} ago by {createBy}
         </span>
       </div>
       <div className='group mr-2 hidden h-[20px] transition-all sm:flex'>
@@ -52,8 +81,7 @@ function IssueItem({
               <button
                 key={index}
                 style={{ order: assignees.length - index }}
-                className='ml-[-8px] h-[20px] w-[20px] transition-all group-hover:ml-0'
-              >
+                className='ml-[-8px] h-[20px] w-[20px] transition-all group-hover:ml-0'>
                 <img
                   src={userImage}
                   alt='userImage'

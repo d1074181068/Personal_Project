@@ -14,20 +14,14 @@ type PropsType = {
 }
 const filterDropdownText = [
   '',
-  'Open issues and pull requests',
   'Your issues',
-  'Your pull requests',
   'Everything assigned to you',
-  'Everything mentioning you',
-  'View advanced search syntax'
+  'Everything mentioning you'
 ]
 const mobilefFilterDropdownText = [
-  'Open issues and pull requests',
   'Your issues',
-  'Your pull requests',
   'Everything assigned to you',
-  'Everything mentioning you',
-  'View advanced search syntax'
+  'Everything mentioning you'
 ]
 function Filters({ headerText }: PropsType) {
   const [filterListOpen, setFilterListOpen] = useState(false)
@@ -46,16 +40,16 @@ function Filters({ headerText }: PropsType) {
         </div>
         <button
           className='block h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray py-[5px] px-2 md:hidden'
-          onClick={() => setFilterListOpen(true)}
-        >
+          onClick={() => setFilterListOpen(true)}>
           Filters
           <TriangleDownIcon />
         </button>
         <div className='relative w-full'>
           <input
             type='text'
-            className='h-[35px] w-full rounded rounded-tl-none rounded-bl-none border border-l-0 border-borderGray bg-commonBgGray pl-4'
+            className='h-[35px] w-full rounded rounded-tl-none rounded-bl-none border border-l-0 border-borderGray bg-commonBgGray pl-4 text-textGray'
             placeholder='Search all issues'
+            defaultValue='is:issue is:open'
           />
           <div className='absolute left-[8px] top-[9px]'>
             <SearchIcon fill={'rgb(87,96,106)'} />
@@ -65,8 +59,7 @@ function Filters({ headerText }: PropsType) {
       <div
         className={`${
           filterListOpen ? 'block' : 'hidden'
-        } fixed top-0 bottom-0 left-0 right-0 z-199 bg-maskBlack px-2  md:hidden`}
-      >
+        } fixed top-0 bottom-0 left-0 right-0 z-199 bg-maskBlack px-2  md:hidden`}>
         <div className=' absolute top-[33%] left-2 right-2 rounded-lg bg-white '>
           <div className='flex items-center justify-between rounded-tl-lg rounded-tr-lg border-b-[1px] border-solid border-borderGray bg-white py-2 px-2'>
             <h3>{headerText}</h3>
@@ -75,8 +68,7 @@ function Filters({ headerText }: PropsType) {
               onClick={(e) => {
                 setFilterListOpen(false)
                 e.preventDefault()
-              }}
-            >
+              }}>
               <XIcon />
             </a>
           </div>
@@ -94,10 +86,6 @@ function Filters({ headerText }: PropsType) {
               />
             )
           })}
-          <button className='flex w-full items-center rounded-br-lg rounded-bl-lg border-b-0 py-2 pl-2 hover:bg-commonBgGray'>
-            <LinkExternalIcon className='mr-1' />
-            View advanced search syntax
-          </button>
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ export interface issueItem {
   performed_via_github_app: null
   state_reason: null
 }
-export interface assignee {
+export interface Assignee {
   login: string
   id: number
   node_id: string

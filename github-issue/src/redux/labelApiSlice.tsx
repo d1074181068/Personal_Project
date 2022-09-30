@@ -1,5 +1,5 @@
 import { apiSlice } from './apiSlice'
-type LabelsType = {
+export type LabelsType = {
   color: string
   default: boolean
   description: string | null

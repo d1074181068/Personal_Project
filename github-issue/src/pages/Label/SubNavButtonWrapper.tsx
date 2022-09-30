@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { TagIcon, MilestoneIcon } from '@primer/octicons-react'
+import { click } from '@testing-library/user-event/dist/click'
 
 type SubNavType = {
   $isAcitve: boolean
@@ -47,18 +48,22 @@ const Qty = styled.span`
 `
 function SubNavButton({
   labelQuantity,
-  unsetBg
+  unsetBg,
+  clickFn
 }: {
   labelQuantity?: number
   unsetBg?: boolean
+  clickFn?: () => void
 }) {
   const [subNavActive, setSubNavActive] = useState(true)
   return (
     <Wrapper>
       <SubNavLabelBtn
         $isAcitve={unsetBg ? false : subNavActive}
-        onClick={() => setSubNavActive((prev) => !prev)}
-      >
+        onClick={() => {
+          setSubNavActive((prev) => !prev)
+          if (clickFn) clickFn()
+        }}>
         <BtnWrapper>
           <LabelBtnIcon />
           Labels
@@ -67,8 +72,7 @@ function SubNavButton({
       </SubNavLabelBtn>
       <SubNavMilestonesBtn
         $isAcitve={!subNavActive}
-        onClick={() => setSubNavActive((prev) => !prev)}
-      >
+        onClick={() => setSubNavActive((prev) => !prev)}>
         <BtnWrapper>
           <MilestonesBtnIcon />
           Milestones

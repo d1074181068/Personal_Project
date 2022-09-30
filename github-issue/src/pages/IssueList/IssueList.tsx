@@ -6,46 +6,126 @@ import {
   CheckIcon,
   TriangleDownIcon
 } from '@primer/octicons-react'
+import { useNavigate } from 'react-router-dom'
 //components
 import Filters from './Filters'
 import SubNavButton from '../Label/SubNavButtonWrapper'
 import GithubBtn from '../../components/Content/GithubBtn'
 import StatusButton from './StatusButton'
-import Dropdown from '../../components/Content/Dropdown'
-import PopMenu from './DesktopPopMenu'
-import MobilePopMenu from './MobilePopMenu'
+import PopMenu from './PopMenu'
 import IssueItem from './IssueItem'
 import { NotLogin } from '../Label/Label'
 
 //custom
-import { useGetAllIssueQuery } from '../../redux/issueSlice'
+import { useGetLabelQuery } from '../../redux/labelApiSlice'
+import {
+  useGetAllIssueQuery,
+  useGetAllAssigneesQuery
+} from '../../redux/issueSlice'
+import { LabelType, Assignee } from '../../types/issueType'
+import { MenuContentType } from './PopMenu'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
+
+export interface ContentType {
+  icon?: string
+  text?: string
+  desc?: string
+  userName?: string
+  userImage?: string
+}
 
 const headerTextArr = ['Label', 'Assignee', 'Sort']
-const sortTextArr = [
-  'Newest',
-  'Oldest',
-  'Most commented',
-  'Least commented',
-  'Recently updated',
-  'Least recently updated'
-]
+
 function IssueList() {
   const userToken = localStorage.getItem('userToken') as string
   const [menuOpenStatus, setMenuOpenStatus] = useState(false)
+  const [popMenuData, setPopMenuData] = useState<MenuContentType>()
+  const { labelReducer } = useSelector((store: RootState) => store)
+  console.log(labelReducer)
+
+  const navigate = useNavigate()
   const [popMenuPos, setPopMenuPos] = useState({
     top: 'top-[100px]',
     left: 'left-[16px]'
   })
-  const { data, isLoading, isSuccess } = useGetAllIssueQuery({
+
+  const {
+    data: issueData,
+    isLoading: issueLoading,
+    isError: issueError
+  } = useGetAllIssueQuery({
     name: 'd1074181068',
     repo: 'webdesign',
     token: userToken
   })
-  if (isLoading) {
+  const {
+    data: labelData,
+    isLoading: labelLoading,
+    isError: labelError
+  } = useGetLabelQuery({
+    name: 'd1074181068',
+    repo: 'webdesign',
+    token: userToken
+  })
+
+  const {
+    data: assigneeData,
+    isLoading: assigneeLoading,
+    isError: assignError
+  } = useGetAllAssigneesQuery({
+    name: 'd1074181068',
+    repo: 'webdesign',
+    token: userToken
+  })
+
+  if (issueLoading || labelLoading || assigneeLoading) {
     return <>Loading...</>
   }
-  if (!isSuccess && !isLoading) return <NotLogin>你尚未登入</NotLogin>
-  const renderData = [...data]
+  if (assignError || issueError || labelError)
+    return <NotLogin>你尚未登入</NotLogin>
+
+  function organsizeLabelData() {
+    const data = [...(labelData as LabelType[])]
+    const contentData = data.map((item) => {
+      return { icon: `#${item.color}`, text: item.name, desc: item.description }
+    })
+    const menuContent = {
+      title: 'Filter by label',
+      inputPlaceholder: 'Filter labels',
+      commonAction: 'Unlabeled',
+      content: contentData
+    }
+    setPopMenuData(menuContent)
+  }
+  function organsizeAsigneeData() {
+    const data = [...(assigneeData as Assignee[])]
+    const contentData = data.map((item) => {
+      return { userImage: item.avatar_url, userName: item.login }
+    })
+    const menuContent = {
+      title: "Filter by who's assigned",
+      inputPlaceholder: 'Filter users',
+      commonAction: 'Assigned to nobody',
+      content: contentData
+    }
+    setPopMenuData(menuContent)
+  }
+  function organsizeSortData() {
+    const sortTextArr = [
+      'Newest',
+      'Oldest',
+      'Most commented',
+      'Least commented',
+      'Recently updated',
+      'Least recently updated'
+    ]
+    const menuContent = {
+      title: 'Sort by',
+      sortTextArr: sortTextArr
+    }
+    setPopMenuData(menuContent)
+  }
 
   return (
     <div className='mx-auto my-3 sm:max-w-[1216px] sm:px-2 md:px-3 lg:px-4 '>
@@ -55,7 +135,11 @@ function IssueList() {
             <Filters headerText={'Filter Issues'} />
           </div>
           <div className='md:order-1 md:ml-2'>
-            <SubNavButton labelQuantity={4} unsetBg={true} />
+            <SubNavButton
+              labelQuantity={4}
+              unsetBg={true}
+              clickFn={() => navigate('/label')}
+            />
           </div>
           <div className='md:order-3 md:ml-2'>
             <GithubBtn
@@ -69,8 +153,7 @@ function IssueList() {
         <a
           href='/'
           className='group hidden items-center'
-          onClick={(e) => e.preventDefault()}
-        >
+          onClick={(e) => e.preventDefault()}>
           <div className='h-[18px] w-[18px] rounded bg-[#6e7781] group-hover:bg-hoverBlue'>
             <XIcon size={18} fill={'#FFF'} />
           </div>
@@ -80,14 +163,14 @@ function IssueList() {
         </a>
       </div>
       <div className='flex items-center px-2 lg:hidden'>
-        <StatusButton icon={<IssueOpenedIcon />} text={'open'} length={8} />
-        <StatusButton icon={<CheckIcon />} text={'closed'} length={4} />
+        <StatusButton icon={<IssueOpenedIcon />} text={'open'} />
+        <StatusButton icon={<CheckIcon />} text={'closed'} />
       </div>
       <div className='mt-2 flex items-center justify-between border-t border-b border-solid border-borderGray bg-commonBgGray px-4 py-2 sm:justify-start sm:rounded-tr sm:rounded-tl sm:border-x lg:justify-between lg:px-0'>
         <div className='hidden lg:block'>
           <div className='flex items-center px-2'>
-            <StatusButton icon={<IssueOpenedIcon />} text={'open'} length={8} />
-            <StatusButton icon={<CheckIcon />} text={'closed'} length={4} />
+            <StatusButton icon={<IssueOpenedIcon />} text={'open'} />
+            <StatusButton icon={<CheckIcon />} text={'closed'} />
           </div>
         </div>
         <ul className='relative flex w-full justify-between sm:w-[unset]'>
@@ -95,51 +178,42 @@ function IssueList() {
             return (
               <li className='sm:mr-3' key={index}>
                 <button className='flex'>
-                  {index === headerTextArr.length - 1 ? (
-                    <>
-                      <div
-                        className='hidden sm:block'
-                        onClick={() => setMenuOpenStatus(false)}
-                      >
-                        <Dropdown
-                          text='Sort by'
-                          dropdownText={sortTextArr}
-                          top={'25px'}
-                          left={'-180px'}
-                        />
-                      </div>
-                      <div className='block text-textGray sm:hidden'>
-                        {text}
-                      </div>
-                    </>
-                  ) : (
-                    <div
-                      className='relative flex items-center text-textGray'
-                      onClick={(e) => {
-                        if (
-                          (e.target as HTMLDivElement).textContent === 'Label'
-                        ) {
-                          setPopMenuPos({
-                            ...popMenuPos,
-                            top: 'top-[25px]',
-                            left: 'left-[-10px]'
-                          })
-                        } else {
-                          setPopMenuPos({
-                            ...popMenuPos,
-                            top: 'top-[25px]',
-                            left: 'left-[-20px]'
-                          })
-                        }
-                        setMenuOpenStatus(true)
-                      }}
-                    >
-                      <div>{text}</div>
-                      <div className='hidden sm:block'>
-                        <TriangleDownIcon />
-                      </div>
+                  <div
+                    className='relative flex items-center text-textGray'
+                    onClick={(e) => {
+                      if (
+                        (e.target as HTMLDivElement).textContent === 'Label'
+                      ) {
+                        setPopMenuPos({
+                          ...popMenuPos,
+                          top: 'sm:top-[25px]',
+                          left: 'sm:left-[-40px]'
+                        })
+                        organsizeLabelData()
+                      } else if (
+                        (e.target as HTMLDivElement).textContent === 'Assignee'
+                      ) {
+                        setPopMenuPos({
+                          ...popMenuPos,
+                          top: 'sm:top-[25px]',
+                          left: 'sm:left-[-40px]'
+                        })
+                        organsizeAsigneeData()
+                      } else {
+                        setPopMenuPos({
+                          ...popMenuPos,
+                          top: 'sm:top-[25px]',
+                          left: 'sm:left-[-40px]'
+                        })
+                        organsizeSortData()
+                      }
+                      setMenuOpenStatus(true)
+                    }}>
+                    <div>{text}</div>
+                    <div className='hidden sm:block'>
+                      <TriangleDownIcon />
                     </div>
-                  )}
+                  </div>
                 </button>
               </li>
             )
@@ -148,6 +222,7 @@ function IssueList() {
           <PopMenu
             menuOpenStatus={menuOpenStatus}
             setMenuStatusFn={setMenuOpenStatus}
+            menuContent={popMenuData}
             top={popMenuPos.top}
             left={popMenuPos.left}
           />
@@ -155,45 +230,55 @@ function IssueList() {
         <div
           className={`${
             menuOpenStatus ? 'block' : 'hidden'
-          } fixed top-0 left-0 right-0 bottom-0`}
-          onClick={() => setMenuOpenStatus(false)}
-        ></div>
-        <MobilePopMenu
-          menuOpenStatus={menuOpenStatus}
-          setMenuStatusFn={setMenuOpenStatus}
-        />
+          } fixed top-0 left-0 right-0 bottom-0 bg-maskBlack sm:bg-[transparent]`}
+          onClick={() => setMenuOpenStatus(false)}></div>
       </div>
       <ul>
-        {renderData.map(
-          ({ title, labels, id, number, assignees, comments }) => {
-            return (
-              <IssueItem
-                key={number}
-                icon={<IssueOpenedIcon fill={'#1a7f37'} key={id} />}
-                title={title}
-                labels={
-                  labels &&
-                  labels.map((data) => {
-                    return {
-                      name: data.name,
-                      bgColor: data.color,
-                      desc: data.description,
-                      id: data.id
-                    }
-                  })
-                }
-                number={number}
-                assignees={
-                  assignees &&
-                  assignees.map((user) => {
-                    return { userImage: user.avatar_url, userName: user.login }
-                  })
-                }
-                commentsQty={comments}
-              />
-            )
-          }
-        )}
+        {issueData &&
+          issueData.map(
+            ({
+              title,
+              labels,
+              id,
+              number,
+              assignees,
+              comments,
+              user,
+              created_at
+            }) => {
+              return (
+                <IssueItem
+                  key={number}
+                  icon={<IssueOpenedIcon fill={'#1a7f37'} key={id} />}
+                  title={title}
+                  labels={
+                    labels &&
+                    labels.map((data) => {
+                      return {
+                        name: data.name,
+                        bgColor: data.color,
+                        desc: data.description,
+                        id: data.id
+                      }
+                    })
+                  }
+                  number={number}
+                  assignees={
+                    assignees &&
+                    assignees.map((user) => {
+                      return {
+                        userImage: user.avatar_url,
+                        userName: user.login
+                      }
+                    })
+                  }
+                  commentsQty={comments}
+                  createBy={user.login}
+                  createTime={created_at}
+                />
+              )
+            }
+          )}
       </ul>
     </div>
   )
