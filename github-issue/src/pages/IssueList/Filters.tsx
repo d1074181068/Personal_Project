@@ -1,24 +1,14 @@
+//Library
 import React, { useState } from 'react'
-import {
-  SearchIcon,
-  LinkExternalIcon,
-  XIcon,
-  TriangleDownIcon
-} from '@primer/octicons-react'
+import { SearchIcon, XIcon, TriangleDownIcon } from '@primer/octicons-react'
 
-import Dropdown from '../../components/Content/Dropdown'
-import MobileFilterDown from './MobileFilterDown'
+//components
+import FilterDown from './FilterDown'
 
 type PropsType = {
   headerText: string
 }
 const filterDropdownText = [
-  '',
-  'Your issues',
-  'Everything assigned to you',
-  'Everything mentioning you'
-]
-const mobilefFilterDropdownText = [
   'Your issues',
   'Everything assigned to you',
   'Everything mentioning you'
@@ -29,21 +19,41 @@ function Filters({ headerText }: PropsType) {
 
   return (
     <div className='mt-3 w-full md:mt-0'>
-      <div className='mb-3 flex md:mb-0'>
-        <div className='hidden h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray px-2 pt-[9px] pb-[5px] md:block'>
-          <Dropdown
-            text='Filters'
-            dropdownText={filterDropdownText}
-            top={'30px'}
-            left={'-17px'}
-          />
-        </div>
+      <div className='relative mb-3 flex md:mb-0'>
         <button
-          className='block h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray py-[5px] px-2 md:hidden'
+          className=' h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray py-[5px] px-2'
           onClick={() => setFilterListOpen(true)}>
           Filters
           <TriangleDownIcon />
         </button>
+
+        <div
+          className={`${
+            filterListOpen ? 'block' : 'hidden'
+          } absolute top-[23%] left-2 right-2 z-199 rounded-lg border border-solid border-borderGray bg-white sm:top-[40px] sm:left-0 sm:right-[unset] sm:w-[300px]`}>
+          <div className='flex items-center justify-between rounded-tl-lg rounded-tr-lg border-b-[1px] border-solid border-borderGray bg-white py-2 px-2'>
+            <h3>{headerText}</h3>
+            <button onClick={() => setFilterListOpen(false)}>
+              <XIcon />
+            </button>
+          </div>
+
+          {filterDropdownText.map((text, index) => {
+            return (
+              <FilterDown
+                text={text}
+                index={index}
+                display={
+                  mobileFilterCurrentCheck === index ? 'visible' : 'invisible'
+                }
+                setFilterListOpen={setFilterListOpen}
+                setCurrentCheckFn={setMobileFilterCurrentCheck}
+                key={index}
+              />
+            )
+          })}
+        </div>
+
         <div className='relative w-full'>
           <input
             type='text'
@@ -59,35 +69,8 @@ function Filters({ headerText }: PropsType) {
       <div
         className={`${
           filterListOpen ? 'block' : 'hidden'
-        } fixed top-0 bottom-0 left-0 right-0 z-199 bg-maskBlack px-2  md:hidden`}>
-        <div className=' absolute top-[33%] left-2 right-2 rounded-lg bg-white '>
-          <div className='flex items-center justify-between rounded-tl-lg rounded-tr-lg border-b-[1px] border-solid border-borderGray bg-white py-2 px-2'>
-            <h3>{headerText}</h3>
-            <a
-              href='/'
-              onClick={(e) => {
-                setFilterListOpen(false)
-                e.preventDefault()
-              }}>
-              <XIcon />
-            </a>
-          </div>
-
-          {mobilefFilterDropdownText.map((text, index) => {
-            return (
-              <MobileFilterDown
-                text={text}
-                index={index}
-                display={
-                  mobileFilterCurrentCheck === index ? 'visible' : 'invisible'
-                }
-                setCurrentCheckFn={setMobileFilterCurrentCheck}
-                key={index}
-              />
-            )
-          })}
-        </div>
-      </div>
+        } fixed top-0 bottom-0 left-0 right-0 z-99 bg-maskBlack px-2 sm:bg-[transparent]`}
+        onClick={() => setFilterListOpen(false)}></div>
     </div>
   )
 }

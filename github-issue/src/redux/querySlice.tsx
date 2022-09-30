@@ -2,20 +2,28 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import _ from 'lodash'
 
-const initialLabelState: {
+const initialState: {
   labelName: string[]
   assigneeUser: string
   issueState: string
+  filters: string
 } = {
   labelName: [],
   assigneeUser: '',
-  issueState: ''
+  issueState: 'open',
+  filters: ''
 }
 
 export const querySlice = createSlice({
   name: 'query',
-  initialState: initialLabelState,
+  initialState: initialState,
   reducers: {
+    handleFilters: (state, action: PayloadAction<string>) => {
+      state.labelName.splice(0, state.labelName.length)
+      state.assigneeUser = ''
+      state.issueState = 'open'
+      state.filters = action.payload
+    },
     handleStateFilter: (state, action: PayloadAction<string>) => {
       state.issueState = action.payload
     },
@@ -38,6 +46,7 @@ export const {
   addLabelFilterText,
   deleteLabelFilterText,
   updateAssigneeUser,
-  handleStateFilter
+  handleStateFilter,
+  handleFilters
 } = querySlice.actions
 export default querySlice.reducer

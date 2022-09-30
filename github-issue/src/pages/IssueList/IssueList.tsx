@@ -57,6 +57,15 @@ function IssueList() {
     if (queryReducer.issueState !== '') {
       queryStr += `&state=${queryReducer.issueState}`
     }
+    if (queryReducer.filters !== '') {
+      if (queryReducer.filters === 'mention') {
+        queryStr += `&mentioned=@me`
+      } else if (queryReducer.filters === 'assign') {
+        queryStr += `&assignee=d1074181068`
+      } else {
+        queryStr += `&creator=@me`
+      }
+    }
     return queryStr
   }
   const navigate = useNavigate()
