@@ -1,10 +1,16 @@
 import React from 'react'
-import { XIcon } from '@primer/octicons-react'
+import { XIcon, CheckIcon } from '@primer/octicons-react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { getLabel } from '../../redux/reducer'
+import {
+  addLabelFilterText,
+  deleteLabelFilterText,
+  updateAssigneeUser
+} from '../../redux/querySlice'
+import { RootState } from '../../redux/store'
 
 export type MenuContentType = {
+  type: string
   title: string
   inputPlaceholder?: string
   commonAction?: string
@@ -38,6 +44,8 @@ function DesktopPopMenu({
   menuContent
 }: PropsType) {
   const dispatch = useDispatch()
+  const { queryReducer } = useSelector((store: RootState) => store)
+
   return (
     <>
       {menuContent && (
@@ -80,34 +88,69 @@ function DesktopPopMenu({
             menuContent.content.map(
               ({ icon, text, desc, userImage, userName }, index) => {
                 return (
-                  <button
-                    className='flex w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray'
-                    key={index}
-                    onClick={() => {
-                      dispatch(getLabel(text as string))
-                    }}>
-                    {icon && (
-                      <span
-                        style={{ backgroundColor: icon }}
-                        className={`mr-1 block h-[14px] w-[14px] rounded-circle ${icon}`}></span>
-                    )}
-                    {userImage && (
-                      <img
-                        src={userImage}
-                        alt='userImage'
-                        className={`mr-1 block h-[14px] w-[14px] rounded-circle `}
-                      />
-                    )}
-                    <span className='font-medium'>
-                      {text ? text : userName}
-                      {desc && (
-                        <span className='font-normal'>
-                          <br />
-                          <br /> {desc}
-                        </span>
+                  <div className='relative' key={index}>
+                    <button
+                      className='flex w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray'
+                      onClick={
+                        menuContent.type === 'labels'
+                          ? () => {
+                              if (
+                                queryReducer.labelName.includes(text as string)
+                              ) {
+                                dispatch(deleteLabelFilterText(text as string))
+                              } else {
+                                dispatch(addLabelFilterText(text as string))
+                              }
+                              setMenuStatusFn(false)
+                            }
+                          : menuContent.type === 'assignee'
+                          ? () => {
+                              dispatch(
+                                updateAssigneeUser(
+                                  queryReducer.assigneeUser === userName
+                                    ? ''
+                                    : (userName as string)
+                                )
+                              )
+                              setMenuStatusFn(false)
+                            }
+                          : () => {
+                              setMenuStatusFn(false)
+                            }
+                      }>
+                      <div
+                        className={`${
+                          queryReducer.labelName.includes(text as string)
+                            ? 'block'
+                            : queryReducer.assigneeUser === userName
+                            ? 'block'
+                            : 'hidden'
+                        } absolute left-[10px] top-[13px]`}>
+                        <CheckIcon />
+                      </div>
+                      {icon && (
+                        <span
+                          style={{ backgroundColor: icon }}
+                          className={`mr-1 block h-[14px] w-[14px] rounded-circle ${icon}`}></span>
                       )}
-                    </span>
-                  </button>
+                      {userImage && (
+                        <img
+                          src={userImage}
+                          alt='userImage'
+                          className={`mr-1 block h-[14px] w-[14px] rounded-circle `}
+                        />
+                      )}
+                      <span className='font-medium'>
+                        {text ? text : userName}
+                        {desc && (
+                          <span className='font-normal'>
+                            <br />
+                            <br /> {desc}
+                          </span>
+                        )}
+                      </span>
+                    </button>
+                  </div>
                 )
               }
             )}

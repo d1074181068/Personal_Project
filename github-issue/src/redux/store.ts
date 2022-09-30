@@ -1,12 +1,12 @@
 import { apiSlice } from './apiSlice'
 import { configureStore } from '@reduxjs/toolkit'
 
-import labelReducer from './reducer'
+import queryReducer from './querySlice'
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
-    labelReducer: labelReducer
+    queryReducer: queryReducer
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(apiSlice.middleware)

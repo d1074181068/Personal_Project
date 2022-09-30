@@ -7,6 +7,8 @@ import {
   TriangleDownIcon
 } from '@primer/octicons-react'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+
 //components
 import Filters from './Filters'
 import SubNavButton from '../Label/SubNavButtonWrapper'
@@ -22,9 +24,9 @@ import {
   useGetAllIssueQuery,
   useGetAllAssigneesQuery
 } from '../../redux/issueSlice'
+
 import { LabelType, Assignee } from '../../types/issueType'
 import { MenuContentType } from './PopMenu'
-import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 
 export interface ContentType {
@@ -41,9 +43,22 @@ function IssueList() {
   const userToken = localStorage.getItem('userToken') as string
   const [menuOpenStatus, setMenuOpenStatus] = useState(false)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
-  const { labelReducer } = useSelector((store: RootState) => store)
-  console.log(labelReducer)
-
+  const { queryReducer } = useSelector((store: RootState) => store)
+  const dispatch = useDispatch()
+  console.log(queryReducer)
+  const query = () => {
+    let queryStr = ''
+    if (queryReducer.labelName.length !== 0) {
+      queryStr += `labels=${queryReducer.labelName.join()}`
+    }
+    if (queryReducer.assigneeUser !== '') {
+      queryStr += `&assignee=${queryReducer.assigneeUser}`
+    }
+    if (queryReducer.issueState !== '') {
+      queryStr += `&state=${queryReducer.issueState}`
+    }
+    return queryStr
+  }
   const navigate = useNavigate()
   const [popMenuPos, setPopMenuPos] = useState({
     top: 'top-[100px]',
@@ -57,7 +72,8 @@ function IssueList() {
   } = useGetAllIssueQuery({
     name: 'd1074181068',
     repo: 'webdesign',
-    token: userToken
+    token: userToken,
+    query: query()
   })
   const {
     data: labelData,
@@ -91,6 +107,7 @@ function IssueList() {
       return { icon: `#${item.color}`, text: item.name, desc: item.description }
     })
     const menuContent = {
+      type: 'labels',
       title: 'Filter by label',
       inputPlaceholder: 'Filter labels',
       commonAction: 'Unlabeled',
@@ -104,6 +121,7 @@ function IssueList() {
       return { userImage: item.avatar_url, userName: item.login }
     })
     const menuContent = {
+      type: 'assignee',
       title: "Filter by who's assigned",
       inputPlaceholder: 'Filter users',
       commonAction: 'Assigned to nobody',
@@ -121,6 +139,7 @@ function IssueList() {
       'Least recently updated'
     ]
     const menuContent = {
+      type: 'sort',
       title: 'Sort by',
       sortTextArr: sortTextArr
     }

@@ -1,6 +1,13 @@
 import { apiSlice } from './apiSlice'
 import { issueList, Assignee } from '../types/issueType'
 
+interface GetIssueQueryParams {
+  name: string
+  repo: string
+  token: string
+  query: string
+}
+
 interface QueryParams {
   name: string
   repo: string
@@ -9,9 +16,9 @@ interface QueryParams {
 
 export const issueApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllIssue: builder.query<issueList, QueryParams>({
-      query: ({ name, repo, token }) => ({
-        url: `/${name}/${repo}/issues`,
+    getAllIssue: builder.query<issueList, GetIssueQueryParams>({
+      query: ({ name, repo, token, query }) => ({
+        url: `/${name}/${repo}/issues?${query}`,
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
