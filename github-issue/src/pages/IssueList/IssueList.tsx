@@ -66,6 +66,9 @@ function IssueList() {
         queryStr += `&creator=@me`
       }
     }
+    if (queryReducer.sortIssue !== '') {
+      queryStr += `&sort=${queryReducer.sortIssue}`
+    }
     return queryStr
   }
   const navigate = useNavigate()
@@ -140,12 +143,12 @@ function IssueList() {
   }
   function organsizeSortData() {
     const sortTextArr = [
-      'Newest',
-      'Oldest',
-      'Most commented',
-      'Least commented',
-      'Recently updated',
-      'Least recently updated'
+      { text: 'Newest', query: 'created-desc' },
+      { text: 'Oldest', query: 'created-asc' },
+      { text: 'Most commented', query: 'comments-desc' },
+      { text: 'Least commented', query: 'comments-asc' },
+      { text: 'Recently updated', query: 'updated-desc' },
+      { text: 'Least recently updated', query: 'updated-asc' }
     ]
     const menuContent = {
       type: 'sort',
@@ -267,18 +270,18 @@ function IssueList() {
             ({
               title,
               labels,
-              id,
               number,
               assignees,
               comments,
               user,
-              created_at
+              created_at,
+              state_reason
             }) => {
               return (
                 <IssueItem
                   key={number}
-                  icon={<IssueOpenedIcon fill={'#1a7f37'} key={id} />}
                   title={title}
+                  stateReason={state_reason}
                   labels={
                     labels &&
                     labels.map((data) => {

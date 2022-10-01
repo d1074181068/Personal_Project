@@ -15,7 +15,7 @@ const filterDropdownText = [
 ]
 function Filters({ headerText }: PropsType) {
   const [filterListOpen, setFilterListOpen] = useState(false)
-  const [mobileFilterCurrentCheck, setMobileFilterCurrentCheck] = useState(0)
+  const [mobileFilterCurrentCheck, setMobileFilterCurrentCheck] = useState(-1)
 
   return (
     <div className='mt-3 w-full md:mt-0'>
@@ -47,6 +47,7 @@ function Filters({ headerText }: PropsType) {
                   mobileFilterCurrentCheck === index ? 'visible' : 'invisible'
                 }
                 setFilterListOpen={setFilterListOpen}
+                currentCheck={mobileFilterCurrentCheck}
                 setCurrentCheckFn={setMobileFilterCurrentCheck}
                 key={index}
               />

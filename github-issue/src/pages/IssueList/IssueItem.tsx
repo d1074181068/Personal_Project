@@ -1,12 +1,16 @@
 import React from 'react'
-import { CommentIcon } from '@primer/octicons-react'
+import {
+  CommentIcon,
+  IssueClosedIcon,
+  IssueOpenedIcon,
+  SkipIcon
+} from '@primer/octicons-react'
 import LabelItem from '../Label/LabelItem'
 
 //custom
 import { lightOrDark } from '../Label/HandleLabel'
 
 type PropsType = {
-  icon: JSX.Element
   title: string
   labels: { name: string; bgColor: string; desc: string; id: number }[]
   number: number
@@ -14,6 +18,7 @@ type PropsType = {
   commentsQty: number
   createBy: string
   createTime: string
+  stateReason: string | null
 }
 
 export function calculateTime(createTime: string): string {
@@ -42,18 +47,24 @@ export function calculateTime(createTime: string): string {
 }
 
 function IssueItem({
-  icon,
   title,
   labels,
   number,
   assignees,
   commentsQty,
   createBy,
-  createTime
+  createTime,
+  stateReason
 }: PropsType) {
   return (
     <li className='flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
-      {icon}
+      {stateReason === null ? (
+        <IssueOpenedIcon fill={'#1a7f37'} />
+      ) : stateReason === 'not_planned' ? (
+        <SkipIcon fill={'#57606a'} />
+      ) : (
+        <IssueClosedIcon fill={'#8250df'} />
+      )}
       <div className='ml-2 flex grow flex-col items-start md:flex-row md:flex-wrap '>
         <h3 className='mb-1 text-[16px] font-medium md:mr-1'>{title}</h3>
         <div className='mb-1 flex'>

@@ -10,6 +10,7 @@ import { handleFilters } from '../../redux/querySlice'
 type PropsType = {
   text: string
   index: number
+  currentCheck: number
   display: string
   setCurrentCheckFn: React.Dispatch<React.SetStateAction<number>>
   setFilterListOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -18,11 +19,13 @@ type PropsType = {
 function MobileFilterDown({
   text,
   index,
+  currentCheck,
   display,
   setCurrentCheckFn,
   setFilterListOpen
 }: PropsType) {
   const dispatch = useDispatch()
+  const { queryReducer } = useSelector((store: RootState) => store)
   return (
     <button
       className=' flex w-full items-center border-0 border-b-[1px] border-solid border-borderGray py-2 pr-3 pl-2 last:rounded-br-lg last:rounded-bl-lg last:border-b-0 hover:bg-commonBgGray '
@@ -30,13 +33,23 @@ function MobileFilterDown({
         dispatch(
           handleFilters(
             text === 'Your issues'
-              ? 'allIssue'
+              ? queryReducer.filters === 'allIssue'
+                ? ''
+                : 'allIssue'
               : text === 'Everything assigned to you'
-              ? 'assign'
+              ? queryReducer.filters === 'assign'
+                ? ''
+                : 'assign'
+              : queryReducer.filters === 'assign'
+              ? ''
               : 'mention'
           )
         )
-        setCurrentCheckFn(index)
+        if (currentCheck === index) {
+          setCurrentCheckFn(-1)
+        } else {
+          setCurrentCheckFn(index)
+        }
         setFilterListOpen(false)
       }}>
       <div className={`mr-2 ${display}`}>

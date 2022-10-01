@@ -7,11 +7,13 @@ const initialState: {
   assigneeUser: string
   issueState: string
   filters: string
+  sortIssue: string
 } = {
   labelName: [],
   assigneeUser: '',
   issueState: 'open',
-  filters: ''
+  filters: '',
+  sortIssue: 'created-desc'
 }
 
 export const querySlice = createSlice({
@@ -23,6 +25,7 @@ export const querySlice = createSlice({
       state.assigneeUser = ''
       state.issueState = 'open'
       state.filters = action.payload
+      state.sortIssue = 'created-desc'
     },
     handleStateFilter: (state, action: PayloadAction<string>) => {
       state.issueState = action.payload
@@ -36,8 +39,14 @@ export const querySlice = createSlice({
         (text) => text !== action.payload
       )
     },
+    resetLabelFilterText: (state) => {
+      state.labelName = []
+    },
     updateAssigneeUser: (state, action: PayloadAction<string>) => {
       state.assigneeUser = action.payload
+    },
+    sortIssue: (state, action: PayloadAction<string>) => {
+      state.sortIssue = action.payload
     }
   }
 })
@@ -45,8 +54,10 @@ export const querySlice = createSlice({
 export const {
   addLabelFilterText,
   deleteLabelFilterText,
+  resetLabelFilterText,
   updateAssigneeUser,
   handleStateFilter,
-  handleFilters
+  handleFilters,
+  sortIssue
 } = querySlice.actions
 export default querySlice.reducer

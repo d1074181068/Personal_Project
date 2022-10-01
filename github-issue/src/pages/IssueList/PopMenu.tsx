@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { XIcon, CheckIcon } from '@primer/octicons-react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import {
   addLabelFilterText,
   deleteLabelFilterText,
-  updateAssigneeUser
+  updateAssigneeUser,
+  resetLabelFilterText,
+  sortIssue
 } from '../../redux/querySlice'
 import { RootState } from '../../redux/store'
 
@@ -21,7 +23,7 @@ export type MenuContentType = {
     userName?: string
     userImage?: string
   }[]
-  sortTextArr?: string[]
+  sortTextArr?: { text: string; query: string }[]
 }
 
 type PropsType = {
@@ -45,6 +47,7 @@ function DesktopPopMenu({
 }: PropsType) {
   const dispatch = useDispatch()
   const { queryReducer } = useSelector((store: RootState) => store)
+  const [searchInputText, setSearchInputText] = useState('')
 
   return (
     <>
@@ -65,23 +68,48 @@ function DesktopPopMenu({
                 type='text'
                 placeholder={menuContent.inputPlaceholder}
                 className='h-[32px] w-full rounded border border-solid border-borderGray pl-2'
+                onChange={(e) => setSearchInputText(e.target.value)}
               />
             </div>
           )}
 
           {menuContent.commonAction && (
-            <button className='w-full border-0 border-b border-solid border-borderGray py-3 pl-4 text-left font-medium hover:bg-commonBgGray'>
+            <button
+              className='w-full border-0 border-b border-solid border-borderGray py-3 pl-4 text-left font-medium hover:bg-commonBgGray'
+              onClick={() => {
+                dispatch(
+                  menuContent.type === 'labels'
+                    ? resetLabelFilterText()
+                    : updateAssigneeUser('')
+                )
+                setMenuStatusFn(false)
+              }}>
               {menuContent.commonAction}
             </button>
           )}
           {menuContent.sortTextArr &&
-            menuContent.sortTextArr.map((text, index) => {
+            menuContent.sortTextArr.map(({ text, query }, index) => {
               return (
-                <button
-                  className='flex w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray'
-                  key={index}>
-                  {text}
-                </button>
+                <div key={index} className='relative'>
+                  <button
+                    className={`${
+                      queryReducer.sortIssue === query
+                        ? 'font-medium'
+                        : 'font-normal'
+                    } flex w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray`}
+                    onClick={() => {
+                      dispatch(sortIssue(query))
+                      setMenuStatusFn(false)
+                    }}>
+                    {text}
+                  </button>
+                  <div
+                    className={`${
+                      queryReducer.sortIssue === query ? 'block' : 'hidden'
+                    } absolute left-[10px] top-[13px]`}>
+                    <CheckIcon />
+                  </div>
+                </div>
               )
             })}
           {menuContent.content &&
@@ -90,7 +118,21 @@ function DesktopPopMenu({
                 return (
                   <div className='relative' key={index}>
                     <button
-                      className='flex w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray'
+                      className={`${
+                        searchInputText?.trim() === ''
+                          ? 'flex'
+                          : text
+                              ?.toUpperCase()
+                              ?.includes(searchInputText.toUpperCase()) ||
+                            desc
+                              ?.toUpperCase()
+                              ?.includes(searchInputText.toUpperCase()) ||
+                            userName
+                              ?.toUpperCase()
+                              ?.includes(searchInputText.toUpperCase())
+                          ? 'flex'
+                          : 'hidden'
+                      }  w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray`}
                       onClick={
                         menuContent.type === 'labels'
                           ? () => {
