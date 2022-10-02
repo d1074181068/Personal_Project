@@ -37,7 +37,7 @@ Default.args = {
   title: 'Frank 在寫扣',
   body: '寫扣寫起來',
   labels: [
-    { name: 'Frank', bgColor: '#FF0000', desc: 'Frank is coming', id: 123 }
+    { name: 'Frank', bgColor: 'FF0000', desc: 'Frank is coming', id: 123 }
   ],
   number: 5,
   createTime: '2022-09-18T02:13:40Z',
