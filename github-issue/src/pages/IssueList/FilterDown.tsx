@@ -40,7 +40,7 @@ function MobileFilterDown({
               ? queryReducer.filters === 'assign'
                 ? ''
                 : 'assign'
-              : queryReducer.filters === 'assign'
+              : queryReducer.filters === 'mention'
               ? ''
               : 'mention'
           )

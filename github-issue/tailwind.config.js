@@ -29,7 +29,7 @@ module.exports = {
         hoverBlue: '#0969da',
         maskBlack: 'rgba(36,41,47,0.4)',
         red: '#FF0000',
-        textGray: 'rgb(87,96,106)'
+        textGray: '#57606a'
       },
       zIndex: {
         99: '99',

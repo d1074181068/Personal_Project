@@ -34,11 +34,13 @@ type PropsType = {
   menuOpenStatus: boolean
   setMenuStatusFn: React.Dispatch<React.SetStateAction<boolean>>
   menuContent?: MenuContentType
+  setFilterInputText: React.Dispatch<React.SetStateAction<string>>
 }
 
 function DesktopPopMenu({
   menuOpenStatus,
   setMenuStatusFn,
+  setFilterInputText,
   top,
   left,
   right,

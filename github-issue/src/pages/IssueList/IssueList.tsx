@@ -1,10 +1,12 @@
 //Libraries
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   XIcon,
   IssueOpenedIcon,
   CheckIcon,
-  TriangleDownIcon
+  TriangleDownIcon,
+  ChevronRightIcon,
+  ChevronLeftIcon
 } from '@primer/octicons-react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,6 +19,7 @@ import StatusButton from './StatusButton'
 import PopMenu from './PopMenu'
 import IssueItem from './IssueItem'
 import { NotLogin } from '../Label/Label'
+import NoIssue from './NoIssue'
 
 //custom
 import { useGetLabelQuery } from '../../redux/labelApiSlice'
@@ -24,7 +27,7 @@ import {
   useGetAllIssueQuery,
   useGetAllAssigneesQuery
 } from '../../redux/issueSlice'
-
+import { handlePage } from '../../redux/querySlice'
 import { LabelType, Assignee } from '../../types/issueType'
 import { MenuContentType } from './PopMenu'
 import { RootState } from '../../redux/store'
@@ -43,13 +46,45 @@ function IssueList() {
   const userToken = localStorage.getItem('userToken') as string
   const [menuOpenStatus, setMenuOpenStatus] = useState(false)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
+  const [filterInputText, setFilterInputText] = useState('')
+  const [page, setPage] = useState(1)
+  const disaptch = useDispatch()
   const { queryReducer } = useSelector((store: RootState) => store)
-  const dispatch = useDispatch()
-  console.log(queryReducer)
+
+  let inputText = 'is issue '
+  for (const key in queryReducer) {
+    if (key === 'issueState') {
+      inputText += `is:${queryReducer[key]} `
+    }
+    if (key === 'labelName') {
+      queryReducer[key].forEach((text) => {
+        inputText += `label:${text} `
+      })
+    }
+    if (key === 'assigneeUser') {
+      if (queryReducer[key] !== '') {
+        inputText += `assignee:${queryReducer[key]} `
+      }
+    }
+    if (key === 'filters') {
+      if (queryReducer[key] === 'assign') inputText += `assignee:@me `
+      if (queryReducer[key] === 'allIssue') inputText += `author:@me `
+      if (queryReducer[key] === 'mention') inputText += `mentions:@me `
+    }
+    if (key === 'sortIssue') {
+      if (queryReducer[key] !== '') {
+        inputText += `sort:${queryReducer[key]} `
+      }
+    }
+  }
+  useEffect(() => {
+    setFilterInputText(inputText)
+  }, [inputText])
+
   const query = () => {
     let queryStr = ''
     if (queryReducer.labelName.length !== 0) {
-      queryStr += `labels=${queryReducer.labelName.join()}`
+      queryStr += `&labels=${queryReducer.labelName.join()}`
     }
     if (queryReducer.assigneeUser !== '') {
       queryStr += `&assignee=${queryReducer.assigneeUser}`
@@ -69,6 +104,7 @@ function IssueList() {
     if (queryReducer.sortIssue !== '') {
       queryStr += `&sort=${queryReducer.sortIssue}`
     }
+    queryStr += `&per_page=5&page=${page}`
     return queryStr
   }
   const navigate = useNavigate()
@@ -85,6 +121,8 @@ function IssueList() {
     name: 'd1074181068',
     repo: 'webdesign',
     token: userToken,
+    perPage: 5,
+    page: queryReducer.page,
     query: query()
   })
   const {
@@ -112,6 +150,10 @@ function IssueList() {
   }
   if (assignError || issueError || labelError)
     return <NotLogin>你尚未登入</NotLogin>
+
+  const renderData = issueData?.filter((item) => {
+    return !('pull_request' in item)
+  })
 
   function organsizeLabelData() {
     const data = [...(labelData as LabelType[])]
@@ -163,7 +205,11 @@ function IssueList() {
       <div className='px-2 sm:px-0 md:mb-3'>
         <div className='flex flex-wrap items-center justify-between'>
           <div className='order-3 w-full md:order-1 md:block md:w-[unset] md:grow'>
-            <Filters headerText={'Filter Issues'} />
+            <Filters
+              headerText={'Filter Issues'}
+              inputText={filterInputText}
+              setFilterInputText={setFilterInputText}
+            />
           </div>
           <div className='md:order-1 md:ml-2'>
             <SubNavButton
@@ -254,6 +300,7 @@ function IssueList() {
             menuOpenStatus={menuOpenStatus}
             setMenuStatusFn={setMenuOpenStatus}
             menuContent={popMenuData}
+            setFilterInputText={setFilterInputText}
             top={popMenuPos.top}
             left={popMenuPos.left}
           />
@@ -265,52 +312,112 @@ function IssueList() {
           onClick={() => setMenuOpenStatus(false)}></div>
       </div>
       <ul>
-        {issueData &&
-          issueData.map(
-            ({
-              title,
-              labels,
-              number,
-              assignees,
-              comments,
-              user,
-              created_at,
-              state_reason
-            }) => {
-              return (
-                <IssueItem
-                  key={number}
-                  title={title}
-                  stateReason={state_reason}
-                  labels={
-                    labels &&
-                    labels.map((data) => {
-                      return {
-                        name: data.name,
-                        bgColor: data.color,
-                        desc: data.description,
-                        id: data.id
-                      }
-                    })
-                  }
-                  number={number}
-                  assignees={
-                    assignees &&
-                    assignees.map((user) => {
-                      return {
-                        userImage: user.avatar_url,
-                        userName: user.login
-                      }
-                    })
-                  }
-                  commentsQty={comments}
-                  createBy={user.login}
-                  createTime={created_at}
-                />
-              )
-            }
-          )}
+        {renderData ? (
+          renderData.length === 0 ? (
+            <NoIssue />
+          ) : (
+            renderData.map(
+              ({
+                title,
+                labels,
+                number,
+                assignees,
+                comments,
+                user,
+                created_at,
+                state_reason
+              }) => {
+                return (
+                  <IssueItem
+                    key={number}
+                    title={title}
+                    stateReason={state_reason}
+                    labels={
+                      labels &&
+                      labels.map((data) => {
+                        return {
+                          name: data.name,
+                          bgColor: data.color,
+                          desc: data.description,
+                          id: data.id
+                        }
+                      })
+                    }
+                    number={number}
+                    assignees={
+                      assignees &&
+                      assignees.map((user) => {
+                        return {
+                          userImage: user.avatar_url,
+                          userName: user.login
+                        }
+                      })
+                    }
+                    commentsQty={comments}
+                    createBy={user.login}
+                    createTime={created_at}
+                  />
+                )
+              }
+            )
+          )
+        ) : (
+          <></>
+        )}
       </ul>
+      <div className='flex items-center justify-center p-3'>
+        <button
+          className={`item-center mr-3  flex rounded border border-solid border-[transparent] py-1 px-[10px] transition-all ${
+            page === 1
+              ? 'cursor-no-drop hover:border-[transparent]'
+              : 'hover:border-borderGray'
+          } `}
+          onClick={() => {
+            disaptch(handlePage(page <= 1 ? 1 : page - 1))
+            setPage((prev) => (prev <= 1 ? 1 : prev - 1))
+          }}>
+          <ChevronLeftIcon fill={page === 1 ? '#57606a' : '#0969da'} />
+          <span
+            className={`ml-1 leading-[16px] ${
+              page === 1 ? 'text-textGray' : 'text-hoverBlue'
+            } `}>
+            Previous
+          </span>
+        </button>
+        <button
+          className={`item-center mr-3 flex rounded border border-solid border-[transparent] py-1 px-[10px] transition-all ${
+            renderData
+              ? renderData.length < 5
+                ? 'cursor-no-drop hover:border-[transparent]'
+                : 'hover:border-borderGray'
+              : 'cursor-no-drop hover:border-[transparent]'
+          }`}
+          disabled={renderData ? (renderData.length < 5 ? true : false) : true}
+          onClick={() => {
+            disaptch(handlePage(page + 1))
+            setPage((prev) => prev + 1)
+          }}>
+          <span
+            className={`mr-1 leading-[16px] ${
+              renderData
+                ? renderData.length < 5
+                  ? 'text-textGray'
+                  : 'text-hoverBlue'
+                : 'text-textGray'
+            } `}>
+            Next
+          </span>
+          <ChevronRightIcon
+            fill={
+              renderData
+                ? renderData.length < 5
+                  ? '#57606a'
+                  : '#0969da'
+                : '#57606a'
+            }
+          />
+        </button>
+      </div>
     </div>
   )
 }

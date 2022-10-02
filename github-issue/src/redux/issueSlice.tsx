@@ -6,6 +6,8 @@ interface GetIssueQueryParams {
   repo: string
   token: string
   query: string
+  perPage: number
+  page: number
 }
 
 interface QueryParams {
@@ -17,8 +19,8 @@ interface QueryParams {
 export const issueApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllIssue: builder.query<issueList, GetIssueQueryParams>({
-      query: ({ name, repo, token, query }) => ({
-        url: `/${name}/${repo}/issues?${query}`,
+      query: ({ name, repo, token, query, perPage, page }) => ({
+        url: `/${name}/${repo}/issues?per_page=${perPage}${query}`,
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',

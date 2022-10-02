@@ -7,13 +7,15 @@ import FilterDown from './FilterDown'
 
 type PropsType = {
   headerText: string
+  inputText: string
+  setFilterInputText: React.Dispatch<React.SetStateAction<string>>
 }
 const filterDropdownText = [
   'Your issues',
   'Everything assigned to you',
   'Everything mentioning you'
 ]
-function Filters({ headerText }: PropsType) {
+function Filters({ headerText, inputText, setFilterInputText }: PropsType) {
   const [filterListOpen, setFilterListOpen] = useState(false)
   const [mobileFilterCurrentCheck, setMobileFilterCurrentCheck] = useState(-1)
 
@@ -60,7 +62,8 @@ function Filters({ headerText }: PropsType) {
             type='text'
             className='h-[35px] w-full rounded rounded-tl-none rounded-bl-none border border-l-0 border-borderGray bg-commonBgGray pl-4 text-textGray'
             placeholder='Search all issues'
-            defaultValue='is:issue is:open'
+            value={inputText}
+            onChange={(e) => setFilterInputText(e.target.value)}
           />
           <div className='absolute left-[8px] top-[9px]'>
             <SearchIcon fill={'rgb(87,96,106)'} />

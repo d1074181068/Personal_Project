@@ -8,12 +8,14 @@ const initialState: {
   issueState: string
   filters: string
   sortIssue: string
+  page: number
 } = {
   labelName: [],
   assigneeUser: '',
   issueState: 'open',
   filters: '',
-  sortIssue: 'created-desc'
+  sortIssue: '',
+  page: 1
 }
 
 export const querySlice = createSlice({
@@ -26,6 +28,7 @@ export const querySlice = createSlice({
       state.issueState = 'open'
       state.filters = action.payload
       state.sortIssue = 'created-desc'
+      state.page = 1
     },
     handleStateFilter: (state, action: PayloadAction<string>) => {
       state.issueState = action.payload
@@ -47,6 +50,9 @@ export const querySlice = createSlice({
     },
     sortIssue: (state, action: PayloadAction<string>) => {
       state.sortIssue = action.payload
+    },
+    handlePage: (state, action: PayloadAction<number>) => {
+      state.page = action.payload
     }
   }
 })
@@ -58,6 +64,7 @@ export const {
   updateAssigneeUser,
   handleStateFilter,
   handleFilters,
-  sortIssue
+  sortIssue,
+  handlePage
 } = querySlice.actions
 export default querySlice.reducer
