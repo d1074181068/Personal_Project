@@ -30,6 +30,14 @@ export const querySlice = createSlice({
       state.sortIssue = 'created-desc'
       state.page = 1
     },
+    resetAllFilter: (state) => {
+      state.labelName.splice(0, state.labelName.length)
+      state.assigneeUser = ''
+      state.issueState = 'open'
+      state.filters = ''
+      state.sortIssue = ''
+      state.page = 1
+    },
     handleStateFilter: (state, action: PayloadAction<string>) => {
       state.issueState = action.payload
     },
@@ -65,6 +73,7 @@ export const {
   handleStateFilter,
   handleFilters,
   sortIssue,
-  handlePage
+  handlePage,
+  resetAllFilter
 } = querySlice.actions
 export default querySlice.reducer

@@ -34,13 +34,11 @@ type PropsType = {
   menuOpenStatus: boolean
   setMenuStatusFn: React.Dispatch<React.SetStateAction<boolean>>
   menuContent?: MenuContentType
-  setFilterInputText: React.Dispatch<React.SetStateAction<string>>
 }
 
 function DesktopPopMenu({
   menuOpenStatus,
   setMenuStatusFn,
-  setFilterInputText,
   top,
   left,
   right,
@@ -187,10 +185,7 @@ function DesktopPopMenu({
                       <span className='font-medium'>
                         {text ? text : userName}
                         {desc && (
-                          <span className='font-normal'>
-                            <br />
-                            <br /> {desc}
-                          </span>
+                          <span className='mt-1 block font-normal'>{desc}</span>
                         )}
                       </span>
                     </button>

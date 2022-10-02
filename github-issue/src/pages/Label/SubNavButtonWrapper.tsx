@@ -71,7 +71,7 @@ function SubNavButton({
         </BtnWrapper>
       </SubNavLabelBtn>
       <SubNavMilestonesBtn
-        $isAcitve={!subNavActive}
+        $isAcitve={unsetBg ? false : !subNavActive}
         onClick={() => setSubNavActive((prev) => !prev)}>
         <BtnWrapper>
           <MilestonesBtnIcon />

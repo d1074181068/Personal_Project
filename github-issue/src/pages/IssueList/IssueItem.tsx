@@ -7,11 +7,15 @@ import {
 } from '@primer/octicons-react'
 import LabelItem from '../Label/LabelItem'
 
+//components
+import HoverTitleEffect from './HoverTitleEffect'
+
 //custom
 import { lightOrDark } from '../Label/HandleLabel'
 
 type PropsType = {
   title: string
+  body: string
   labels: { name: string; bgColor: string; desc: string; id: number }[]
   number: number
   assignees: { userName: string; userImage: string }[]
@@ -19,6 +23,7 @@ type PropsType = {
   createBy: string
   createTime: string
   stateReason: string | null
+  ownerImg: string
 }
 
 export function calculateTime(createTime: string): string {
@@ -54,10 +59,12 @@ function IssueItem({
   commentsQty,
   createBy,
   createTime,
-  stateReason
+  body,
+  stateReason,
+  ownerImg
 }: PropsType) {
   return (
-    <li className='flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
+    <li className=' relative flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
       {stateReason === null ? (
         <IssueOpenedIcon fill={'#1a7f37'} />
       ) : stateReason === 'not_planned' ? (
@@ -66,7 +73,20 @@ function IssueItem({
         <IssueClosedIcon fill={'#8250df'} />
       )}
       <div className='ml-2 flex grow flex-col items-start md:flex-row md:flex-wrap '>
-        <h3 className='mb-1 text-[16px] font-medium md:mr-1'>{title}</h3>
+        <div className='group mb-1 text-[16px] font-medium md:mr-1'>
+          {title}
+          <div className='hidden group-hover:block'>
+            <HoverTitleEffect
+              title={title}
+              labels={labels}
+              number={number}
+              createTime={createTime}
+              body={body}
+              stateReason={stateReason}
+              ownerImg={ownerImg}
+            />
+          </div>
+        </div>
         <div className='mb-1 flex'>
           {labels.length !== 0 &&
             labels.map(({ name, bgColor, id }) => {

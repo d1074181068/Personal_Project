@@ -27,7 +27,7 @@ import {
   useGetAllIssueQuery,
   useGetAllAssigneesQuery
 } from '../../redux/issueSlice'
-import { handlePage } from '../../redux/querySlice'
+import { handlePage, resetAllFilter } from '../../redux/querySlice'
 import { LabelType, Assignee } from '../../types/issueType'
 import { MenuContentType } from './PopMenu'
 import { RootState } from '../../redux/store'
@@ -47,11 +47,16 @@ function IssueList() {
   const [menuOpenStatus, setMenuOpenStatus] = useState(false)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
   const [filterInputText, setFilterInputText] = useState('')
+  const navigate = useNavigate()
+  const [popMenuPos, setPopMenuPos] = useState({
+    top: 'top-[100px]',
+    left: 'left-[16px]'
+  })
   const [page, setPage] = useState(1)
   const disaptch = useDispatch()
   const { queryReducer } = useSelector((store: RootState) => store)
 
-  let inputText = 'is issue '
+  let inputText = 'is:issue '
   for (const key in queryReducer) {
     if (key === 'issueState') {
       inputText += `is:${queryReducer[key]} `
@@ -107,12 +112,18 @@ function IssueList() {
     queryStr += `&per_page=5&page=${page}`
     return queryStr
   }
-  const navigate = useNavigate()
-  const [popMenuPos, setPopMenuPos] = useState({
-    top: 'top-[100px]',
-    left: 'left-[16px]'
-  })
-
+  const clearStatus =
+    queryReducer.labelName.length !== 0
+      ? true
+      : queryReducer.assigneeUser !== ''
+      ? true
+      : queryReducer.filters !== ''
+      ? true
+      : queryReducer.sortIssue !== ''
+      ? true
+      : queryReducer.issueState !== 'open'
+      ? true
+      : false
   const {
     data: issueData,
     isLoading: issueLoading,
@@ -213,7 +224,7 @@ function IssueList() {
           </div>
           <div className='md:order-1 md:ml-2'>
             <SubNavButton
-              labelQuantity={4}
+              labelQuantity={labelData?.length}
               unsetBg={true}
               clickFn={() => navigate('/label')}
             />
@@ -227,17 +238,18 @@ function IssueList() {
             />
           </div>
         </div>
-        <a
-          href='/'
-          className='group hidden items-center'
-          onClick={(e) => e.preventDefault()}>
+        <button
+          className={`group mt-2 ${
+            clearStatus ? 'flex' : 'hidden'
+          }  items-center`}
+          onClick={() => disaptch(resetAllFilter())}>
           <div className='h-[18px] w-[18px] rounded bg-[#6e7781] group-hover:bg-hoverBlue'>
             <XIcon size={18} fill={'#FFF'} />
           </div>
           <span className='ml-1 group-hover:text-hoverBlue'>
             Clear current search query, filters, and sorts
           </span>
-        </a>
+        </button>
       </div>
       <div className='flex items-center px-2 lg:hidden'>
         <StatusButton icon={<IssueOpenedIcon />} text={'open'} />
@@ -300,7 +312,6 @@ function IssueList() {
             menuOpenStatus={menuOpenStatus}
             setMenuStatusFn={setMenuOpenStatus}
             menuContent={popMenuData}
-            setFilterInputText={setFilterInputText}
             top={popMenuPos.top}
             left={popMenuPos.left}
           />
@@ -325,12 +336,14 @@ function IssueList() {
                 comments,
                 user,
                 created_at,
-                state_reason
+                state_reason,
+                body
               }) => {
                 return (
                   <IssueItem
                     key={number}
                     title={title}
+                    body={body}
                     stateReason={state_reason}
                     labels={
                       labels &&
@@ -356,6 +369,7 @@ function IssueList() {
                     commentsQty={comments}
                     createBy={user.login}
                     createTime={created_at}
+                    ownerImg={user.avatar_url}
                   />
                 )
               }
