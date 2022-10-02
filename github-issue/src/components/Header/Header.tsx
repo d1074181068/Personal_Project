@@ -9,12 +9,16 @@ import {
   TriangleDownIcon,
   ThreeBarsIcon
 } from '@primer/octicons-react'
+import { useDispatch, useSelector } from 'react-redux'
 
 //components
 import MobileLink from './MobileLink'
 
+//custom
+import { storeToken } from '../../redux/tokenSlice'
 import { supabase } from '../../utils/client'
 import { UserType, Session } from '../../types/supabaseType'
+import { RootState } from '../../redux/store'
 
 type PropsType = {
   signClickFn: () => void
@@ -177,6 +181,9 @@ function Header({ signClickFn }: PropsType) {
   const [userPhoto, setUserPhoto] = useState('')
   const [searchBarStyle, setSearchBarStyle] = useState(false)
   const [listActive, setListActive] = useState(false)
+  const { tokenReducer } = useSelector((store: RootState) => store)
+  const dispatch = useDispatch()
+
   const navigate = useNavigate()
   useEffect(() => {
     checkUser()
@@ -195,6 +202,7 @@ function Header({ signClickFn }: PropsType) {
           'userToken',
           userLoginObj.currentSession.provider_token
         )
+        dispatch(storeToken(userLoginObj.currentSession.provider_token))
       }
     } else {
       signClickFn()
@@ -214,6 +222,7 @@ function Header({ signClickFn }: PropsType) {
     await supabase.auth.signOut()
     setUserPhoto('')
     localStorage.clear()
+    dispatch(storeToken(''))
     navigate('/')
   }
   return (
@@ -223,8 +232,7 @@ function Header({ signClickFn }: PropsType) {
           <HumbergerBtn
             onClick={() => {
               setListActive((prev) => !prev)
-            }}
-          >
+            }}>
             <HumbergerBtnSVG />
           </HumbergerBtn>
           <Icon />
@@ -263,7 +271,7 @@ function Header({ signClickFn }: PropsType) {
             <DropDown />
           </MoreActionButton>
 
-          {userPhoto ? (
+          {tokenReducer.token ? (
             <SignBtn onClick={() => signOut()}>signOut</SignBtn>
           ) : (
             <SignBtn onClick={() => signInGithub()}>signIn</SignBtn>

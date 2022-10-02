@@ -2,11 +2,13 @@ import { apiSlice } from './apiSlice'
 import { configureStore } from '@reduxjs/toolkit'
 
 import queryReducer from './querySlice'
+import tokenReducer from './tokenSlice'
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
-    queryReducer: queryReducer
+    queryReducer: queryReducer,
+    tokenReducer: tokenReducer
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(apiSlice.middleware)

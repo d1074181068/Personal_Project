@@ -13,6 +13,8 @@ import {
   useGetLabelQuery,
   useCreateLabelMutation
 } from '../../redux/labelApiSlice'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
 
 type LabelControlerType = {
   display: string
@@ -94,19 +96,18 @@ export const NotLogin = styled.div`
 
 function Label() {
   const userToken = localStorage.getItem('userToken') as string
-
+  const { tokenReducer } = useSelector((store: RootState) => store)
   const [handleLabelOpen, setHandleLabelOpen] = useState(false)
-  const { data, isLoading, isSuccess } = useGetLabelQuery({
+  const [createLabel] = useCreateLabelMutation()
+  const { data, isLoading } = useGetLabelQuery({
     name: 'd1074181068',
     repo: 'webdesign',
-    token: userToken
+    token: tokenReducer.token
   })
-  const [createLabel] = useCreateLabelMutation()
+  if (!tokenReducer.token) return <NotLogin>你尚未登入</NotLogin>
   if (isLoading) {
     return <>Loading...</>
   }
-  if (!isSuccess && !isLoading) return <NotLogin>你尚未登入</NotLogin>
-  const renderData = [...data]
   return (
     <Wrapper>
       <Navbar>
@@ -159,7 +160,7 @@ function Label() {
 
       <LabelListWrapper>
         <LabelListHeader>
-          <LabelQuantity>{renderData.length} labels</LabelQuantity>
+          <LabelQuantity>{data && data.length} labels</LabelQuantity>
           <Dropdown
             text={'Sort'}
             dropdownText={[
@@ -175,7 +176,7 @@ function Label() {
         </LabelListHeader>
         <LabelList>
           {data &&
-            renderData.map(({ name, description, color }, index) => {
+            data.map(({ name, description, color }, index) => {
               return (
                 <LabelListItem
                   labelName={name}

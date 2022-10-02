@@ -1,6 +1,7 @@
 //Libraries
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
 import {
   CodeIcon,
   IssueOpenedIcon,
@@ -22,6 +23,7 @@ import {
 //components
 import PageHeaderAction from './PageHeaderAction'
 import RepoNavbar from './RepoNavbar'
+import { RootState } from '../../redux/store'
 
 type FontType = {
   fontBold: boolean
@@ -92,7 +94,8 @@ const pageActionArr = [
 ]
 function MainHeader() {
   const [clickItem, setClickItem] = useState('Issues')
-  const userToken = localStorage.getItem('userToken')
+  const { tokenReducer } = useSelector((store: RootState) => store)
+
   function isClick(event: EventTarget) {
     if ((event as HTMLElement).tagName === 'svg') {
       setClickItem(
@@ -106,7 +109,7 @@ function MainHeader() {
     setClickItem((event as HTMLLIElement).textContent as string)
   }
 
-  if (!userToken) {
+  if (!tokenReducer.token) {
     return <></>
   }
   return (

@@ -43,7 +43,6 @@ export interface ContentType {
 const headerTextArr = ['Label', 'Assignee', 'Sort']
 
 function IssueList() {
-  const userToken = localStorage.getItem('userToken') as string
   const [menuOpenStatus, setMenuOpenStatus] = useState(false)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
   const [filterInputText, setFilterInputText] = useState('')
@@ -54,7 +53,9 @@ function IssueList() {
   })
   const [page, setPage] = useState(1)
   const disaptch = useDispatch()
-  const { queryReducer } = useSelector((store: RootState) => store)
+  const { queryReducer, tokenReducer } = useSelector(
+    (store: RootState) => store
+  )
 
   let inputText = 'is:issue '
   for (const key in queryReducer) {
@@ -131,7 +132,7 @@ function IssueList() {
   } = useGetAllIssueQuery({
     name: 'd1074181068',
     repo: 'webdesign',
-    token: userToken,
+    token: tokenReducer.token,
     perPage: 5,
     page: queryReducer.page,
     query: query()
@@ -143,7 +144,7 @@ function IssueList() {
   } = useGetLabelQuery({
     name: 'd1074181068',
     repo: 'webdesign',
-    token: userToken
+    token: tokenReducer.token
   })
 
   const {
@@ -153,13 +154,13 @@ function IssueList() {
   } = useGetAllAssigneesQuery({
     name: 'd1074181068',
     repo: 'webdesign',
-    token: userToken
+    token: tokenReducer.token
   })
 
   if (issueLoading || labelLoading || assigneeLoading) {
     return <>Loading...</>
   }
-  if (assignError || issueError || labelError)
+  if (assignError || issueError || labelError || !tokenReducer.token)
     return <NotLogin>你尚未登入</NotLogin>
 
   const renderData = issueData?.filter((item) => {
