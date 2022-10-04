@@ -2,14 +2,16 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import _ from 'lodash'
 
-const initialState: {
+type InitStateType = {
   labelName: string[]
   assigneeUser: string
   issueState: string
   filters: string
   sortIssue: string
   page: number
-} = {
+}
+
+const initialState: InitStateType = {
   labelName: [],
   assigneeUser: '',
   issueState: 'open',

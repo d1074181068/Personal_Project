@@ -64,7 +64,7 @@ function IssueItem({
   ownerImg
 }: PropsType) {
   return (
-    <li className=' relative flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
+    <li className=' relative z-[24px] flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
       {stateReason === null ? (
         <IssueOpenedIcon fill={'#1a7f37'} />
       ) : stateReason === 'not_planned' ? (

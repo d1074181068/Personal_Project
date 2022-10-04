@@ -191,8 +191,12 @@ function Header({ signClickFn }: PropsType) {
   }, [])
   async function checkUser() {
     const user = supabase.auth.user() as UserType
+    console.log(user)
+
     if (user) {
-      supabase.auth.session() as Session
+      const session = supabase.auth.session() as Session
+      console.log(session)
+
       setUserPhoto(user.identities[0].identity_data.avatar_url)
       const userLoginObj = JSON.parse(
         localStorage.getItem('supabase.auth.token') as string

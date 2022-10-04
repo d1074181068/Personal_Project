@@ -320,7 +320,7 @@ function IssueList() {
         <div
           className={`${
             menuOpenStatus ? 'block' : 'hidden'
-          } fixed top-0 left-0 right-0 bottom-0 bg-maskBlack sm:bg-[transparent]`}
+          } fixed top-0 left-0 right-0 bottom-0 z-199 bg-maskBlack sm:bg-[transparent]`}
           onClick={() => setMenuOpenStatus(false)}></div>
       </div>
       <ul>
