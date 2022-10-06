@@ -115,3 +115,9 @@ export interface Reactions {
   rocket: number
   eyes: number
 }
+
+export type ClickFnType = {
+  text?: string
+  colorCode?: string
+  imageUrl?: string
+}

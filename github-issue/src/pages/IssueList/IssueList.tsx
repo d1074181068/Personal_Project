@@ -27,10 +27,18 @@ import {
   useGetAllIssueQuery,
   useGetAllAssigneesQuery
 } from '../../redux/issueSlice'
-import { handlePage, resetAllFilter } from '../../redux/querySlice'
+import {
+  handlePage,
+  resetAllFilter,
+  addLabelFilterText,
+  deleteLabelFilterText,
+  updateAssigneeUser,
+  resetLabelFilterText
+} from '../../redux/querySlice'
 import { LabelType, Assignee } from '../../types/issueType'
 import { MenuContentType } from './PopMenu'
 import { RootState } from '../../redux/store'
+import { ClickFnType } from '../../types/issueType'
 
 export interface ContentType {
   icon?: string
@@ -52,11 +60,10 @@ function IssueList() {
     left: 'left-[16px]'
   })
   const [page, setPage] = useState(1)
-  const disaptch = useDispatch()
+  const dispatch = useDispatch()
   const { queryReducer, tokenReducer } = useSelector(
     (store: RootState) => store
   )
-
   let inputText = 'is:issue '
   for (const key in queryReducer) {
     if (key === 'issueState') {
@@ -167,7 +174,7 @@ function IssueList() {
     return !('pull_request' in item)
   })
 
-  function organsizeLabelData() {
+  function organizeLabelData() {
     const data = [...(labelData as LabelType[])]
     const contentData = data.map((item) => {
       return { icon: `#${item.color}`, text: item.name, desc: item.description }
@@ -177,11 +184,19 @@ function IssueList() {
       title: 'Filter by label',
       inputPlaceholder: 'Filter labels',
       commonAction: 'Unlabeled',
+      clickFn: ({ text }: ClickFnType) => {
+        if (queryReducer.labelName.includes(text as string)) {
+          dispatch(deleteLabelFilterText(text as string))
+        } else {
+          dispatch(addLabelFilterText(text as string))
+        }
+        setMenuOpenStatus(false)
+      },
       content: contentData
     }
     setPopMenuData(menuContent)
   }
-  function organsizeAsigneeData() {
+  function organizeAssigneeData() {
     const data = [...(assigneeData as Assignee[])]
     const contentData = data.map((item) => {
       return { userImage: item.avatar_url, userName: item.login }
@@ -191,11 +206,19 @@ function IssueList() {
       title: "Filter by who's assigned",
       inputPlaceholder: 'Filter users',
       commonAction: 'Assigned to nobody',
+      clickFn: ({ text }: ClickFnType) => {
+        dispatch(
+          updateAssigneeUser(
+            queryReducer.assigneeUser === text ? '' : (text as string)
+          )
+        )
+        setMenuOpenStatus(false)
+      },
       content: contentData
     }
     setPopMenuData(menuContent)
   }
-  function organsizeSortData() {
+  function organizeSortData() {
     const sortTextArr = [
       { text: 'Newest', query: 'created-desc' },
       { text: 'Oldest', query: 'created-asc' },
@@ -243,7 +266,7 @@ function IssueList() {
           className={`group mt-2 ${
             clearStatus ? 'flex' : 'hidden'
           }  items-center`}
-          onClick={() => disaptch(resetAllFilter())}>
+          onClick={() => dispatch(resetAllFilter())}>
           <div className='h-[18px] w-[18px] rounded bg-[#6e7781] group-hover:bg-hoverBlue'>
             <XIcon size={18} fill={'#FFF'} />
           </div>
@@ -279,7 +302,7 @@ function IssueList() {
                           top: 'sm:top-[25px]',
                           left: 'sm:left-[-40px]'
                         })
-                        organsizeLabelData()
+                        organizeLabelData()
                       } else if (
                         (e.target as HTMLDivElement).textContent === 'Assignee'
                       ) {
@@ -288,14 +311,14 @@ function IssueList() {
                           top: 'sm:top-[25px]',
                           left: 'sm:left-[-40px]'
                         })
-                        organsizeAsigneeData()
+                        organizeAssigneeData()
                       } else {
                         setPopMenuPos({
                           ...popMenuPos,
                           top: 'sm:top-[25px]',
                           left: 'sm:left-[-40px]'
                         })
-                        organsizeSortData()
+                        organizeSortData()
                       }
                       setMenuOpenStatus(true)
                     }}>
@@ -388,7 +411,7 @@ function IssueList() {
               : 'hover:border-borderGray'
           } `}
           onClick={() => {
-            disaptch(handlePage(page <= 1 ? 1 : page - 1))
+            dispatch(handlePage(page <= 1 ? 1 : page - 1))
             setPage((prev) => (prev <= 1 ? 1 : prev - 1))
           }}>
           <ChevronLeftIcon fill={page === 1 ? '#57606a' : '#0969da'} />
@@ -409,7 +432,7 @@ function IssueList() {
           }`}
           disabled={renderData ? (renderData.length < 5 ? true : false) : true}
           onClick={() => {
-            disaptch(handlePage(page + 1))
+            dispatch(handlePage(page + 1))
             setPage((prev) => prev + 1)
           }}>
           <span

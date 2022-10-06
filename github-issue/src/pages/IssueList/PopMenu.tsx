@@ -12,7 +12,7 @@ import {
 import { RootState } from '../../redux/store'
 
 export type MenuContentType = {
-  type: string
+  type?: string
   title: string
   inputPlaceholder?: string
   commonAction?: string
@@ -23,6 +23,12 @@ export type MenuContentType = {
     userName?: string
     userImage?: string
   }[]
+  clickFn?: (argObj: {
+    text?: string
+    icon?: string
+    userName?: string
+    userImage?: string
+  }) => void
   sortTextArr?: { text: string; query: string }[]
 }
 
@@ -31,6 +37,7 @@ type PropsType = {
   left?: string
   right?: string
   bottom?: string
+  breakPoint?: string
   menuOpenStatus: boolean
   setMenuStatusFn: React.Dispatch<React.SetStateAction<boolean>>
   menuContent?: MenuContentType
@@ -39,6 +46,7 @@ type PropsType = {
 function DesktopPopMenu({
   menuOpenStatus,
   setMenuStatusFn,
+  breakPoint,
   top,
   left,
   right,
@@ -46,19 +54,29 @@ function DesktopPopMenu({
   menuContent
 }: PropsType) {
   const dispatch = useDispatch()
-  const { queryReducer } = useSelector((store: RootState) => store)
+  const { queryReducer, newIssueReducer } = useSelector(
+    (store: RootState) => store
+  )
   const [searchInputText, setSearchInputText] = useState('')
 
   return (
     <>
       {menuContent && (
         <div
-          className={`fixed sm:absolute ${
+          className={`fixed ${
+            breakPoint === 'md' ? 'md:absolute' : 'sm:absolute'
+          } ${
             menuOpenStatus ? 'block' : 'hidden'
-          } ${top} ${left} ${right} ${bottom} top-[20px] right-1 left-1 z-[200] max-h-[480px] overflow-y-auto rounded-lg border border-solid border-borderGray bg-white sm:w-[300px]`}>
-          <div className='flex justify-between rounded-tl-lg rounded-tr-lg border-b border-solid border-borderGray px-3 py-2'>
-            <h3 className='font-medium'>{menuContent.title}</h3>
-            <button onClick={() => setMenuStatusFn(false)}>
+          } ${top} ${left} ${right} ${bottom} top-[20px] right-1 left-1 z-[200] max-h-[480px] overflow-y-auto rounded-lg border border-solid border-borderGray bg-white ${
+            breakPoint === 'md' ? 'md:w-[300px]' : 'sm:w-[300px]'
+          }`}>
+          <div className='flex items-center justify-between rounded-tl-lg rounded-tr-lg border-b border-solid border-borderGray px-3 py-2'>
+            <h3 className='text-[12px] font-medium'>{menuContent.title}</h3>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setMenuStatusFn(false)
+              }}>
               <XIcon />
             </button>
           </div>
@@ -133,39 +151,32 @@ function DesktopPopMenu({
                           ? 'flex'
                           : 'hidden'
                       }  w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray`}
-                      onClick={
-                        menuContent.type === 'labels'
-                          ? () => {
-                              if (
-                                queryReducer.labelName.includes(text as string)
-                              ) {
-                                dispatch(deleteLabelFilterText(text as string))
-                              } else {
-                                dispatch(addLabelFilterText(text as string))
-                              }
-                              setMenuStatusFn(false)
-                            }
-                          : menuContent.type === 'assignee'
-                          ? () => {
-                              dispatch(
-                                updateAssigneeUser(
-                                  queryReducer.assigneeUser === userName
-                                    ? ''
-                                    : (userName as string)
-                                )
-                              )
-                              setMenuStatusFn(false)
-                            }
-                          : () => {
-                              setMenuStatusFn(false)
-                            }
-                      }>
+                      onClick={(e) => {
+                        if (menuContent.clickFn) {
+                          e.stopPropagation()
+                          let argObj = {}
+                          if (text) {
+                            argObj = { text, colorCode: icon }
+                          } else {
+                            argObj = { imageUrl: userImage, text: userName }
+                          }
+                          menuContent.clickFn(argObj)
+                        }
+                      }}>
                       <div
                         className={`${
                           queryReducer.labelName.includes(text as string)
                             ? 'block'
                             : queryReducer.assigneeUser === userName
                             ? 'block'
+                            : newIssueReducer.labelName.find(
+                                (item) => item.text === text
+                              )
+                            ? 'block'
+                            : newIssueReducer.assignees.find(
+                                (item) => item.text === userName
+                              )
+                            ? 'blcok'
                             : 'hidden'
                         } absolute left-[10px] top-[13px]`}>
                         <CheckIcon />

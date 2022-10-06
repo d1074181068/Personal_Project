@@ -1,74 +1,57 @@
 //libraries
 import React, { useState } from 'react'
 import { GearIcon } from '@primer/octicons-react'
+import { useDispatch, useSelector } from 'react-redux'
 
 //components
-import MenuDropdown from './MenuDropdown'
 import LabelItem from '../Label/LabelItem'
+import DesktopPopMenu from '../IssueList/PopMenu'
 
 //custom
 import { lightOrDark } from '../Label/HandleLabel'
+import { MenuContentType } from '../IssueList/PopMenu'
+import { RootState } from '../../redux/store'
 
 type PropsType = {
   type: string
+  organizeDataFn: () => void
+  menuContent?: MenuContentType
 }
-const assigneeArr = [
-  {
-    imageUrl: 'https://avatars.githubusercontent.com/u/71813522?v=4',
-    text: 'Frank'
-  },
-  {
-    imageUrl: 'https://avatars.githubusercontent.com/u/71813522?v=4',
-    text: 'Hippo'
-  },
-  {
-    imageUrl: 'https://avatars.githubusercontent.com/u/71813522?v=4',
-    text: 'Jay'
-  }
-]
-const labelArr = [
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' },
-  { color: 'FF0000', text: 'Frank' }
-]
-function FeatureMenu({ type }: PropsType) {
-  const [hoverMenuStyle, setHoverMenuStyle] = useState('')
+
+function FeatureMenu({ type, organizeDataFn, menuContent }: PropsType) {
   const [featureMenuOpen, setFeatureMenuOpen] = useState(false)
+  const { newIssueReducer } = useSelector((store: RootState) => store)
+  console.log(newIssueReducer.labelName)
+
   return (
     <div className='border-b border-solid border-borderGray py-2'>
       <div
-        className='group mb-1 flex cursor-pointer items-center justify-between'
-        onMouseOver={() => setHoverMenuStyle('rgb(9,105,218)')}
-        onMouseLeave={() => setHoverMenuStyle('rgb(87,96,106)')}
-        onClick={() => setFeatureMenuOpen(true)}>
+        className={`${
+          featureMenuOpen ? 'block' : 'hidden'
+        } fixed top-0 left-0 right-0 bottom-0 bg-maskBlack md:bg-[transparent]`}
+        onClick={() => setFeatureMenuOpen(false)}></div>
+      <div
+        className='group relative mb-1 flex cursor-pointer items-center justify-between'
+        onClick={() => {
+          organizeDataFn()
+          setFeatureMenuOpen(true)
+        }}>
         <h3 className='text-[12px] text-textGray group-hover:text-hoverBlue'>
           {type}
         </h3>
-        <GearIcon fill={hoverMenuStyle ? hoverMenuStyle : 'rgb(87,96,106)'} />
+        <div className='group-hover:text-hoverBlue'>
+          <GearIcon />
+        </div>
+        <DesktopPopMenu
+          menuOpenStatus={featureMenuOpen}
+          setMenuStatusFn={setFeatureMenuOpen}
+          menuContent={menuContent}
+          left={'md:left-[-100px]'}
+          breakPoint={'md'}
+        />
       </div>
       {type === 'Assignees' &&
-        assigneeArr.map(({ imageUrl, text }, index) => {
+        newIssueReducer.assignees.map(({ imageUrl, text }, index) => {
           return (
             <div className='mb-1 flex items-center' key={index}>
               <img
@@ -83,24 +66,20 @@ function FeatureMenu({ type }: PropsType) {
           )
         })}
       {type === 'Labels' && (
-        <div className='mb-1 flex flex-wrap items-center gap-1'>
-          {labelArr.map(({ color, text }, index) => {
+        <div className='mb-1 flex flex-wrap items-center gap-[4px]'>
+          {newIssueReducer.labelName.map(({ text, colorCode }, index) => {
             return (
-              <div className='mr-[5px] flex' key={index}>
+              <div className='mr-[2px] flex' key={index}>
                 <LabelItem
                   labelName={text}
-                  colorCode={`#${color}`}
-                  textColor={lightOrDark(color)}
+                  colorCode={colorCode}
+                  textColor={lightOrDark(colorCode)}
                 />
               </div>
             )
           })}
         </div>
       )}
-
-      <div className={`${featureMenuOpen ? 'block' : 'hidden'}`}>
-        <MenuDropdown setFeatureMenuOpen={setFeatureMenuOpen} />
-      </div>
     </div>
   )
 }
