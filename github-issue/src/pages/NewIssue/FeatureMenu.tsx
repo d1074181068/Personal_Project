@@ -11,6 +11,7 @@ import DesktopPopMenu from '../IssueList/PopMenu'
 import { lightOrDark } from '../Label/HandleLabel'
 import { MenuContentType } from '../IssueList/PopMenu'
 import { RootState } from '../../redux/store'
+import { handleAssignee } from '../../redux/newIssueSlice'
 
 type PropsType = {
   type: string
@@ -21,8 +22,7 @@ type PropsType = {
 function FeatureMenu({ type, organizeDataFn, menuContent }: PropsType) {
   const [featureMenuOpen, setFeatureMenuOpen] = useState(false)
   const { newIssueReducer } = useSelector((store: RootState) => store)
-  console.log(newIssueReducer.labelName)
-
+  const dispatch = useDispatch()
   return (
     <div className='border-b border-solid border-borderGray py-2'>
       <div
@@ -50,34 +50,60 @@ function FeatureMenu({ type, organizeDataFn, menuContent }: PropsType) {
           breakPoint={'md'}
         />
       </div>
-      {type === 'Assignees' &&
-        newIssueReducer.assignees.map(({ imageUrl, text }, index) => {
-          return (
-            <div className='mb-1 flex items-center' key={index}>
-              <img
-                src={imageUrl}
-                alt='userImage'
-                className='mr-[5px] h-[20px] w-[20px] rounded-circle'
-              />
-              <span className='cursor-pointer font-medium hover:text-hoverBlue'>
-                {text}
-              </span>
+      {type === 'Assignees' && (
+        <div className='text-[12px] text-textGray'>
+          {newIssueReducer.assignees.length === 0 ? (
+            <div className='text-[12px] text-textGray'>
+              No one -
+              <button
+                className=' hover:text-hoverBlue'
+                onClick={() =>
+                  dispatch(
+                    handleAssignee({
+                      text: 'd1074181068',
+                      imageUrl:
+                        'https://avatars.githubusercontent.com/u/71813522?v=4'
+                    })
+                  )
+                }>
+                assign yourself
+              </button>
             </div>
-          )
-        })}
+          ) : (
+            newIssueReducer.assignees.map(({ imageUrl, text }, index) => {
+              return (
+                <div className='mb-1 flex items-center' key={index}>
+                  <img
+                    src={imageUrl}
+                    alt='userImage'
+                    className='mr-[5px] h-[20px] w-[20px] rounded-circle'
+                  />
+                  <span className='cursor-pointer font-medium hover:text-hoverBlue'>
+                    {text}
+                  </span>
+                </div>
+              )
+            })
+          )}
+        </div>
+      )}
       {type === 'Labels' && (
         <div className='mb-1 flex flex-wrap items-center gap-[4px]'>
-          {newIssueReducer.labelName.map(({ text, colorCode }, index) => {
-            return (
-              <div className='mr-[2px] flex' key={index}>
-                <LabelItem
-                  labelName={text}
-                  colorCode={colorCode}
-                  textColor={lightOrDark(colorCode)}
-                />
-              </div>
-            )
-          })}
+          {newIssueReducer.labelName.length === 0 ? (
+            <div className='text-[12px] text-textGray'>None yet</div>
+          ) : (
+            newIssueReducer.labelName.map(({ text, colorCode }, index) => {
+              return (
+                <div className='mr-[2px] flex' key={index}>
+                  <LabelItem
+                    labelName={text}
+                    colorCode={colorCode}
+                    textColor={lightOrDark(colorCode)}
+                  />
+                </div>
+              )
+            })
+          )}
         </div>
       )}
     </div>

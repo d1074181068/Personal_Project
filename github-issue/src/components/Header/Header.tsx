@@ -20,10 +20,6 @@ import { supabase } from '../../utils/client'
 import { UserType, Session } from '../../types/supabaseType'
 import { RootState } from '../../redux/store'
 
-type PropsType = {
-  signClickFn: () => void
-}
-
 const Wrapper = styled.header`
   display: flex;
   justify-content: space-between;
@@ -177,8 +173,7 @@ const SignBtn = styled.button`
   }
 `
 const navBarTxt: string[] = ['Pull', 'Issues', 'Marketplace', 'Explore']
-function Header({ signClickFn }: PropsType) {
-  const [userPhoto, setUserPhoto] = useState('')
+function Header() {
   const [searchBarStyle, setSearchBarStyle] = useState(false)
   const [listActive, setListActive] = useState(false)
   const { tokenReducer } = useSelector((store: RootState) => store)
@@ -193,9 +188,7 @@ function Header({ signClickFn }: PropsType) {
     const user = supabase.auth.user() as UserType
 
     if (user) {
-      const session = supabase.auth.session() as Session
-
-      setUserPhoto(user.identities[0].identity_data.avatar_url)
+      supabase.auth.session() as Session
       const userLoginObj = JSON.parse(
         localStorage.getItem('supabase.auth.token') as string
       )
@@ -206,8 +199,6 @@ function Header({ signClickFn }: PropsType) {
         )
         dispatch(storeToken(userLoginObj.currentSession.provider_token))
       }
-    } else {
-      signClickFn()
     }
   }
   async function signInGithub(): Promise<void> {
@@ -222,7 +213,6 @@ function Header({ signClickFn }: PropsType) {
   }
   async function signOut() {
     await supabase.auth.signOut()
-    setUserPhoto('')
     localStorage.clear()
     dispatch(storeToken(''))
     navigate('/')
@@ -283,7 +273,7 @@ function Header({ signClickFn }: PropsType) {
       <MobileLink
         listActive={listActive}
         searchBarStyle={searchBarStyle}
-        userPhoto={userPhoto}
+        userToken={tokenReducer.token}
         setSearchBarStyle={setSearchBarStyle}
         signOut={signOut}
         signInGithub={signInGithub}

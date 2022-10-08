@@ -1,5 +1,5 @@
 import { apiSlice } from './apiSlice'
-import { issueList, Assignee } from '../types/issueType'
+import { issueList, issueItem, Assignee } from '../types/issueType'
 
 interface GetIssueQueryParams {
   name: string
@@ -14,6 +14,15 @@ interface QueryParams {
   name: string
   repo: string
   token: string
+}
+
+interface CreateIssueParams extends QueryParams {
+  body: {
+    title: string
+    body: string
+    labels: string[]
+    assignees: string[]
+  }
 }
 
 export const issueApiSlice = apiSlice.injectEndpoints({
@@ -39,8 +48,23 @@ export const issueApiSlice = apiSlice.injectEndpoints({
         })
       }),
       providesTags: ['issue']
+    }),
+    createIssue: builder.mutation<issueItem, CreateIssueParams>({
+      query: ({ name, repo, body, token }) => ({
+        url: `/${name}/${repo}/issues`,
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `token ${token}`
+        }),
+        body: body
+      })
     })
   })
 })
 
-export const { useGetAllIssueQuery, useGetAllAssigneesQuery } = issueApiSlice
+export const {
+  useGetAllIssueQuery,
+  useGetAllAssigneesQuery,
+  useCreateIssueMutation
+} = issueApiSlice

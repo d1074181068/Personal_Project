@@ -95,7 +95,6 @@ export const NotLogin = styled.div`
 `
 
 function Label() {
-  const userToken = localStorage.getItem('userToken') as string
   const { tokenReducer } = useSelector((store: RootState) => store)
   const [handleLabelOpen, setHandleLabelOpen] = useState(false)
   const [createLabel] = useCreateLabelMutation()
@@ -147,7 +146,7 @@ function Label() {
             createLabel({
               name: 'd1074181068',
               repo: 'webdesign',
-              token: userToken,
+              token: tokenReducer.token,
               body: {
                 name: labelName,
                 color: labelColor,

@@ -1,5 +1,5 @@
 //Libraries
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   MarkdownIcon,
   InfoIcon,
@@ -20,6 +20,8 @@ import {
   TasklistIcon
 } from '@primer/octicons-react'
 import { useDispatch, useSelector } from 'react-redux'
+import { marked } from 'marked'
+import TextareaMarkdown, { TextareaMarkdownRef } from 'textarea-markdown-editor'
 
 //components
 import FeatureMenu from './FeatureMenu'
@@ -30,21 +32,73 @@ import { useGetLabelQuery } from '../../redux/labelApiSlice'
 import { RootState } from '../../redux/store'
 import { Assignee, ClickFnType, LabelType } from '../../types/issueType'
 import { MenuContentType } from '../IssueList/PopMenu'
-import { useGetAllAssigneesQuery } from '../../redux/issueSlice'
-import { handleLabelTag, handleAssignee } from '../../redux/newIssueSlice'
+import {
+  useGetAllAssigneesQuery,
+  useCreateIssueMutation
+} from '../../redux/issueSlice'
+import {
+  handleLabelTag,
+  handleAssignee,
+  handleTitle,
+  handleIssueBody,
+  resetIssueContent
+} from '../../redux/newIssueSlice'
+import '../../utils/markdownStyle.css'
 
 const iconArr = [
-  [<HeadingIcon />, <BoldIcon />, <ItalicIcon />],
-  [<QuoteIcon />, <CodeIcon />, <LinkIcon />],
-  [<ListUnorderedIcon />, <ListOrderedIcon />, <TasklistIcon />],
-  [<MentionIcon />, <ImageIcon />, <CrossReferenceIcon />, <ReplyIcon />]
+  [
+    { icon: <HeadingIcon />, trigger: 'h1' },
+    { icon: <BoldIcon />, trigger: 'bold' },
+    { icon: <ItalicIcon />, trigger: 'italic' }
+  ],
+  [
+    { icon: <QuoteIcon />, trigger: 'block-quotes' },
+    { icon: <CodeIcon />, trigger: 'code' },
+    { icon: <LinkIcon />, trigger: 'link' }
+  ],
+  [
+    { icon: <ListUnorderedIcon />, trigger: 'unordered-list' },
+    { icon: <ListOrderedIcon />, trigger: 'ordered-list' },
+    { icon: <TasklistIcon />, trigger: 'ordered-list' }
+  ],
+  [
+    { icon: <MentionIcon />, trigger: 'bold' },
+    { icon: <ImageIcon />, trigger: 'image' },
+    { icon: <CrossReferenceIcon />, trigger: 'bold' },
+    { icon: <ReplyIcon />, trigger: 'bold' }
+  ]
 ]
+
 function NewIssue() {
   const [navBarToggleStatus, setNavBarToggleStatus] = useState(true)
   const [markdownButtonListOpen, setMarkdownButtonListOpen] = useState(false)
-  const { tokenReducer } = useSelector((store: RootState) => store)
+  const { tokenReducer, newIssueReducer } = useSelector(
+    (store: RootState) => store
+  )
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
+  const [createIssue] = useCreateIssueMutation()
   const dispatch = useDispatch()
+  const ref = useRef<TextareaMarkdownRef>(null)
+
+  const renderer = {
+    listitem(text: string, booleantask: boolean, checked: boolean) {
+      if (checked !== undefined) {
+        return `<li class='check'>${text}</li>`
+      }
+      return `<li>${text}</li>`
+    },
+    paragraph(text: string) {
+      const mentionText = text.match(/^\@/g)
+      const hashText = text.match(/^\#/g)
+      if (!hashText && !mentionText) {
+        return `<p>${text}</p>`
+      }
+      return `<button ${
+        mentionText ? 'class=mention' : 'class="hash"'
+      }>${text}</button>`
+    }
+  }
+  marked.use({ renderer })
   const {
     data: labelData,
     isLoading: labelLoading,
@@ -123,6 +177,8 @@ function NewIssue() {
           type='text'
           className='mb-2 h-[32px] w-full rounded border border-solid border-borderGray bg-commonBgGray pl-1'
           placeholder='Title'
+          value={newIssueReducer.content.title}
+          onChange={(e) => dispatch(handleTitle(e.target.value))}
         />
         <div className='lg:mb-1 lg:flex lg:h-[41px]'>
           <div className='mb-[-1px] flex md:border-borderGray'>
@@ -161,45 +217,59 @@ function NewIssue() {
                 )}
               </button>
               <ul className={`hidden items-center md:flex`}>
-                {iconArr[0].map((item, index) => {
+                {iconArr[0].map(({ icon, trigger }, index) => {
                   return (
                     <li key={index} className={`px-[12px] py-1 md:px-1`}>
-                      <button className='hover:text-hoverBlue'>{item}</button>
+                      <button
+                        className='hover:text-hoverBlue'
+                        onClick={() => ref.current?.trigger(trigger)}>
+                        {icon}
+                      </button>
                     </li>
                   )
                 })}
               </ul>
               <ul className='flex items-center'>
-                {iconArr[1].map((item, index) => {
+                {iconArr[1].map(({ icon, trigger }, index) => {
                   return (
                     <li
                       key={index}
                       className='px-[12px] py-1 first:pl-1 md:px-1'>
-                      <button className='hover:text-hoverBlue'>{item}</button>
+                      <button
+                        className='hover:text-hoverBlue'
+                        onClick={() => ref.current?.trigger(trigger)}>
+                        {icon}
+                      </button>
                     </li>
                   )
                 })}
               </ul>
               <ul className={`hidden items-center md:flex`}>
-                {iconArr[2].map((item, index) => {
+                {iconArr[2].map(({ icon, trigger }, index) => {
                   return (
                     <li
                       key={index}
                       className='px-[12px] py-1 first:pl-1 md:px-1'>
-                      <button className='hover:text-hoverBlue'>{item}</button>
+                      <button
+                        className='hover:text-hoverBlue'
+                        onClick={() => ref.current?.trigger(trigger)}>
+                        {icon}
+                      </button>
                     </li>
                   )
                 })}
               </ul>
               <ul className={`flex items-center`}>
-                {iconArr[3].map((item, index) => {
+                {iconArr[3].map(({ icon, trigger }, index) => {
                   return (
                     <li
                       key={index}
                       className={`${
                         index === 1 ? 'block  md:hidden' : null
                       } px-[12px] py-1 first:pl-1`}>
-                      <button>{item}</button>
+                      <button onClick={() => ref.current?.trigger(trigger)}>
+                        {icon}
+                      </button>
                     </li>
                   )
                 })}
@@ -209,19 +279,23 @@ function NewIssue() {
                   markdownButtonListOpen ? 'flex' : 'hidden'
                 } w-full md:hidden`}>
                 <ul className={`flex items-center`}>
-                  {iconArr[0].map((item, index) => {
+                  {iconArr[0].map(({ icon, trigger }, index) => {
                     return (
                       <li key={index} className='px-[12px]  py-1 first:pl-1'>
-                        {item}
+                        <button onClick={() => ref.current?.trigger(trigger)}>
+                          {icon}
+                        </button>
                       </li>
                     )
                   })}
                 </ul>
                 <ul className={`flex items-center`}>
-                  {iconArr[2].map((item, index) => {
+                  {iconArr[2].map(({ icon, trigger }, index) => {
                     return (
                       <li key={index} className='px-[12px] py-1 first:pl-1'>
-                        {item}
+                        <button onClick={() => ref.current?.trigger(trigger)}>
+                          {icon}
+                        </button>
                       </li>
                     )
                   })}
@@ -235,10 +309,15 @@ function NewIssue() {
           className={`${
             navBarToggleStatus ? 'block' : 'hidden'
           } rounded border border-solid border-borderGray`}>
-          <textarea
-            placeholder='Leave a comment'
-            className=' mb-[-2px] min-h-[200px] w-full resize-y rounded border-b border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] md:rounded-b-none md:border-dashed'
-          />
+          <TextareaMarkdown.Wrapper ref={ref}>
+            <textarea
+              placeholder='Leave a comment'
+              className=' mb-[-2px] min-h-[200px] w-full resize-y rounded border-b border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] md:rounded-b-none md:border-dashed'
+              value={newIssueReducer.content.body}
+              onChange={(e) => dispatch(handleIssueBody(e.target.value))}
+            />
+          </TextareaMarkdown.Wrapper>
+
           <label className='hidden bg-commonBgGray md:block'>
             <div className='flex items-center justify-between p-1 text-textGray'>
               <span>
@@ -252,10 +331,17 @@ function NewIssue() {
         <div
           className={`${
             !navBarToggleStatus
-              ? 'block border-t border-solid border-borderGray pt-2 lg:mt-[-10px]'
+              ? 'block border-t border-solid border-borderGray py-2 lg:mt-[-10px]'
               : 'hidden'
           } m-0 min-h-[200px] border-b-[2px] border-solid border-borderGray md:p-2`}>
-          Nothing to preview
+          <div
+            className='prose'
+            dangerouslySetInnerHTML={{
+              __html: marked(newIssueReducer.content.body, {
+                gfm: true,
+                breaks: true
+              })
+            }}></div>
         </div>
 
         <p className='mt-2 mb-1 block text-[12px] md:hidden'>
@@ -284,6 +370,20 @@ function NewIssue() {
               textColor={'white'}
               hoverColor={'#2c974b'}
               widthFull={'100%'}
+              clickFn={() => {
+                createIssue({
+                  name: 'd1074181068',
+                  repo: 'webdesign',
+                  token: tokenReducer.token,
+                  body: {
+                    title: newIssueReducer.content.title,
+                    body: newIssueReducer.content.body,
+                    labels: newIssueReducer.labelName.map(({ text }) => text),
+                    assignees: newIssueReducer.assignees.map(({ text }) => text)
+                  }
+                })
+                dispatch(resetIssueContent())
+              }}
             />
           </div>
         </div>
@@ -308,6 +408,20 @@ function NewIssue() {
             textColor={'white'}
             hoverColor={'#2c974b'}
             widthFull={'100%'}
+            clickFn={() => {
+              createIssue({
+                name: 'd1074181068',
+                repo: 'webdesign',
+                token: tokenReducer.token,
+                body: {
+                  title: newIssueReducer.content.title,
+                  body: newIssueReducer.content.body,
+                  labels: newIssueReducer.labelName.map(({ text }) => text),
+                  assignees: newIssueReducer.assignees.map(({ text }) => text)
+                }
+              })
+              dispatch(resetIssueContent())
+            }}
           />
         </div>
       </div>

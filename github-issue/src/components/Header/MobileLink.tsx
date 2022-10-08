@@ -6,7 +6,7 @@ type TypeFocus = { $isFocus: boolean }
 type PropsType = {
   listActive: boolean
   searchBarStyle: boolean
-  userPhoto: string
+  userToken: string
   setSearchBarStyle: React.Dispatch<React.SetStateAction<boolean>>
   signOut: () => {}
   signInGithub: () => {}
@@ -95,7 +95,7 @@ const mobileNavBarTxt: string[] = [
 function MobileLink({
   listActive,
   searchBarStyle,
-  userPhoto,
+  userToken,
   setSearchBarStyle,
   signOut,
   signInGithub
@@ -120,9 +120,8 @@ function MobileLink({
           return (
             <li key={index}>
               <MobileSignBtn
-                onClick={userPhoto ? () => signOut() : () => signInGithub()}
-              >
-                {userPhoto ? 'signOut' : 'signIn'}
+                onClick={userToken ? () => signOut() : () => signInGithub()}>
+                {userToken ? 'signOut' : 'signIn'}
               </MobileSignBtn>
             </li>
           )

@@ -5,6 +5,10 @@ import _ from 'lodash'
 type InitStateType = {
   labelName: { text: string; colorCode: string }[]
   assignees: { text: string; imageUrl: string }[]
+  content: {
+    title: string
+    body: string
+  }
 }
 
 type LabelActionType = {
@@ -18,7 +22,11 @@ type AssigneeActionType = {
 
 const initialState: InitStateType = {
   labelName: [],
-  assignees: []
+  assignees: [],
+  content: {
+    title: '',
+    body: ''
+  }
 }
 
 export const newIssueSlice = createSlice({
@@ -46,9 +54,22 @@ export const newIssueSlice = createSlice({
         return
       }
       state.assignees = [...state.assignees, action.payload]
-    }
+    },
+    handleTitle: (state, action: PayloadAction<string>) => {
+      state.content = { ...state.content, title: action.payload }
+    },
+    handleIssueBody: (state, action: PayloadAction<string>) => {
+      state.content = { ...state.content, body: action.payload }
+    },
+    resetIssueContent: () => initialState
   }
 })
 
-export const { handleLabelTag, handleAssignee } = newIssueSlice.actions
+export const {
+  handleLabelTag,
+  handleAssignee,
+  handleTitle,
+  handleIssueBody,
+  resetIssueContent
+} = newIssueSlice.actions
 export default newIssueSlice.reducer
