@@ -22,6 +22,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { marked } from 'marked'
 import TextareaMarkdown, { TextareaMarkdownRef } from 'textarea-markdown-editor'
+import hljs from 'highlight.js'
 
 //components
 import FeatureMenu from './FeatureMenu'
@@ -44,6 +45,7 @@ import {
   resetIssueContent
 } from '../../redux/newIssueSlice'
 import '../../utils/markdownStyle.css'
+import 'highlight.js/styles/github.css'
 
 const iconArr = [
   [
@@ -62,9 +64,9 @@ const iconArr = [
     { icon: <TasklistIcon />, trigger: 'ordered-list' }
   ],
   [
-    { icon: <MentionIcon />, trigger: 'bold' },
+    { icon: <MentionIcon />, trigger: '@' },
     { icon: <ImageIcon />, trigger: 'image' },
-    { icon: <CrossReferenceIcon />, trigger: 'bold' },
+    { icon: <CrossReferenceIcon />, trigger: '#' },
     { icon: <ReplyIcon />, trigger: 'bold' }
   ]
 ]
@@ -79,6 +81,16 @@ function NewIssue() {
   const [createIssue] = useCreateIssueMutation()
   const dispatch = useDispatch()
   const ref = useRef<TextareaMarkdownRef>(null)
+
+  marked.setOptions({
+    gfm: true,
+    breaks: true,
+    langPrefix: 'hljs language-',
+    highlight: function (code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext'
+      return hljs.highlight(code, { language }).value
+    }
+  })
 
   const renderer = {
     listitem(text: string, booleantask: boolean, checked: boolean) {
@@ -99,6 +111,7 @@ function NewIssue() {
     }
   }
   marked.use({ renderer })
+
   const {
     data: labelData,
     isLoading: labelLoading,
@@ -267,7 +280,14 @@ function NewIssue() {
                       className={`${
                         index === 1 ? 'block  md:hidden' : null
                       } px-[12px] py-1 first:pl-1`}>
-                      <button onClick={() => ref.current?.trigger(trigger)}>
+                      <button
+                        onClick={
+                          trigger === '@'
+                            ? () => {}
+                            : trigger === '#'
+                            ? () => {}
+                            : () => ref.current?.trigger(trigger)
+                        }>
                         {icon}
                       </button>
                     </li>
@@ -314,18 +334,20 @@ function NewIssue() {
               placeholder='Leave a comment'
               className=' mb-[-2px] min-h-[200px] w-full resize-y rounded border-b border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] md:rounded-b-none md:border-dashed'
               value={newIssueReducer.content.body}
-              onChange={(e) => dispatch(handleIssueBody(e.target.value))}
+              onChange={(e) => {
+                dispatch(handleIssueBody(e.target.value))
+              }}
             />
           </TextareaMarkdown.Wrapper>
 
-          <label className='hidden bg-commonBgGray md:block'>
+          <label className='hidden bg-commonBgGray hover:cursor-pointer md:block'>
             <div className='flex items-center justify-between p-1 text-textGray'>
               <span>
                 Attach files by dragging & dropping, selecting or pasting them.
               </span>
               <MarkdownIcon />
             </div>
-            <input type='file' className='absolute  opacity-0 ' />
+            <input type='file' className='absolute  opacity-0' />
           </label>
         </div>
         <div
@@ -337,10 +359,7 @@ function NewIssue() {
           <div
             className='prose'
             dangerouslySetInnerHTML={{
-              __html: marked(newIssueReducer.content.body, {
-                gfm: true,
-                breaks: true
-              })
+              __html: marked(newIssueReducer.content.body)
             }}></div>
         </div>
 

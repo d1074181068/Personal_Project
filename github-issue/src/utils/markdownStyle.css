@@ -52,6 +52,13 @@
 .prose p code::before, .prose p code::after {
   content: "";
 }
+.prose pre {
+  background-color: unset;
+  padding: 0;
+}
+.prose .hljs {
+  background-color: #f6f8fa;
+}
 .prose .check {
   list-style: none;
 }

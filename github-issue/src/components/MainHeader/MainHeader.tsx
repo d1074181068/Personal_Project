@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import {
   CodeIcon,
   IssueOpenedIcon,
@@ -95,7 +96,7 @@ const pageActionArr = [
 function MainHeader() {
   const [clickItem, setClickItem] = useState('Issues')
   const { tokenReducer } = useSelector((store: RootState) => store)
-
+  const navigate = useNavigate()
   function isClick(event: EventTarget) {
     if ((event as HTMLElement).tagName === 'svg') {
       setClickItem(

@@ -4,8 +4,8 @@ import PopMenu from '../pages/IssueList/PopMenu'
 import { Provider } from 'react-redux'
 import { store } from '../redux/store'
 import { MenuContentType } from '../pages/IssueList/PopMenu'
-import '../../index.css'
-import '../../../.storybook/globalstyle.css'
+import '../index.css'
+import '../../.storybook/globalstyle.css'
 
 type StorybookType = {
   top?: string

@@ -259,6 +259,7 @@ function IssueList() {
               $text={'New Issue'}
               textColor={'white'}
               hoverColor={'#2c974b'}
+              clickFn={() => navigate('/newissue')}
             />
           </div>
         </div>

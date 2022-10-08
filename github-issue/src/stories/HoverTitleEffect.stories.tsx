@@ -3,8 +3,8 @@ import { Meta, Story } from '@storybook/react'
 import HoverTitleEffect from '../pages/IssueList/HoverTitleEffect'
 import { Provider } from 'react-redux'
 import { store } from '../redux/store'
-import '../../index.css'
-import '../../../.storybook/globalstyle.css'
+import '../index.css'
+import '../../.storybook/globalstyle.css'
 
 type StorybookType = {
   title: string

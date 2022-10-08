@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 type NavbarButton = {
   iconComponent: JSX.Element
@@ -14,6 +15,7 @@ const RepoNavbarItem = styled.li<TypeActive>`
   min-height: 40px;
   border-bottom: ${(props) => (props.$isActive ? '2px solid #FD8C73' : 'none')};
   font-weight: ${(props) => (props.$isActive ? 'bolder' : 'normal')};
+  cursor: pointer;
   :nth-child(3) {
     white-space: nowrap;
   }
@@ -39,19 +41,19 @@ function RepoNavbar({
   isClick,
   $isActive
 }: NavbarButton) {
+  const navigate = useNavigate()
   return (
     <RepoNavbarItem
       onClick={(event) => {
         isClick(event.target)
+        navigate('/')
       }}
-      $isActive={$isActive}
-    >
+      $isActive={$isActive}>
       <BtnWrapper>
         <IconWrapper
           onClick={(event) => {
             isClick(event.target)
-          }}
-        >
+          }}>
           {iconComponent}
         </IconWrapper>
 
