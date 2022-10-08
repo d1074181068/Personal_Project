@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import HandleLabel from './HandleLabel'
+import HandleLabel from '../pages/Label/HandleLabel'
 import '../../../.storybook/globalstyle.css'
 
 type StorybookType = {

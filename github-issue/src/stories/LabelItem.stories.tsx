@@ -1,14 +1,16 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import ActionBtn from './ActionBtn'
+import LabelItem from '../pages/Label/LabelItem'
 
 type StorybookType = {
-  btnText: string
+  labelName: string
+  colorCode: string
+  textColor: string
 }
 
 export default {
-  title: 'Example/page_label_management/ActionBtn',
-  component: ActionBtn,
+  title: 'Example/page_label_management/LabelItem',
+  component: LabelItem,
   parameters: {
     layout: 'fullscreen'
   }
@@ -16,11 +18,13 @@ export default {
 
 const Template: Story<StorybookType> = (args: StorybookType) => (
   <div style={{ margin: '20px' }}>
-    <ActionBtn {...args} />
+    <LabelItem {...args} />
   </div>
 )
 
 export const Default = Template.bind({})
 Default.args = {
-  btnText: 'Edit'
+  labelName: 'Frank',
+  colorCode: '#FF0000',
+  textColor: '#FFFFFF'
 }

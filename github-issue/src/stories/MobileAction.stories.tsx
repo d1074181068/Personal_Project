@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import MobileAction from './MobileAction'
+import MobileAction from '../pages/Label/MobileAction'
 
 type StorybookType = {
   btnTextList: string[]
@@ -16,8 +16,11 @@ export default {
 
 const Template: Story<StorybookType> = (args: StorybookType) => (
   <div
-    style={{ margin: '20px', display: 'flex', justifyContent: 'space-between' }}
-  >
+    style={{
+      margin: '20px',
+      display: 'flex',
+      justifyContent: 'space-between'
+    }}>
     Let your screen less than 1011px to show Button
     <MobileAction {...args} />
   </div>

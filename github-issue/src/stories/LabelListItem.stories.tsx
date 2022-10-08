@@ -1,8 +1,8 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import LabelListItem from './LabelListItem'
+import LabelListItem from '../pages/Label/LabelListItem'
 import { Provider } from 'react-redux'
-import { store } from '../../redux/store'
+import { store } from '../redux/store'
 type StorybookType = {
   labelName: string
   labelDesc: string
@@ -25,8 +25,7 @@ const Template: Story<StorybookType> = (args: StorybookType) => (
         margin: '20px',
         padding: '0px',
         listStyle: 'none'
-      }}
-    >
+      }}>
       <LabelListItem {...args} />
     </ul>
   </Provider>

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import SubNavButton from './SubNavButtonWrapper'
+import SubNavButton from '../pages/Label/SubNavButtonWrapper'
 import { Provider } from 'react-redux'
-import { store } from '../../redux/store'
+import { store } from '../redux/store'
 import '../../index.css'
 import '../../../.storybook/globalstyle.css'
 
