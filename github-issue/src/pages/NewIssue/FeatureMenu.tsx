@@ -17,9 +17,15 @@ type PropsType = {
   type: string
   organizeDataFn: () => void
   menuContent?: MenuContentType
+  menuPos: string
 }
 
-function FeatureMenu({ type, organizeDataFn, menuContent }: PropsType) {
+function FeatureMenu({
+  type,
+  organizeDataFn,
+  menuContent,
+  menuPos
+}: PropsType) {
   const [featureMenuOpen, setFeatureMenuOpen] = useState(false)
   const { newIssueReducer } = useSelector((store: RootState) => store)
   const dispatch = useDispatch()
@@ -46,7 +52,7 @@ function FeatureMenu({ type, organizeDataFn, menuContent }: PropsType) {
           menuOpenStatus={featureMenuOpen}
           setMenuStatusFn={setFeatureMenuOpen}
           menuContent={menuContent}
-          left={'md:left-[-100px]'}
+          left={menuPos}
           breakPoint={'md'}
         />
       </div>

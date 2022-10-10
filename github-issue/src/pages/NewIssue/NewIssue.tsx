@@ -111,10 +111,12 @@ function NewIssue() {
             type={'Assignees'}
             organizeDataFn={organizeAssigneeData}
             menuContent={popMenuData}
+            menuPos={'md:left-[-100px]'}
           />
           <FeatureMenu
             type={'Labels'}
             organizeDataFn={organizeLabelData}
+            menuPos={'md:left-[-100px]'}
             menuContent={popMenuData}
           />
         </div>

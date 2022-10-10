@@ -32,7 +32,8 @@ import { useCreateIssueMutation } from '../../redux/issueSlice'
 import {
   handleTitle,
   handleIssueBody,
-  resetIssueContent
+  resetIssueContent,
+  githubAction
 } from '../../redux/newIssueSlice'
 import '../../utils/markdownStyle.css'
 import 'highlight.js/styles/github.css'
@@ -92,8 +93,8 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
       return `<li>${text}</li>`
     },
     paragraph(text: string) {
-      const mentionText = text.match(/^\@/g)
-      const hashText = text.match(/^\#/g)
+      const mentionText = text.match(/^\s\@/g)
+      const hashText = text.match(/^\s\#/g)
       if (!hashText && !mentionText) {
         return `<p>${text}</p>`
       }
@@ -198,9 +199,13 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
                     <button
                       onClick={
                         trigger === '@'
-                          ? () => {}
+                          ? () => {
+                              dispatch(githubAction('@d1074181068'))
+                            }
                           : trigger === '#'
-                          ? () => {}
+                          ? () => {
+                              dispatch(githubAction('#23'))
+                            }
                           : () => ref.current?.trigger(trigger)
                       }>
                       {icon}
