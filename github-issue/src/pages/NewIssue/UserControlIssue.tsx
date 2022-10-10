@@ -20,6 +20,7 @@ import {
   TasklistIcon
 } from '@primer/octicons-react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { marked } from 'marked'
 import TextareaMarkdown, { TextareaMarkdownRef } from 'textarea-markdown-editor'
 import hljs from 'highlight.js'
@@ -74,13 +75,13 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
   const [createIssue] = useCreateIssueMutation()
   const dispatch = useDispatch()
   const ref = useRef<TextareaMarkdownRef>(null)
-
+  const navigate = useNavigate()
   marked.setOptions({
     gfm: true,
     breaks: true,
     langPrefix: 'hljs language-',
     highlight: function (code, lang) {
-      const language = hljs.getLanguage(lang) ? lang : 'plaintext'
+      const language = hljs.getLanguage(lang) ? lang : 'javascript'
       return hljs.highlight(code, { language }).value
     }
   })
@@ -111,7 +112,7 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
         <input
           type='text'
           className='mb-2 h-[32px] w-full rounded border border-solid border-borderGray bg-commonBgGray pl-1'
-          placeholder='Title'
+          placeholder={titleInputPlaceholder}
           value={newIssueReducer.content.title}
           onChange={(e) => dispatch(handleTitle(e.target.value))}
         />
@@ -322,6 +323,7 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
                 }
               })
               dispatch(resetIssueContent())
+              navigate('/')
             }}
           />
         </div>

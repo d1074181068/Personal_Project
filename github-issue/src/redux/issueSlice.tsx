@@ -46,8 +46,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
           'Content-Type': 'application/json',
           Authorization: `token ${token}`
         })
-      }),
-      providesTags: ['issue']
+      })
     }),
     createIssue: builder.mutation<issueItem, CreateIssueParams>({
       query: ({ name, repo, body, token }) => ({
@@ -58,7 +57,8 @@ export const issueApiSlice = apiSlice.injectEndpoints({
           Authorization: `token ${token}`
         }),
         body: body
-      })
+      }),
+      invalidatesTags: ['issue']
     })
   })
 })

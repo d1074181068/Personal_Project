@@ -22,6 +22,7 @@ import GithubBtn from '../../components/Content/GithubBtn'
 import FeatureMenu from './FeatureMenu'
 import UserControlIssue from './UserControlIssue'
 import { NotLogin } from '../Label/Label'
+import { useNavigate } from 'react-router-dom'
 
 function NewIssue() {
   const { tokenReducer, newIssueReducer } = useSelector(
@@ -30,6 +31,7 @@ function NewIssue() {
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
   const [createIssue] = useCreateIssueMutation()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const {
     data: labelData,
     isLoading: labelLoading,
@@ -140,6 +142,7 @@ function NewIssue() {
                 }
               })
               dispatch(resetIssueContent())
+              navigate('/')
             }}
           />
         </div>

@@ -3,6 +3,7 @@ import { Meta, Story } from '@storybook/react'
 import UserControlIssue from '../pages/NewIssue/UserControlIssue'
 import { Provider } from 'react-redux'
 import { store } from '../redux/store'
+import { BrowserRouter } from 'react-router-dom'
 import '../index.css'
 import '../../.storybook/globalstyle.css'
 
@@ -19,11 +20,13 @@ export default {
 } as Meta
 
 const Template: Story<StorybookType> = (args: StorybookType) => (
-  <Provider store={store}>
-    <div style={{ margin: '20px' }}>
-      <UserControlIssue {...args} />
-    </div>
-  </Provider>
+  <BrowserRouter>
+    <Provider store={store}>
+      <div style={{ margin: '20px' }}>
+        <UserControlIssue {...args} />
+      </div>
+    </Provider>
+  </BrowserRouter>
 )
 
 export const Default = Template.bind({})
