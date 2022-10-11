@@ -24,7 +24,7 @@ root.render(
           <Route index element={<IssueList />} />
           <Route path='label' element={<Label />} />
           <Route path='newIssue' element={<NewIssue />} />
-          <Route path='issue' element={<Issue />} />
+          <Route path='issue/:issueId' element={<Issue />} />
           <Route path='*' element={<Navigate to='/' replace />} />
         </Route>
       </Routes>

@@ -205,7 +205,7 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
                             }
                           : trigger === '#'
                           ? () => {
-                              dispatch(githubAction('#23'))
+                              dispatch(githubAction('#'))
                             }
                           : () => ref.current?.trigger(trigger)
                       }>

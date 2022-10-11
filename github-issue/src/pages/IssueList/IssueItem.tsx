@@ -12,6 +12,7 @@ import HoverTitleEffect from './HoverTitleEffect'
 
 //custom
 import { lightOrDark } from '../Label/HandleLabel'
+import { useNavigate } from 'react-router-dom'
 
 type PropsType = {
   title: string
@@ -63,6 +64,7 @@ function IssueItem({
   stateReason,
   ownerImg
 }: PropsType) {
+  const navigate = useNavigate()
   return (
     <li className=' relative z-[24px] flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
       {stateReason === null ? (
@@ -73,9 +75,13 @@ function IssueItem({
         <IssueClosedIcon fill={'#8250df'} />
       )}
       <div className='ml-2 flex grow flex-col items-start md:flex-row md:flex-wrap '>
-        <div className='group mb-1 text-[16px] font-medium md:mr-1'>
+        <button
+          className='group mb-1 text-[16px] font-medium hover:text-hoverBlue md:mr-1'
+          onClick={() => navigate(`/issue/${number}`)}>
           {title}
-          <div className='hidden group-hover:block'>
+          {
+            //TODO : fix hoverItem bug
+            /* <div className='hidden group-hover:block'>
             <HoverTitleEffect
               title={title}
               labels={labels}
@@ -85,8 +91,9 @@ function IssueItem({
               stateReason={stateReason}
               ownerImg={ownerImg}
             />
-          </div>
-        </div>
+          </div> */
+          }
+        </button>
         <div className='mb-1 flex'>
           {labels.length !== 0 &&
             labels.map(({ name, bgColor, id }) => {

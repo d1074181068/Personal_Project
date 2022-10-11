@@ -26,7 +26,7 @@ module.exports = {
     extend: {
       colors: {
         borderGray: 'rgb(208, 215, 222)',
-        commonBgGray: 'rgb(246,248,250)',
+        commonBgGray: '#f6f8fa',
         hoverBlue: '#0969da',
         maskBlack: 'rgba(36,41,47,0.4)',
         red: '#FF0000',
