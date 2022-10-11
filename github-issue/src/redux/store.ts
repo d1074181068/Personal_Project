@@ -3,14 +3,14 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import queryReducer from './querySlice'
 import tokenReducer from './tokenSlice'
-import newIssueReducer from './newIssueSlice'
+import issueReducer from './issueSlice'
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
     queryReducer: queryReducer,
     tokenReducer: tokenReducer,
-    newIssueReducer: newIssueReducer
+    issueReducer: issueReducer
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(apiSlice.middleware)

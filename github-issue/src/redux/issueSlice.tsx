@@ -1,70 +1,82 @@
-import { apiSlice } from './apiSlice'
-import { issueList, issueItem, Assignee } from '../types/issueType'
+import { createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
+import _ from 'lodash'
 
-interface GetIssueQueryParams {
-  name: string
-  repo: string
-  token: string
-  query: string
-  perPage: number
-  page: number
-}
-
-interface QueryParams {
-  name: string
-  repo: string
-  token: string
-}
-
-interface CreateIssueParams extends QueryParams {
-  body: {
+type InitStateType = {
+  labelName: { text: string; colorCode: string }[]
+  assignees: { text: string; imageUrl: string }[]
+  content: {
     title: string
     body: string
-    labels: string[]
-    assignees: string[]
   }
 }
 
-export const issueApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    getAllIssue: builder.query<issueList, GetIssueQueryParams>({
-      query: ({ name, repo, token, query, perPage, page }) => ({
-        url: `/${name}/${repo}/issues?per_page=${perPage}${query}`,
-        method: 'GET',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`
-        })
-      }),
-      providesTags: ['issue']
-    }),
-    getAllAssignees: builder.query<Assignee[], QueryParams>({
-      query: ({ name, repo, token }) => ({
-        url: `/${name}/${repo}/assignees`,
-        method: 'GET',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`
-        })
-      })
-    }),
-    createIssue: builder.mutation<issueItem, CreateIssueParams>({
-      query: ({ name, repo, body, token }) => ({
-        url: `/${name}/${repo}/issues`,
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`
-        }),
-        body: body
-      }),
-      invalidatesTags: ['issue']
-    })
-  })
+type LabelActionType = {
+  text: string
+  colorCode: string
+}
+type AssigneeActionType = {
+  text: string
+  imageUrl: string
+}
+
+const initialState: InitStateType = {
+  labelName: [],
+  assignees: [],
+  content: {
+    title: '',
+    body: ''
+  }
+}
+
+export const issueSlice = createSlice({
+  name: 'issue',
+  initialState: initialState,
+  reducers: {
+    handleLabelTag: (state, action: PayloadAction<LabelActionType>) => {
+      const { text } = action.payload
+      if (state.labelName.some((item) => item.text === text)) {
+        state.labelName = _.remove(
+          state.labelName,
+          (lableItem) => lableItem.text !== text
+        )
+        return
+      }
+      state.labelName = [...state.labelName, action.payload]
+    },
+    handleAssignee: (state, action: PayloadAction<AssigneeActionType>) => {
+      const { text } = action.payload
+      if (state.assignees.some((item) => item.text === text)) {
+        state.assignees = _.remove(
+          state.assignees,
+          (assigneeItem) => assigneeItem.text !== text
+        )
+        return
+      }
+      state.assignees = [...state.assignees, action.payload]
+    },
+    handleTitle: (state, action: PayloadAction<string>) => {
+      state.content = { ...state.content, title: action.payload }
+    },
+    handleIssueBody: (state, action: PayloadAction<string>) => {
+      state.content = { ...state.content, body: action.payload }
+    },
+    githubAction: (state, action: PayloadAction<string>) => {
+      state.content = {
+        ...state.content,
+        body: (state.content.body += ' ' + action.payload)
+      }
+    },
+    resetIssueContent: () => initialState
+  }
 })
 
 export const {
-  useGetAllIssueQuery,
-  useGetAllAssigneesQuery,
-  useCreateIssueMutation
-} = issueApiSlice
+  handleLabelTag,
+  handleAssignee,
+  handleTitle,
+  handleIssueBody,
+  resetIssueContent,
+  githubAction
+} = issueSlice.actions
+export default issueSlice.reducer

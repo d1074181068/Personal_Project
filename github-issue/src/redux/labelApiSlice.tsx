@@ -36,7 +36,8 @@ export const labelApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
-          Authorization: `token ${token}`
+          Authorization: `token ${token}`,
+          'if-none-match': ''
         })
       }),
       providesTags: ['labels']

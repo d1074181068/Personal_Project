@@ -6,13 +6,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   useCreateIssueMutation,
   useGetAllAssigneesQuery
-} from '../../redux/issueSlice'
+} from '../../redux/issueApiSlice'
 import { useGetLabelQuery } from '../../redux/labelApiSlice'
 import {
   handleAssignee,
   handleLabelTag,
   resetIssueContent
-} from '../../redux/newIssueSlice'
+} from '../../redux/issueSlice'
 import { RootState } from '../../redux/store'
 import { Assignee, ClickFnType, LabelType } from '../../types/issueType'
 import { MenuContentType } from '../IssueList/PopMenu'
@@ -25,7 +25,7 @@ import { NotLogin } from '../Label/Label'
 import { useNavigate } from 'react-router-dom'
 
 function NewIssue() {
-  const { tokenReducer, newIssueReducer } = useSelector(
+  const { tokenReducer, issueReducer } = useSelector(
     (store: RootState) => store
   )
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
@@ -135,10 +135,10 @@ function NewIssue() {
                 repo: 'webdesign',
                 token: tokenReducer.token,
                 body: {
-                  title: newIssueReducer.content.title,
-                  body: newIssueReducer.content.body,
-                  labels: newIssueReducer.labelName.map(({ text }) => text),
-                  assignees: newIssueReducer.assignees.map(({ text }) => text)
+                  title: issueReducer.content.title,
+                  body: issueReducer.content.body,
+                  labels: issueReducer.labelName.map(({ text }) => text),
+                  assignees: issueReducer.assignees.map(({ text }) => text)
                 }
               })
               dispatch(resetIssueContent())

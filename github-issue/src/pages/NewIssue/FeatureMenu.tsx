@@ -11,7 +11,7 @@ import DesktopPopMenu from '../IssueList/PopMenu'
 import { lightOrDark } from '../Label/HandleLabel'
 import { MenuContentType } from '../IssueList/PopMenu'
 import { RootState } from '../../redux/store'
-import { handleAssignee } from '../../redux/newIssueSlice'
+import { handleAssignee } from '../../redux/issueSlice'
 
 type PropsType = {
   type: string
@@ -27,7 +27,7 @@ function FeatureMenu({
   menuPos
 }: PropsType) {
   const [featureMenuOpen, setFeatureMenuOpen] = useState(false)
-  const { newIssueReducer } = useSelector((store: RootState) => store)
+  const { issueReducer } = useSelector((store: RootState) => store)
   const dispatch = useDispatch()
   return (
     <div className='border-b border-solid border-borderGray py-2'>
@@ -58,7 +58,7 @@ function FeatureMenu({
       </div>
       {type === 'Assignees' && (
         <div className='text-[12px] text-textGray'>
-          {newIssueReducer.assignees.length === 0 ? (
+          {issueReducer.assignees.length === 0 ? (
             <div className='text-[12px] text-textGray'>
               No one -
               <button
@@ -76,7 +76,7 @@ function FeatureMenu({
               </button>
             </div>
           ) : (
-            newIssueReducer.assignees.map(({ imageUrl, text }, index) => {
+            issueReducer.assignees.map(({ imageUrl, text }, index) => {
               return (
                 <div className='mb-1 flex items-center' key={index}>
                   <img
@@ -95,10 +95,10 @@ function FeatureMenu({
       )}
       {type === 'Labels' && (
         <div className='mb-1 flex flex-wrap items-center gap-[4px]'>
-          {newIssueReducer.labelName.length === 0 ? (
+          {issueReducer.labelName.length === 0 ? (
             <div className='text-[12px] text-textGray'>None yet</div>
           ) : (
-            newIssueReducer.labelName.map(({ text, colorCode }, index) => {
+            issueReducer.labelName.map(({ text, colorCode }, index) => {
               return (
                 <div className='mr-[2px] flex' key={index}>
                   <LabelItem

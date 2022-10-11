@@ -54,7 +54,7 @@ function DesktopPopMenu({
   menuContent
 }: PropsType) {
   const dispatch = useDispatch()
-  const { queryReducer, newIssueReducer } = useSelector(
+  const { queryReducer, issueReducer } = useSelector(
     (store: RootState) => store
   )
   const [searchInputText, setSearchInputText] = useState('')
@@ -169,11 +169,11 @@ function DesktopPopMenu({
                             ? 'block'
                             : queryReducer.assigneeUser === userName
                             ? 'block'
-                            : newIssueReducer.labelName.find(
+                            : issueReducer.labelName.find(
                                 (item) => item.text === text
                               )
                             ? 'block'
-                            : newIssueReducer.assignees.find(
+                            : issueReducer.assignees.find(
                                 (item) => item.text === userName
                               )
                             ? 'blcok'

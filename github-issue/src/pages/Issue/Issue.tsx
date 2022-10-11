@@ -5,6 +5,7 @@ import { IssueOpenedIcon } from '@primer/octicons-react'
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
 import LabelItem from '../Label/LabelItem'
+import Comment from './Comment'
 //custom
 import { lightOrDark } from '../Label/HandleLabel'
 
@@ -76,7 +77,7 @@ function Issue() {
               textColor={'white'}
               hoverColor={'#2c974b'}
               clickFn={() => {
-                navigate('/')
+                navigate('/newissue')
               }}
             />
           </div>
@@ -107,7 +108,7 @@ function Issue() {
           </span>
         </p>
       </div>
-      <div className='border-y border-solid border-borderGray py-2 md:hidden'>
+      <div className='mb-2 border-y border-solid border-borderGray py-2 md:hidden'>
         <div className='mt-2 mb-1 flex items-center'>
           <h3 className='w-[24.9999%] sm:w-[16.66666%]'>Assignees</h3>
           <ul className='flex'>
@@ -124,7 +125,7 @@ function Issue() {
             })}
           </ul>
         </div>
-        <div className='mt-2 mb-1 flex items-center'>
+        <div className='mt-2 mb-1 flex items-start'>
           <h3 className='w-[24.9999%] sm:w-[16.66666%]'>Labels</h3>
           <ul className='flex flex-wrap gap-[2px]'>
             {labelArr.map(({ text, colorCode }, index) => {
@@ -140,6 +141,9 @@ function Issue() {
             })}
           </ul>
         </div>
+      </div>
+      <div>
+        <Comment />
       </div>
     </div>
   )

@@ -29,13 +29,13 @@ import hljs from 'highlight.js'
 import GithubBtn from '../../components/Content/GithubBtn'
 //custom
 import { RootState } from '../../redux/store'
-import { useCreateIssueMutation } from '../../redux/issueSlice'
+import { useCreateIssueMutation } from '../../redux/issueApiSlice'
 import {
   handleTitle,
   handleIssueBody,
   resetIssueContent,
   githubAction
-} from '../../redux/newIssueSlice'
+} from '../../redux/issueSlice'
 import '../../utils/markdownStyle.css'
 import 'highlight.js/styles/github.css'
 
@@ -69,7 +69,7 @@ const iconArr = [
 function UserControlIssue({ titleInputPlaceholder }: PropsType) {
   const [navBarToggleStatus, setNavBarToggleStatus] = useState(true)
   const [markdownButtonListOpen, setMarkdownButtonListOpen] = useState(false)
-  const { tokenReducer, newIssueReducer } = useSelector(
+  const { tokenReducer, issueReducer } = useSelector(
     (store: RootState) => store
   )
   const [createIssue] = useCreateIssueMutation()
@@ -113,7 +113,7 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
           type='text'
           className='mb-2 h-[32px] w-full rounded border border-solid border-borderGray bg-commonBgGray pl-1'
           placeholder={titleInputPlaceholder}
-          value={newIssueReducer.content.title}
+          value={issueReducer.content.title}
           onChange={(e) => dispatch(handleTitle(e.target.value))}
         />
       )}
@@ -254,7 +254,7 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
           <textarea
             placeholder='Leave a comment'
             className=' mb-[-2px] min-h-[200px] w-full resize-y rounded border-b border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] md:rounded-b-none md:border-dashed'
-            value={newIssueReducer.content.body}
+            value={issueReducer.content.body}
             onChange={(e) => {
               dispatch(handleIssueBody(e.target.value))
             }}
@@ -280,7 +280,7 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
         <div
           className='prose'
           dangerouslySetInnerHTML={{
-            __html: marked(newIssueReducer.content.body)
+            __html: marked(issueReducer.content.body)
           }}></div>
       </div>
 
@@ -316,10 +316,10 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
                 repo: 'webdesign',
                 token: tokenReducer.token,
                 body: {
-                  title: newIssueReducer.content.title,
-                  body: newIssueReducer.content.body,
-                  labels: newIssueReducer.labelName.map(({ text }) => text),
-                  assignees: newIssueReducer.assignees.map(({ text }) => text)
+                  title: issueReducer.content.title,
+                  body: issueReducer.content.body,
+                  labels: issueReducer.labelName.map(({ text }) => text),
+                  assignees: issueReducer.assignees.map(({ text }) => text)
                 }
               })
               dispatch(resetIssueContent())

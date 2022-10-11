@@ -25,12 +25,14 @@ module.exports = {
     },
     extend: {
       colors: {
-        borderGray: 'rgb(208, 215, 222)',
-        commonBgGray: '#f6f8fa',
+        borderGray: '#d0d7de', //rgb(208, 215, 222)
+        commonBgGray: '#f6f8fa', //rgb(246, 248, 250)
         hoverBlue: '#0969da',
         maskBlack: 'rgba(36,41,47,0.4)',
         red: '#FF0000',
-        textGray: '#57606a'
+        danger:'#cf222e',
+        textBlack: '#24292F', //rgb(36, 41, 47)
+        textGray: '#57606a' //rgb(87,96,106)
       },
       zIndex: {
         99: '99',

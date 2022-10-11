@@ -26,7 +26,7 @@ import { useGetLabelQuery } from '../../redux/labelApiSlice'
 import {
   useGetAllIssueQuery,
   useGetAllAssigneesQuery
-} from '../../redux/issueSlice'
+} from '../../redux/issueApiSlice'
 import {
   handlePage,
   resetAllFilter,
