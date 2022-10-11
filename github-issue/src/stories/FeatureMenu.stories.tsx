@@ -5,9 +5,10 @@ import { Provider } from 'react-redux'
 import { store } from '../redux/store'
 import '../index.css'
 import '../../.storybook/globalstyle.css'
-import { MenuContentType } from '../pages/IssueList/PopMenu'
+import { MenuContentType } from '../pages/IssueList/PopupMenu'
 
 type StorybookType = {
+  title: string
   type: string
   organizeDataFn: () => void
   menuContent: MenuContentType
@@ -32,6 +33,7 @@ const Template: Story<StorybookType> = (args: StorybookType) => (
 
 export const Default = Template.bind({})
 Default.args = {
+  title: 'Labels',
   type: 'Labels',
   organizeDataFn: () => {},
   menuPos: 'md:left-0',

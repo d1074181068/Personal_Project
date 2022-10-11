@@ -1,9 +1,9 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import PopMenu from '../pages/IssueList/PopMenu'
+import PopMenu from '../pages/IssueList/PopupMenu'
 import { Provider } from 'react-redux'
 import { store } from '../redux/store'
-import { MenuContentType } from '../pages/IssueList/PopMenu'
+import { MenuContentType } from '../pages/IssueList/PopupMenu'
 import '../index.css'
 import '../../.storybook/globalstyle.css'
 

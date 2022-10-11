@@ -16,7 +16,7 @@ import Filters from './Filters'
 import SubNavButton from '../Label/SubNavButtonWrapper'
 import GithubBtn from '../../components/Content/GithubBtn'
 import StatusButton from './StatusButton'
-import PopMenu from './PopMenu'
+import PopupMenu from './PopupMenu'
 import IssueItem from './IssueItem'
 import { NotLogin } from '../Label/Label'
 import NoIssue from './NoIssue'
@@ -36,7 +36,7 @@ import {
   resetLabelFilterText
 } from '../../redux/querySlice'
 import { LabelType, Assignee } from '../../types/issueType'
-import { MenuContentType } from './PopMenu'
+import { MenuContentType } from './PopupMenu'
 import { RootState } from '../../redux/store'
 import { ClickFnType } from '../../types/issueType'
 
@@ -333,7 +333,7 @@ function IssueList() {
             )
           })}
 
-          <PopMenu
+          <PopupMenu
             menuOpenStatus={menuOpenStatus}
             setMenuStatusFn={setMenuOpenStatus}
             menuContent={popMenuData}

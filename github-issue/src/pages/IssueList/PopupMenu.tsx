@@ -43,7 +43,7 @@ type PropsType = {
   menuContent?: MenuContentType
 }
 
-function DesktopPopMenu({
+function PopupMenu({
   menuOpenStatus,
   setMenuStatusFn,
   breakPoint,
@@ -210,4 +210,4 @@ function DesktopPopMenu({
   )
 }
 
-export default DesktopPopMenu
+export default PopupMenu

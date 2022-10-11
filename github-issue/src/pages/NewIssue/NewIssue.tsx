@@ -15,7 +15,7 @@ import {
 } from '../../redux/issueSlice'
 import { RootState } from '../../redux/store'
 import { Assignee, ClickFnType, LabelType } from '../../types/issueType'
-import { MenuContentType } from '../IssueList/PopMenu'
+import { MenuContentType } from '../IssueList/PopupMenu'
 
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
@@ -111,12 +111,14 @@ function NewIssue() {
         <div className='mt-5 md:mt-0'>
           <FeatureMenu
             type={'Assignees'}
+            title={'Assignees'}
             organizeDataFn={organizeAssigneeData}
             menuContent={popMenuData}
             menuPos={'md:left-[-100px]'}
           />
           <FeatureMenu
             type={'Labels'}
+            title={'Labels'}
             organizeDataFn={organizeLabelData}
             menuPos={'md:left-[-100px]'}
             menuContent={popMenuData}

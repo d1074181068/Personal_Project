@@ -5,22 +5,24 @@ import { useDispatch, useSelector } from 'react-redux'
 
 //components
 import LabelItem from '../Label/LabelItem'
-import DesktopPopMenu from '../IssueList/PopMenu'
+import PopupMenu from '../IssueList/PopupMenu'
 
 //custom
 import { lightOrDark } from '../Label/HandleLabel'
-import { MenuContentType } from '../IssueList/PopMenu'
+import { MenuContentType } from '../IssueList/PopupMenu'
 import { RootState } from '../../redux/store'
 import { handleAssignee } from '../../redux/issueSlice'
 
 type PropsType = {
   type: string
+  title: string
   organizeDataFn: () => void
   menuContent?: MenuContentType
-  menuPos: string
+  menuPos?: string
 }
 
 function FeatureMenu({
+  title,
   type,
   organizeDataFn,
   menuContent,
@@ -35,27 +37,40 @@ function FeatureMenu({
         className={`${
           featureMenuOpen ? 'block' : 'hidden'
         } fixed top-0 left-0 right-0 bottom-0 bg-maskBlack md:bg-[transparent]`}
-        onClick={() => setFeatureMenuOpen(false)}></div>
+        onClick={
+          type === 'other' ? () => {} : () => setFeatureMenuOpen(false)
+        }></div>
       <div
         className='group relative mb-1 flex cursor-pointer items-center justify-between'
-        onClick={() => {
-          organizeDataFn()
-          setFeatureMenuOpen(true)
-        }}>
+        onClick={
+          type === 'other'
+            ? () => {}
+            : () => {
+                organizeDataFn()
+                setFeatureMenuOpen(true)
+              }
+        }>
         <h3 className='text-[12px] text-textGray group-hover:text-hoverBlue'>
-          {type}
+          {title}
         </h3>
         <div className='group-hover:text-hoverBlue'>
           <GearIcon />
         </div>
-        <DesktopPopMenu
-          menuOpenStatus={featureMenuOpen}
-          setMenuStatusFn={setFeatureMenuOpen}
-          menuContent={menuContent}
-          left={menuPos}
-          breakPoint={'md'}
-        />
+        {type === 'other' ? (
+          <></>
+        ) : (
+          <PopupMenu
+            menuOpenStatus={featureMenuOpen}
+            setMenuStatusFn={setFeatureMenuOpen}
+            menuContent={menuContent}
+            left={menuPos}
+            breakPoint={'md'}
+          />
+        )}
       </div>
+      {type !== 'Labels' && type !== 'Assignees' && (
+        <div className='text-[12px] text-textGray'>None yet</div>
+      )}
       {type === 'Assignees' && (
         <div className='text-[12px] text-textGray'>
           {issueReducer.assignees.length === 0 ? (
