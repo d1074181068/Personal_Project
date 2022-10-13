@@ -7,6 +7,7 @@ import {
   IssueOpenedIcon,
   SkipIcon
 } from '@primer/octicons-react'
+import _ from 'lodash'
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
 import LabelItem from '../Label/LabelItem'
@@ -17,7 +18,7 @@ import { NotLogin } from '../Label/Label'
 
 //custom
 import { lightOrDark } from '../Label/HandleLabel'
-import { Assignee, ClickFnType, LabelType } from '../../types/issueType'
+import { ClickFnType, LabelType } from '../../types/issueType'
 import {
   handleAssignee,
   handleLabelTag,
@@ -64,7 +65,6 @@ function Issue() {
   })
   const {
     data: timelineData,
-    isSuccess: timelineSuccess,
     isLoading: timelineLoading,
     isError: timelineError
   } = useGetTimelineQuery({
@@ -91,6 +91,22 @@ function Issue() {
     repo: 'webdesign',
     token: tokenReducer.token
   })
+  const commentsData = timelineData?.filter(
+    (item) => item.event === 'commented'
+  )
+  const participantsData = _.uniqWith(
+    commentsData
+      ?.map(({ user }) => {
+        return { userName: user.login, userImage: user.avatar_url }
+      })
+      .concat([
+        {
+          userName: issueData?.user.login as string,
+          userImage: issueData?.user.avatar_url as string
+        }
+      ]),
+    _.isEqual
+  )
 
   function organizeLabelData() {
     const data = [...(labelData as LabelType[])]
@@ -114,10 +130,23 @@ function Issue() {
   }
 
   function organizeAssigneeData() {
-    const data = [...(assigneeData as Assignee[])]
-    const contentData = data.map((item) => {
-      return { userImage: item.avatar_url, userName: item.login }
-    })
+    const assigneesInFeatureMenuData = _.uniqWith(
+      participantsData
+        .concat(
+          assigneeData
+            ? assigneeData?.map(({ login, avatar_url }) => {
+                return { userName: login, userImage: avatar_url }
+              })
+            : []
+        )
+        .concat([
+          {
+            userName: issueData?.user.login as string,
+            userImage: issueData?.user.avatar_url as string
+          }
+        ]),
+      _.isEqual
+    )
     const menuContent = {
       title: 'Assign up to 10 people to this issue',
       inputPlaceholder: 'Type or choose a user',
@@ -129,7 +158,7 @@ function Issue() {
           })
         )
       },
-      content: contentData
+      content: assigneesInFeatureMenuData
     }
     setPopMenuData(menuContent)
   }
@@ -174,32 +203,34 @@ function Issue() {
     })
   }, [issueData])
 
-  const headerBottom = useCallback((node: HTMLDivElement) => {
+  const listenerTarget = useCallback((node: HTMLDivElement) => {
     if (node) {
       const options = {
         rootMargin: '0px',
         threshold: 0
       }
-      const callback = (entries: { isIntersecting: any }[]) => {
+      const callback = (entries: IntersectionObserverEntry[]) => {
         if (entries[0].isIntersecting) {
           setFixedHeaderStatus(false)
-        } else {
-          setFixedHeaderStatus(true)
+          return
         }
+        setFixedHeaderStatus(true)
       }
       observer.current = new IntersectionObserver(callback, options)
       observer.current.observe(node)
     }
   }, [])
 
-  const commentsData = timelineData?.filter(
-    (item) => item.event === 'commented'
-  )
-
-  if (issueLoading || labelLoading || assigneeLoading) {
+  if (issueLoading || labelLoading || assigneeLoading || timelineLoading) {
     return <>Loading...</>
   }
-  if (assignError || issueError || labelError || !tokenReducer.token)
+  if (
+    assignError ||
+    issueError ||
+    labelError ||
+    timelineError ||
+    !tokenReducer.token
+  )
     return <NotLogin>你尚未登入</NotLogin>
   if (issueSuccess) {
     initTitleText.current = issueData.title
@@ -334,7 +365,7 @@ function Issue() {
           </header>
           <div
             className='mt-1 flex flex-wrap items-center md:mb-4 md:border-b md:border-solid md:border-borderGray'
-            ref={headerBottom}>
+            ref={listenerTarget}>
             <div className='mb-1 mr-1 flex'>
               <LabelItem
                 labelName={issueData.state === 'open' ? 'Open' : 'Closed'}
@@ -442,7 +473,7 @@ function Issue() {
                               user={actor.login}
                               createTime={created_at}
                               authorAssociation={author_association}
-                              type={'issueComment'}
+                              type={'comment'}
                             />
                           </div>
                         </div>
@@ -488,6 +519,24 @@ function Issue() {
                   )
                 }
               )}
+              <div className='border-b border-solid border-borderGray py-2'>
+                <h4 className='mb-1 text-[12px] font-bold text-textGray'>
+                  {participantsData.length} participants
+                </h4>
+                <ul className='flex'>
+                  {participantsData.map(({ userImage }, index) => {
+                    return (
+                      <li className='mr-[5px]' key={index}>
+                        <img
+                          src={userImage}
+                          alt='userImage'
+                          className='h-[26px] w-[26px] rounded-circle border border-solid border-borderGray'
+                        />
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
             </div>
           </main>
         </div>

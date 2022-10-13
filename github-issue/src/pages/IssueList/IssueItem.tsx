@@ -121,17 +121,17 @@ function IssueItem({
               <button
                 key={index}
                 style={{ order: assignees.length - index }}
-                className='ml-[-8px] h-[20px] w-[20px] transition-all group-hover:ml-0'>
+                className='mr-[-8px] h-[20px] w-[20px] transition-all group-hover:mr-[0px]'>
                 <img
                   src={userImage}
                   alt='userImage'
-                  className=' rounded-circle'
+                  className='rounded-circle'
                 />
               </button>
             )
           })}
       </div>
-      <button className='ml-3 hidden h-[20px] items-center pt-[2px] sm:flex'>
+      <button className='ml-2 hidden h-[20px] w-[30px] items-center pt-[2px] text-center sm:flex'>
         <CommentIcon />
         <span className='ml-1'>{commentsQty}</span>
       </button>

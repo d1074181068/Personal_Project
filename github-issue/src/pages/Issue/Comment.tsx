@@ -11,8 +11,12 @@ import UserControlIssue from '../NewIssue/UserControlIssue'
 
 //custom
 import { calculateTime } from '../IssueList/IssueItem'
-import { useUpdateCommentMutation } from '../../redux/issueApiSlice'
+import {
+  useUpdateCommentMutation,
+  useUpdateIssueMutation
+} from '../../redux/issueApiSlice'
 import { RootState } from '../../redux/store'
+import { useParams } from 'react-router-dom'
 
 type PropsType = {
   id: number
@@ -43,7 +47,9 @@ function Comment({
   const [actionMenuToggle, setActionMenuToggle] = useState(false)
   const [editTextareaToggle, setEditTexrareaToggle] = useState(false)
   const initBodyText = useRef(body)
+  const { issueId } = useParams()
   const [updateComment] = useUpdateCommentMutation()
+  const [updateIssue] = useUpdateIssueMutation()
   const { tokenReducer } = useSelector((store: RootState) => store)
   const [textAreaText, setTextAreaText] = useState(initBodyText.current)
   useEffect(() => {
@@ -65,7 +71,7 @@ function Comment({
             authorAssociation === 'OWNER'
               ? 'border-[rgba(84,174,255,0.4)] bg-[rgb(221,244,255)]'
               : 'border-borderGray bg-commonBgGray'
-          }  p-2`}>
+          }  px-2 py-1`}>
           <span className='font-medium text-textBlack'>
             {user}
             <span className='ml-[5px] text-textGray'>
@@ -159,15 +165,27 @@ function Comment({
             textColor: 'white',
             hoverColor: '#2c974b',
             clickFn: () => {
-              updateComment({
-                name: 'd1074181068',
-                repo: 'webdesign',
-                token: tokenReducer.token,
-                commentId: id,
-                body: {
-                  body: textAreaText
-                }
-              })
+              if (type === 'comment') {
+                updateComment({
+                  name: 'd1074181068',
+                  repo: 'webdesign',
+                  token: tokenReducer.token,
+                  commentId: id,
+                  body: {
+                    body: textAreaText
+                  }
+                })
+              } else {
+                updateIssue({
+                  name: 'd1074181068',
+                  repo: 'webdesign',
+                  token: tokenReducer.token,
+                  issueNumber: issueId as string,
+                  body: {
+                    body: textAreaText
+                  }
+                })
+              }
               setEditTexrareaToggle(false)
             }
           }}

@@ -117,7 +117,7 @@ function IssueList() {
     if (queryReducer.sortIssue !== '') {
       queryStr += `&sort=${queryReducer.sortIssue}`
     }
-    queryStr += `&per_page=5&page=${page}`
+    queryStr += `&per_page=10&page=${page}`
     return queryStr
   }
   const clearStatus =
@@ -132,6 +132,8 @@ function IssueList() {
       : queryReducer.issueState !== 'open'
       ? true
       : false
+  console.log(tokenReducer.token)
+
   const {
     data: issueData,
     isLoading: issueLoading,
@@ -140,7 +142,6 @@ function IssueList() {
     name: 'd1074181068',
     repo: 'webdesign',
     token: tokenReducer.token,
-    perPage: 5,
     page: queryReducer.page,
     query: query()
   })
@@ -428,12 +429,12 @@ function IssueList() {
         <button
           className={`item-center mr-3 flex rounded border border-solid border-[transparent] py-1 px-[10px] transition-all ${
             renderData
-              ? renderData.length < 5
+              ? renderData.length < 10
                 ? 'cursor-no-drop hover:border-[transparent]'
                 : 'hover:border-borderGray'
               : 'cursor-no-drop hover:border-[transparent]'
           }`}
-          disabled={renderData ? (renderData.length < 5 ? true : false) : true}
+          disabled={renderData ? (renderData.length < 10 ? true : false) : true}
           onClick={() => {
             dispatch(handlePage(page + 1))
             setPage((prev) => prev + 1)
@@ -441,7 +442,7 @@ function IssueList() {
           <span
             className={`mr-1 leading-[16px] ${
               renderData
-                ? renderData.length < 5
+                ? renderData.length < 10
                   ? 'text-textGray'
                   : 'text-hoverBlue'
                 : 'text-textGray'
@@ -451,7 +452,7 @@ function IssueList() {
           <ChevronRightIcon
             fill={
               renderData
-                ? renderData.length < 5
+                ? renderData.length < 10
                   ? '#57606a'
                   : '#0969da'
                 : '#57606a'

@@ -32,7 +32,6 @@ interface UpdateIssueParams extends QueryParams {
 }
 interface GetIssueQueryParams extends QueryParams {
   query: string
-  perPage: number
   page: number
 }
 interface SingleIssueParams extends QueryParams {
@@ -47,8 +46,8 @@ interface CommentParams extends QueryParams {
 export const issueApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllIssue: builder.query<issueList, GetIssueQueryParams>({
-      query: ({ name, repo, token, query, perPage }) => ({
-        url: `/${name}/${repo}/issues?per_page=${perPage}${query}`,
+      query: ({ name, repo, token, query }) => ({
+        url: `/${name}/${repo}/issues?${query}`,
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
