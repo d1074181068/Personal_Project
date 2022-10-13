@@ -17,10 +17,13 @@ import {
   ItalicIcon,
   ListUnorderedIcon,
   ListOrderedIcon,
-  TasklistIcon
+  TasklistIcon,
+  TriangleDownIcon,
+  IssueReopenedIcon,
+  IssueClosedIcon,
+  SkipIcon
 } from '@primer/octicons-react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { marked } from 'marked'
 import TextareaMarkdown, { TextareaMarkdownRef } from 'textarea-markdown-editor'
 import hljs from 'highlight.js'
@@ -29,11 +32,9 @@ import hljs from 'highlight.js'
 import GithubBtn from '../../components/Content/GithubBtn'
 //custom
 import { RootState } from '../../redux/store'
-import { useCreateIssueMutation } from '../../redux/issueApiSlice'
 import {
   handleTitle,
   handleIssueBody,
-  resetIssueContent,
   githubAction
 } from '../../redux/issueSlice'
 import '../../utils/markdownStyle.css'
@@ -41,6 +42,31 @@ import 'highlight.js/styles/github.css'
 
 type PropsType = {
   titleInputPlaceholder: string
+  initBodyText?: string
+  textAreaText?: string
+  setTextAreaText?: React.Dispatch<React.SetStateAction<string>>
+  cancelBtn?: {
+    bgcolor: string
+    $text: string
+    textColor: string
+    hoverColor?: string
+    border?: string
+    hoverTextColor?: string
+    widthFull?: string
+    clickFn?: () => void
+  }
+  actionBtn?: {
+    bgcolor: string
+    $text: string
+    textColor: string
+    hoverColor?: string
+    border?: string
+    hoverTextColor?: string
+    widthFull?: string
+    clickFn?: () => void
+  }
+  initStatusBtn?: string
+  mobileExist: boolean
 }
 const iconArr = [
   [
@@ -66,16 +92,22 @@ const iconArr = [
   ]
 ]
 
-function UserControlIssue({ titleInputPlaceholder }: PropsType) {
+function UserControlIssue({
+  titleInputPlaceholder,
+  cancelBtn,
+  actionBtn,
+  mobileExist,
+  textAreaText,
+  setTextAreaText,
+  initStatusBtn
+}: PropsType) {
   const [navBarToggleStatus, setNavBarToggleStatus] = useState(true)
   const [markdownButtonListOpen, setMarkdownButtonListOpen] = useState(false)
-  const { tokenReducer, issueReducer } = useSelector(
-    (store: RootState) => store
-  )
-  const [createIssue] = useCreateIssueMutation()
+  const [statusButtonDropdown, setStatusButtonDropdown] = useState(false)
+  const { issueReducer } = useSelector((store: RootState) => store)
   const dispatch = useDispatch()
   const ref = useRef<TextareaMarkdownRef>(null)
-  const navigate = useNavigate()
+
   marked.setOptions({
     gfm: true,
     breaks: true,
@@ -107,7 +139,10 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
   marked.use({ renderer })
 
   return (
-    <div className='grow md:rounded md:border md:border-solid md:border-borderGray md:p-1'>
+    <div
+      className={`${
+        mobileExist ? 'rounded border border-solid border-borderGray p-1' : ''
+      } grow bg-white md:rounded md:border md:border-solid md:border-borderGray md:p-1`}>
       {titleInputPlaceholder && (
         <input
           type='text'
@@ -254,14 +289,21 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
           <textarea
             placeholder='Leave a comment'
             className=' mb-[-2px] min-h-[200px] w-full resize-y rounded border-b border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] md:rounded-b-none md:border-dashed'
-            value={issueReducer.content.body}
+            value={textAreaText ? textAreaText : issueReducer.content.body}
             onChange={(e) => {
+              if (setTextAreaText) {
+                setTextAreaText(e.target.value)
+                return
+              }
               dispatch(handleIssueBody(e.target.value))
             }}
           />
         </TextareaMarkdown.Wrapper>
 
-        <label className='hidden bg-commonBgGray hover:cursor-pointer md:block'>
+        <label
+          className={`${
+            mobileExist ? 'block' : 'hidden'
+          } bg-commonBgGray hover:cursor-pointer md:block`}>
           <div className='flex items-center justify-between p-1 text-textGray'>
             <span>
               Attach files by dragging & dropping, selecting or pasting them.
@@ -280,7 +322,11 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
         <div
           className='prose'
           dangerouslySetInnerHTML={{
-            __html: marked(issueReducer.content.body)
+            __html: marked(
+              textAreaText
+                ? (textAreaText as string)
+                : issueReducer.content.body
+            )
           }}></div>
       </div>
 
@@ -294,38 +340,83 @@ function UserControlIssue({ titleInputPlaceholder }: PropsType) {
         </span>
       </p>
 
-      <div className='mt-2 hidden items-center justify-between md:flex'>
+      <div
+        className={`${
+          mobileExist ? 'block' : 'hidden'
+        } mt-2 items-center justify-between md:flex`}>
         <a
           href='https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax'
-          className='flex items-center text-[#57606a] hover:text-hoverBlue'>
+          className='hidden items-center text-[#57606a] hover:text-hoverBlue md:flex'>
           <div className='mr-1'>
             <MarkdownIcon />
           </div>
           Styling with Markdown is supported
         </a>
-        <div>
-          <GithubBtn
-            bgcolor={'#2DA44E'}
-            $text={'Submit new issue'}
-            textColor={'white'}
-            hoverColor={'#2c974b'}
-            widthFull={'100%'}
-            clickFn={() => {
-              createIssue({
-                name: 'd1074181068',
-                repo: 'webdesign',
-                token: tokenReducer.token,
-                body: {
-                  title: issueReducer.content.title,
-                  body: issueReducer.content.body,
-                  labels: issueReducer.labelName.map(({ text }) => text),
-                  assignees: issueReducer.assignees.map(({ text }) => text)
-                }
-              })
-              dispatch(resetIssueContent())
-              navigate('/')
-            }}
-          />
+        <div className='flex justify-end text-[12px] '>
+          {cancelBtn && (
+            <div className='mr-1'>
+              <GithubBtn
+                bgcolor={cancelBtn.bgcolor}
+                $text={cancelBtn.$text}
+                textColor={cancelBtn.textColor}
+                hoverColor={cancelBtn?.hoverColor}
+                hoverTextColor={cancelBtn.hoverTextColor}
+                widthFull={cancelBtn?.widthFull}
+                clickFn={cancelBtn?.clickFn}
+                border={cancelBtn?.border}
+              />
+            </div>
+          )}
+          {initStatusBtn && (
+            <div className='relative mr-1'>
+              <button className='rounded-tl rounded-bl border border-r-0 border-solid border-borderGray px-[16px] py-[6px] hover:bg-commonBgGray'>
+                <span className={`mr-1 text-[#8250df]`}>
+                  <IssueClosedIcon />
+                </span>
+                <span>Close issue</span>
+              </button>
+              <button
+                className='rounded-tr rounded-br border border-solid border-borderGray px-[12px] py-[6px] hover:bg-commonBgGray'
+                onClick={() => setStatusButtonDropdown(true)}>
+                <TriangleDownIcon />
+              </button>
+              <div
+                className={`${
+                  statusButtonDropdown ? 'block' : 'hidden'
+                } fixed top-0 left-0 right-0 bottom-0 z-[120]`}
+                onClick={() => setStatusButtonDropdown(false)}></div>
+              <ul
+                className={`${
+                  statusButtonDropdown ? 'block' : 'hidden'
+                } absolute top-[33px] right-0 z-199 w-[300px] rounded border border-solid border-borderGray bg-white`}>
+                <li className='group cursor-pointer rounded-tr rounded-tl border-b border-solid border-borderGray py-1 pl-3 hover:bg-hoverBlue hover:text-white'>
+                  <span
+                    className={`mr-[3px] text-[#8250df] group-hover:text-white`}>
+                    <IssueClosedIcon />
+                  </span>
+                  <span>Closed as completed</span>
+                </li>
+                <li className='group cursor-pointer rounded-br rounded-bl py-1 pl-3 hover:bg-hoverBlue hover:text-white'>
+                  <span
+                    className={`mr-[3px] text-[#57606a] group-hover:text-white`}>
+                    <SkipIcon />
+                  </span>
+                  <span>Closed as not planned</span>
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {actionBtn && (
+            <GithubBtn
+              bgcolor={actionBtn.bgcolor}
+              $text={actionBtn.$text}
+              textColor={actionBtn.textColor}
+              hoverColor={actionBtn?.hoverColor}
+              widthFull={actionBtn?.widthFull}
+              clickFn={actionBtn?.clickFn}
+            />
+          )}
         </div>
       </div>
     </div>

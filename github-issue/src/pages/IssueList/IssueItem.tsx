@@ -24,6 +24,7 @@ type PropsType = {
   createBy: string
   createTime: string
   stateReason: string | null
+  state: string
   ownerImg: string
 }
 
@@ -62,12 +63,13 @@ function IssueItem({
   createTime,
   body,
   stateReason,
+  state,
   ownerImg
 }: PropsType) {
   const navigate = useNavigate()
   return (
     <li className=' relative z-[24px] flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
-      {stateReason === null ? (
+      {state === 'open' ? (
         <IssueOpenedIcon fill={'#1a7f37'} />
       ) : stateReason === 'not_planned' ? (
         <SkipIcon fill={'#57606a'} />
@@ -94,7 +96,7 @@ function IssueItem({
           </div> */
           }
         </button>
-        <div className='mb-1 flex'>
+        <div className='mb-1 flex flex-wrap gap-[3px]'>
           {labels.length !== 0 &&
             labels.map(({ name, bgColor, id }) => {
               return (

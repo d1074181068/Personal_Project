@@ -8,6 +8,7 @@ type ButtonType = {
   textColor: string
   border?: string
   hoverColor?: string
+  hoverTextColor?: string
   clickFn?: (
     labelName?: string,
     labelColor?: string,
@@ -21,6 +22,7 @@ type ButtonProps = {
   textColor: string
   border: string
   hoverColor: string
+  hoverTextColor?: string
   $disabled?: string
   cursorEffect?: string
   widthFull?: string
@@ -38,6 +40,7 @@ const CreateNewLabelBtn = styled.button<ButtonProps>`
   opacity: ${(props) => props.$disabled};
   :hover {
     background-color: ${(props) => props.hoverColor};
+    color: ${(props) => props.hoverTextColor};
   }
 `
 function GithubBtn({
@@ -47,6 +50,7 @@ function GithubBtn({
   border,
   clickFn,
   hoverColor,
+  hoverTextColor,
   $disabled,
   widthFull
 }: ButtonType) {
@@ -56,6 +60,7 @@ function GithubBtn({
       textColor={textColor}
       border={border ? border : 'none'}
       hoverColor={hoverColor ? hoverColor : bgcolor}
+      hoverTextColor={hoverTextColor ? hoverTextColor : textColor}
       onClick={clickFn ? () => clickFn() : () => {}}
       $disabled={$disabled ? '0.5' : '1'}
       cursorEffect={$disabled ? 'no-drop' : 'pointer'}

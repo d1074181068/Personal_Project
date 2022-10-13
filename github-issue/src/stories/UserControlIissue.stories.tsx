@@ -9,6 +9,7 @@ import '../../.storybook/globalstyle.css'
 
 type StorybookType = {
   titleInputPlaceholder: string
+  mobileExist: boolean
 }
 
 export default {
@@ -31,5 +32,6 @@ const Template: Story<StorybookType> = (args: StorybookType) => (
 
 export const Default = Template.bind({})
 Default.args = {
-  titleInputPlaceholder: 'Title'
+  titleInputPlaceholder: 'Title',
+  mobileExist: true
 }

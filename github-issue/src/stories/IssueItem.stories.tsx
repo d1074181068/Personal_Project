@@ -1,8 +1,8 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import IssueItem from './IssueItem'
+import IssueItem from '../pages/IssueList/IssueItem'
 import { Provider } from 'react-redux'
-import { store } from '../../redux/store'
+import { store } from '../redux/store'
 import '../../index.css'
 import '../../../.storybook/globalstyle.css'
 
@@ -19,6 +19,7 @@ type StorybookType = {
   createBy: string
   createTime: string
   stateReason: null
+  state: string
   ownerImg: string
 }
 
@@ -67,5 +68,6 @@ Default.args = {
   createBy: 'd1074180168',
   createTime: '2022-10-01T07:43:38Z',
   stateReason: null,
+  state: 'open',
   ownerImg: 'https://avatars.githubusercontent.com/u/71813522?v=4'
 }

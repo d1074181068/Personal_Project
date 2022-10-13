@@ -3,8 +3,13 @@ import React from 'react'
 type PropsType = {
   menuContent: string[][]
   actionMenuToggle: boolean
+  clickEditFn: () => void
 }
-function CommentMenu({ menuContent, actionMenuToggle }: PropsType) {
+function CommentMenu({
+  menuContent,
+  actionMenuToggle,
+  clickEditFn
+}: PropsType) {
   return (
     <div
       className={`${
@@ -25,7 +30,8 @@ function CommentMenu({ menuContent, actionMenuToggle }: PropsType) {
                     item === 'Delete'
                       ? 'text-danger hover:bg-danger hover:text-white'
                       : 'text-textBlack hover:bg-hoverBlue hover:text-white'
-                  }`}>
+                  }`}
+                  onClick={item === 'Edit' ? () => clickEditFn() : () => {}}>
                   <button>{item}</button>
                 </li>
               )

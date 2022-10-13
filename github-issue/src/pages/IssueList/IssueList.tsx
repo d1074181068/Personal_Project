@@ -362,6 +362,7 @@ function IssueList() {
                 user,
                 created_at,
                 state_reason,
+                state,
                 body
               }) => {
                 return (
@@ -369,6 +370,7 @@ function IssueList() {
                     key={number}
                     title={title}
                     body={body}
+                    state={state}
                     stateReason={state_reason}
                     labels={
                       labels &&

@@ -1,14 +1,11 @@
 import { apiSlice } from './apiSlice'
-import { issueList, issueItem, Assignee } from '../types/issueType'
-
-interface GetIssueQueryParams {
-  name: string
-  repo: string
-  token: string
-  query: string
-  perPage: number
-  page: number
-}
+import {
+  issueList,
+  issueItem,
+  Assignee,
+  Timeline,
+  Comment
+} from '../types/issueType'
 
 interface QueryParams {
   name: string
@@ -24,11 +21,33 @@ interface CreateIssueParams extends QueryParams {
     assignees: string[]
   }
 }
+interface UpdateIssueParams extends QueryParams {
+  issueNumber: string
+  body: {
+    title?: string
+    body?: string
+    labels?: string[]
+    assignees?: string[]
+  }
+}
+interface GetIssueQueryParams extends QueryParams {
+  query: string
+  perPage: number
+  page: number
+}
+interface SingleIssueParams extends QueryParams {
+  issueId: string
+}
+
+interface CommentParams extends QueryParams {
+  commentId: number
+  body: { body: string }
+}
 
 export const issueApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllIssue: builder.query<issueList, GetIssueQueryParams>({
-      query: ({ name, repo, token, query, perPage, page }) => ({
+      query: ({ name, repo, token, query, perPage }) => ({
         url: `/${name}/${repo}/issues?per_page=${perPage}${query}`,
         method: 'GET',
         headers: new Headers({
@@ -38,6 +57,30 @@ export const issueApiSlice = apiSlice.injectEndpoints({
         })
       }),
       providesTags: ['issue']
+    }),
+    getIssue: builder.query<issueItem, SingleIssueParams>({
+      query: ({ name, repo, token, issueId }) => ({
+        url: `/${name}/${repo}/issues/${issueId}`,
+        method: 'GET',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `token ${token}`,
+          'if-none-match': ''
+        })
+      }),
+      providesTags: ['issue_id']
+    }),
+    getTimeline: builder.query<Timeline[], SingleIssueParams>({
+      query: ({ name, repo, token, issueId }) => ({
+        url: `/${name}/${repo}/issues/${issueId}/timeline`,
+        method: 'GET',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `token ${token}`,
+          'if-none-match': ''
+        })
+      }),
+      providesTags: ['timeline']
     }),
     getAllAssignees: builder.query<Assignee[], QueryParams>({
       query: ({ name, repo, token }) => ({
@@ -60,6 +103,34 @@ export const issueApiSlice = apiSlice.injectEndpoints({
         body: body
       }),
       invalidatesTags: ['issue']
+    }),
+    updateIssue: builder.mutation<issueItem, UpdateIssueParams>({
+      query: ({ name, repo, token, issueNumber, body }) => {
+        return {
+          url: `/${name}/${repo}/issues/${issueNumber}`,
+          method: 'PATCH',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            Authorization: `token ${token}`
+          }),
+          body: body
+        }
+      },
+      invalidatesTags: ['issue_id']
+    }),
+    updateComment: builder.mutation<Comment, CommentParams>({
+      query: ({ name, repo, token, commentId, body }) => {
+        return {
+          url: `/${name}/${repo}/issues/comments/${commentId}`,
+          method: 'PATCH',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            Authorization: `token ${token}`
+          }),
+          body: body
+        }
+      },
+      invalidatesTags: ['timeline']
     })
   })
 })
@@ -67,5 +138,9 @@ export const issueApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetAllIssueQuery,
   useGetAllAssigneesQuery,
-  useCreateIssueMutation
+  useCreateIssueMutation,
+  useGetIssueQuery,
+  useGetTimelineQuery,
+  useUpdateCommentMutation,
+  useUpdateIssueMutation
 } = issueApiSlice

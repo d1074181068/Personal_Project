@@ -36,7 +36,7 @@ function FeatureMenu({
       <div
         className={`${
           featureMenuOpen ? 'block' : 'hidden'
-        } fixed top-0 left-0 right-0 bottom-0 bg-maskBlack md:bg-[transparent]`}
+        } fixed top-0 left-0 right-0 bottom-0 z-[399] bg-maskBlack md:bg-[transparent]`}
         onClick={
           type === 'other' ? () => {} : () => setFeatureMenuOpen(false)
         }></div>

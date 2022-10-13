@@ -1,5 +1,5 @@
 //libraries
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 //custom
@@ -32,6 +32,9 @@ function NewIssue() {
   const [createIssue] = useCreateIssueMutation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  useEffect(() => {
+    dispatch(resetIssueContent())
+  }, [])
   const {
     data: labelData,
     isLoading: labelLoading,
@@ -106,7 +109,32 @@ function NewIssue() {
         alt='ownerImage'
         className='mr-2 hidden h-[40px] w-[40px] rounded-circle md:block'
       />
-      <UserControlIssue titleInputPlaceholder={'Title'} />
+      <UserControlIssue
+        titleInputPlaceholder={'Title'}
+        mobileExist={false}
+        actionBtn={{
+          bgcolor: '#2DA44E',
+          $text: 'Submit new issue',
+          textColor: 'white',
+          hoverColor: '#2c974b',
+          widthFull: '100%',
+          clickFn: () => {
+            createIssue({
+              name: 'd1074181068',
+              repo: 'webdesign',
+              token: tokenReducer.token,
+              body: {
+                title: issueReducer.content.title,
+                body: issueReducer.content.body,
+                labels: issueReducer.labelName.map(({ text }) => text),
+                assignees: issueReducer.assignees.map(({ text }) => text)
+              }
+            })
+            dispatch(resetIssueContent())
+            navigate('/')
+          }
+        }}
+      />
       <div className='md:ml-2 md:w-[240px]'>
         <div className='mt-5 md:mt-0'>
           <FeatureMenu

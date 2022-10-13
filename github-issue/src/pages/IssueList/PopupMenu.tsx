@@ -67,7 +67,7 @@ function PopupMenu({
             breakPoint === 'md' ? 'md:absolute' : 'sm:absolute'
           } ${
             menuOpenStatus ? 'block' : 'hidden'
-          } ${top} ${left} ${right} ${bottom} top-[20px] right-1 left-1 z-[200] max-h-[480px] overflow-y-auto rounded-lg border border-solid border-borderGray bg-white ${
+          } ${top} ${left} ${right} ${bottom} top-[20px] right-1 left-1 z-[400] max-h-[480px] overflow-y-auto rounded-lg border border-solid border-borderGray bg-white ${
             breakPoint === 'md' ? 'md:w-[300px]' : 'sm:w-[300px]'
           }`}>
           <div className='flex items-center justify-between rounded-tl-lg rounded-tr-lg border-b border-solid border-borderGray px-3 py-2'>
