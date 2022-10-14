@@ -70,7 +70,7 @@ type PropsType = {
 }
 const iconArr = [
   [
-    { icon: <HeadingIcon />, trigger: 'h1' },
+    { icon: <HeadingIcon />, trigger: 'h3' },
     { icon: <BoldIcon />, trigger: 'bold' },
     { icon: <ItalicIcon />, trigger: 'italic' }
   ],

@@ -13,6 +13,7 @@ type StorybookType = {
   organizeDataFn: () => void
   menuContent: MenuContentType
   menuPos: string
+  updateOrigin: boolean
 }
 
 export default {
@@ -35,6 +36,7 @@ export const Default = Template.bind({})
 Default.args = {
   title: 'Labels',
   type: 'Labels',
+  updateOrigin: false,
   organizeDataFn: () => {},
   menuPos: 'md:left-0',
   menuContent: {

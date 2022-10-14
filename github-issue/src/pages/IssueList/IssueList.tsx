@@ -132,7 +132,6 @@ function IssueList() {
       : queryReducer.issueState !== 'open'
       ? true
       : false
-  console.log(tokenReducer.token)
 
   const {
     data: issueData,
