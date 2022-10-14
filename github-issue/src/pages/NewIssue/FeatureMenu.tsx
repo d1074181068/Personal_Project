@@ -11,7 +11,9 @@ import PopupMenu from '../IssueList/PopupMenu'
 import { lightOrDark } from '../Label/HandleLabel'
 import { MenuContentType } from '../IssueList/PopupMenu'
 import { RootState } from '../../redux/store'
-import { handleAssignee } from '../../redux/issueSlice'
+import { handleAssignee, handleIssueBody } from '../../redux/issueSlice'
+import { useUpdateIssueMutation } from '../../redux/issueApiSlice'
+import { useParams } from 'react-router-dom'
 
 type PropsType = {
   type: string
@@ -19,6 +21,7 @@ type PropsType = {
   organizeDataFn: () => void
   menuContent?: MenuContentType
   menuPos?: string
+  updateOrigin: boolean
 }
 
 function FeatureMenu({
@@ -26,10 +29,15 @@ function FeatureMenu({
   type,
   organizeDataFn,
   menuContent,
-  menuPos
+  menuPos,
+  updateOrigin
 }: PropsType) {
   const [featureMenuOpen, setFeatureMenuOpen] = useState(false)
-  const { issueReducer } = useSelector((store: RootState) => store)
+  const { issueReducer, tokenReducer } = useSelector(
+    (store: RootState) => store
+  )
+  const [updateIssue] = useUpdateIssueMutation()
+  const { issueId } = useParams()
   const dispatch = useDispatch()
   return (
     <div className='border-b border-solid border-borderGray py-2'>
@@ -38,7 +46,21 @@ function FeatureMenu({
           featureMenuOpen ? 'block' : 'hidden'
         } fixed top-0 left-0 right-0 bottom-0 z-[399] bg-maskBlack md:bg-[transparent]`}
         onClick={
-          type === 'other' ? () => {} : () => setFeatureMenuOpen(false)
+          type === 'other'
+            ? () => {}
+            : () => {
+                updateIssue({
+                  name: 'd1074181068',
+                  repo: 'webdesign',
+                  token: tokenReducer.token,
+                  issueNumber: issueId as string,
+                  body: {
+                    assignees: issueReducer.assignees.map(({ text }) => text),
+                    labels: issueReducer.labelName.map(({ text }) => text)
+                  }
+                })
+                setFeatureMenuOpen(false)
+              }
         }></div>
       <div
         className='group relative mb-1 flex cursor-pointer items-center justify-between'
@@ -78,7 +100,7 @@ function FeatureMenu({
               No one -
               <button
                 className=' hover:text-hoverBlue'
-                onClick={() =>
+                onClick={() => {
                   dispatch(
                     handleAssignee({
                       text: 'd1074181068',
@@ -86,7 +108,18 @@ function FeatureMenu({
                         'https://avatars.githubusercontent.com/u/71813522?v=4'
                     })
                   )
-                }>
+                  if (updateOrigin) {
+                    updateIssue({
+                      name: 'd1074181068',
+                      repo: 'webdesign',
+                      token: tokenReducer.token,
+                      issueNumber: issueId as string,
+                      body: {
+                        assignees: ['d1074181068']
+                      }
+                    })
+                  }
+                }}>
                 assign yourself
               </button>
             </div>

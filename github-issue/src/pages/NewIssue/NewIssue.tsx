@@ -143,6 +143,7 @@ function NewIssue() {
             organizeDataFn={organizeAssigneeData}
             menuContent={popMenuData}
             menuPos={'md:left-[-100px]'}
+            updateOrigin={false}
           />
           <FeatureMenu
             type={'Labels'}
@@ -150,6 +151,7 @@ function NewIssue() {
             organizeDataFn={organizeLabelData}
             menuPos={'md:left-[-100px]'}
             menuContent={popMenuData}
+            updateOrigin={false}
           />
         </div>
         <div className='py-5 md:hidden'>
