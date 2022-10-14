@@ -45,6 +45,7 @@ function Issue() {
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
   const [fixedHeaderStatus, setFixedHeaderStatus] = useState(false)
   const [editTitle, setEditTitle] = useState(false)
+  const [updateTitleLoading, setUpdateTitleLoading] = useState(false)
   const [editTitleText, setEditTitleText] = useState('')
   const initTitleText = useRef('')
   const dispatch = useDispatch()
@@ -224,7 +225,6 @@ function Issue() {
       observer.current.observe(node)
     }
   }, [])
-
   if (issueLoading || labelLoading || assigneeLoading || timelineLoading) {
     return <>Loading...</>
   }
@@ -296,12 +296,14 @@ function Issue() {
               <div className='mr-1 text-[12px]'>
                 <GithubBtn
                   bgcolor={'#f6f8fa'}
-                  $text={'Save'}
+                  $text={updateTitleLoading ? 'Upadte' : 'Save'}
                   border={'1px solid rgba(27,31,36,0.15)'}
+                  $disabled={updateTitleLoading}
                   textColor={'#000000'}
                   hoverColor={'#f3f4f6'}
-                  clickFn={() => {
-                    updateIssue({
+                  clickFn={async () => {
+                    setUpdateTitleLoading(true)
+                    await updateIssue({
                       name: 'd1074181068',
                       repo: 'webdesign',
                       token: tokenReducer.token,
@@ -310,6 +312,7 @@ function Issue() {
                         title: editTitleText
                       }
                     })
+                    setUpdateTitleLoading(false)
                     setEditTitle(false)
                   }}
                 />
@@ -336,7 +339,7 @@ function Issue() {
                     ? '#2DA44E'
                     : issueData.state_reason === 'completed'
                     ? '#8250df'
-                    : '#57606a'
+                    : '#6e7781'
                 }
                 textColor={'white'}
                 icon={
@@ -378,7 +381,7 @@ function Issue() {
                     ? '#2DA44E'
                     : issueData.state_reason === 'completed'
                     ? '#8250df'
-                    : '#57606a'
+                    : '#6e7781'
                 }
                 textColor={'white'}
                 icon={
@@ -454,12 +457,20 @@ function Issue() {
                         user={issueData.user.login}
                         createTime={issueData.created_at}
                         authorAssociation={issueData.author_association}
+                        reactions={issueData.reactions}
                         type={'issueComment'}
                       />
                     </div>
                   </div>
                   {commentsData?.map(
-                    ({ id, actor, body, created_at, author_association }) => {
+                    ({
+                      id,
+                      actor,
+                      body,
+                      created_at,
+                      author_association,
+                      reactions
+                    }) => {
                       return (
                         <div className='flex' key={`${id}-${actor.login}`}>
                           <img
@@ -474,6 +485,7 @@ function Issue() {
                               user={actor.login}
                               createTime={created_at}
                               authorAssociation={author_association}
+                              reactions={reactions}
                               type={'comment'}
                             />
                           </div>
@@ -493,14 +505,15 @@ function Issue() {
                   />
                   <UserControlIssue
                     titleInputPlaceholder=''
-                    initStatusBtn='reopen'
+                    state={issueData.state}
+                    stateReason={issueData.state_reason}
                     actionBtn={{
                       bgcolor: '#2DA44E',
                       $text: 'Comment',
                       textColor: 'white',
                       hoverColor: '#2c974b',
-                      clickFn: () => {
-                        createComment({
+                      clickFn: async () => {
+                        await createComment({
                           name: 'd1074181068',
                           repo: 'webdesign',
                           token: tokenReducer.token,

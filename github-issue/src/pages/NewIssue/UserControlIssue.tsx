@@ -1,5 +1,5 @@
 //Libraries
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   MarkdownIcon,
   InfoIcon,
@@ -21,15 +21,18 @@ import {
   TriangleDownIcon,
   IssueReopenedIcon,
   IssueClosedIcon,
-  SkipIcon
+  SkipIcon,
+  CheckIcon
 } from '@primer/octicons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { marked } from 'marked'
 import TextareaMarkdown, { TextareaMarkdownRef } from 'textarea-markdown-editor'
 import hljs from 'highlight.js'
+import { useParams } from 'react-router-dom'
 
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
+import StateButton from './StateButton'
 //custom
 import { RootState } from '../../redux/store'
 import {
@@ -37,6 +40,7 @@ import {
   handleIssueBody,
   githubAction
 } from '../../redux/issueSlice'
+import { useUpdateIssueMutation } from '../../redux/issueApiSlice'
 import '../../utils/markdownStyle.css'
 import 'highlight.js/styles/github.css'
 
@@ -65,7 +69,8 @@ type PropsType = {
     widthFull?: string
     clickFn?: () => void
   }
-  initStatusBtn?: string
+  state?: string
+  stateReason?: string | null
   mobileExist: boolean
 }
 const iconArr = [
@@ -99,11 +104,11 @@ function UserControlIssue({
   mobileExist,
   textAreaText,
   setTextAreaText,
-  initStatusBtn
+  state,
+  stateReason
 }: PropsType) {
   const [navBarToggleStatus, setNavBarToggleStatus] = useState(true)
   const [markdownButtonListOpen, setMarkdownButtonListOpen] = useState(false)
-  const [statusButtonDropdown, setStatusButtonDropdown] = useState(false)
   const { issueReducer } = useSelector((store: RootState) => store)
   const dispatch = useDispatch()
   const ref = useRef<TextareaMarkdownRef>(null)
@@ -367,46 +372,12 @@ function UserControlIssue({
               />
             </div>
           )}
-          {initStatusBtn && (
-            <div className='relative mr-1'>
-              <button className='rounded-tl rounded-bl border border-r-0 border-solid border-borderGray px-[16px] py-[6px] hover:bg-commonBgGray'>
-                <span className={`mr-1 text-[#8250df]`}>
-                  <IssueClosedIcon />
-                </span>
-                <span>Close issue</span>
-              </button>
-              <button
-                className='rounded-tr rounded-br border border-solid border-borderGray px-[12px] py-[6px] hover:bg-commonBgGray'
-                onClick={() => setStatusButtonDropdown(true)}>
-                <TriangleDownIcon />
-              </button>
-              <div
-                className={`${
-                  statusButtonDropdown ? 'block' : 'hidden'
-                } fixed top-0 left-0 right-0 bottom-0 z-[120]`}
-                onClick={() => setStatusButtonDropdown(false)}></div>
-              <ul
-                className={`${
-                  statusButtonDropdown ? 'block' : 'hidden'
-                } absolute top-[33px] right-0 z-199 w-[300px] rounded border border-solid border-borderGray bg-white`}>
-                <li className='group cursor-pointer rounded-tr rounded-tl border-b border-solid border-borderGray py-1 pl-3 hover:bg-hoverBlue hover:text-white'>
-                  <span
-                    className={`mr-[3px] text-[#8250df] group-hover:text-white`}>
-                    <IssueClosedIcon />
-                  </span>
-                  <span>Closed as completed</span>
-                </li>
-                <li className='group cursor-pointer rounded-br rounded-bl py-1 pl-3 hover:bg-hoverBlue hover:text-white'>
-                  <span
-                    className={`mr-[3px] text-[#57606a] group-hover:text-white`}>
-                    <SkipIcon />
-                  </span>
-                  <span>Closed as not planned</span>
-                </li>
-              </ul>
-            </div>
+          {state && (
+            <StateButton
+              state={state}
+              stateReason={stateReason as string | null}
+            />
           )}
-
           {actionBtn && (
             <GithubBtn
               bgcolor={actionBtn.bgcolor}
@@ -414,6 +385,7 @@ function UserControlIssue({
               textColor={actionBtn.textColor}
               hoverColor={actionBtn?.hoverColor}
               widthFull={actionBtn?.widthFull}
+              $disabled={issueReducer.content.body === '' ? true : false}
               clickFn={actionBtn?.clickFn}
             />
           )}

@@ -21,13 +21,15 @@ interface CreateIssueParams extends QueryParams {
     assignees: string[]
   }
 }
-interface UpdateIssueParams extends QueryParams {
+export interface UpdateIssueParams extends QueryParams {
   issueNumber: string
   body: {
     title?: string
     body?: string
     labels?: string[]
     assignees?: string[]
+    state?: string
+    state_reason?: string
   }
 }
 interface GetIssueQueryParams extends QueryParams {
