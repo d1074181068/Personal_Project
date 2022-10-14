@@ -18,6 +18,8 @@ import {
   useDeleteCommentMutation
 } from '../../redux/issueApiSlice'
 import { RootState } from '../../redux/store'
+import { Reactions } from '../../types/issueType'
+import { turnReactionsToArray } from '../../utils/transformReactions'
 
 type PropsType = {
   id: number
@@ -26,6 +28,7 @@ type PropsType = {
   createTime: string
   authorAssociation?: string
   type: string
+  reactions: Reactions
 }
 const issueMenuContentArr = [
   ['Copy link', 'Quote reply'],
@@ -43,6 +46,7 @@ function Comment({
   user,
   createTime,
   authorAssociation,
+  reactions,
   type
 }: PropsType) {
   const [actionMenuToggle, setActionMenuToggle] = useState(false)
@@ -150,11 +154,26 @@ function Comment({
           </div>
         </header>
         <main className='m-2'>
-          <p
+          <div
             className='prose'
             dangerouslySetInnerHTML={{
               __html: marked(body)
-            }}></p>
+            }}></div>
+          <ul
+            className={`${
+              reactions.total_count !== 0 ? 'mt-2' : 'mt-0'
+            }  flex items-center`}>
+            <>
+              {reactions.total_count !== 0 && (
+                <li className='mr-1 rounded-circle border border-solid border-borderGray bg-commonBgGray p-[5px] text-textGray'>
+                  <button>
+                    <SmileyIcon />
+                  </button>
+                </li>
+              )}
+              {turnReactionsToArray(reactions)}
+            </>
+          </ul>
         </main>
       </div>
       <div className={`${editTextareaToggle ? 'block' : 'hidden'} mb-4`}>
