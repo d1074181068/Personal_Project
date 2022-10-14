@@ -4,11 +4,13 @@ type PropsType = {
   menuContent: string[][]
   actionMenuToggle: boolean
   clickEditFn: () => void
+  clickDeleteFn?: () => void
 }
 function CommentMenu({
   menuContent,
   actionMenuToggle,
-  clickEditFn
+  clickEditFn,
+  clickDeleteFn
 }: PropsType) {
   return (
     <div
@@ -31,7 +33,15 @@ function CommentMenu({
                       ? 'text-danger hover:bg-danger hover:text-white'
                       : 'text-textBlack hover:bg-hoverBlue hover:text-white'
                   }`}
-                  onClick={item === 'Edit' ? () => clickEditFn() : () => {}}>
+                  onClick={
+                    item === 'Edit'
+                      ? () => clickEditFn()
+                      : item === 'Delete'
+                      ? () => {
+                          if (clickDeleteFn) clickDeleteFn()
+                        }
+                      : () => {}
+                  }>
                   <button>{item}</button>
                 </li>
               )

@@ -21,6 +21,7 @@ import { lightOrDark } from '../Label/HandleLabel'
 import { ClickFnType, LabelType } from '../../types/issueType'
 import {
   handleAssignee,
+  handleIssueBody,
   handleLabelTag,
   resetIssueContent
 } from '../../redux/issueSlice'
@@ -29,7 +30,8 @@ import {
   useGetAllAssigneesQuery,
   useGetIssueQuery,
   useGetTimelineQuery,
-  useUpdateIssueMutation
+  useUpdateIssueMutation,
+  useCreateCommentMutation
 } from '../../redux/issueApiSlice'
 import { MenuContentType } from '../IssueList/PopupMenu'
 import { RootState } from '../../redux/store'
@@ -48,6 +50,7 @@ function Issue() {
   const dispatch = useDispatch()
   const { issueId } = useParams()
   const [updateIssue] = useUpdateIssueMutation()
+  const [createComment] = useCreateCommentMutation()
   const observer = useRef<IntersectionObserver | null>(null)
   const userPhoto = JSON.parse(
     localStorage.getItem('supabase.auth.token') as string
@@ -147,6 +150,7 @@ function Issue() {
         ]),
       _.isEqual
     )
+
     const menuContent = {
       title: 'Assign up to 10 people to this issue',
       inputPlaceholder: 'Type or choose a user',
@@ -455,12 +459,9 @@ function Issue() {
                     </div>
                   </div>
                   {commentsData?.map(
-                    (
-                      { id, actor, body, created_at, author_association },
-                      index
-                    ) => {
+                    ({ id, actor, body, created_at, author_association }) => {
                       return (
-                        <div className='flex' key={index}>
+                        <div className='flex' key={`${id}-${actor.login}`}>
                           <img
                             src={actor.avatar_url}
                             alt='userImage'
@@ -484,7 +485,12 @@ function Issue() {
                   <div className='absolute top-0 left-[15px] right-0 bottom-0 z-[-10] border-l-[2px] border-solid border-borderGray md:left-[70px]'></div>
                 </div>
 
-                <div className='border-t-[2px] border-solid border-borderGray pt-4'>
+                <div className='flex border-t-[2px] border-solid border-borderGray pt-4'>
+                  <img
+                    src={userPhoto}
+                    alt='userImage'
+                    className='mr-2 hidden h-[40px] w-[40px] rounded-circle md:block'
+                  />
                   <UserControlIssue
                     titleInputPlaceholder=''
                     initStatusBtn='reopen'
@@ -493,7 +499,18 @@ function Issue() {
                       $text: 'Comment',
                       textColor: 'white',
                       hoverColor: '#2c974b',
-                      clickFn: () => {}
+                      clickFn: () => {
+                        createComment({
+                          name: 'd1074181068',
+                          repo: 'webdesign',
+                          token: tokenReducer.token,
+                          issueNumber: issueId as string,
+                          body: {
+                            body: issueReducer.content.body
+                          }
+                        })
+                        dispatch(handleIssueBody(''))
+                      }
                     }}
                     mobileExist={true}
                   />
@@ -514,6 +531,7 @@ function Issue() {
                       organizeDataFn={organizeDataFn}
                       menuContent={menuContent}
                       menuPos={menuPos}
+                      updateOrigin={true}
                       key={index}
                     />
                   )

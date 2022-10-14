@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { SmileyIcon, KebabHorizontalIcon } from '@primer/octicons-react'
 import { useSelector } from 'react-redux'
 import { marked } from 'marked'
+import { useParams } from 'react-router-dom'
 
 //components
 import LabelItem from '../Label/LabelItem'
@@ -13,10 +14,10 @@ import UserControlIssue from '../NewIssue/UserControlIssue'
 import { calculateTime } from '../IssueList/IssueItem'
 import {
   useUpdateCommentMutation,
-  useUpdateIssueMutation
+  useUpdateIssueMutation,
+  useDeleteCommentMutation
 } from '../../redux/issueApiSlice'
 import { RootState } from '../../redux/store'
-import { useParams } from 'react-router-dom'
 
 type PropsType = {
   id: number
@@ -49,6 +50,7 @@ function Comment({
   const initBodyText = useRef(body)
   const { issueId } = useParams()
   const [updateComment] = useUpdateCommentMutation()
+  const [deleteComment] = useDeleteCommentMutation()
   const [updateIssue] = useUpdateIssueMutation()
   const { tokenReducer } = useSelector((store: RootState) => store)
   const [textAreaText, setTextAreaText] = useState(initBodyText.current)
@@ -120,6 +122,24 @@ function Comment({
                   setActionMenuToggle(false)
                   setEditTexrareaToggle(true)
                 }}
+                clickDeleteFn={
+                  type === 'comment'
+                    ? () => {
+                        const confirmDelete = window.confirm(
+                          'Are you sure you want to delete this?'
+                        )
+                        if (confirmDelete) {
+                          deleteComment({
+                            name: 'd1074181068',
+                            repo: 'webdesign',
+                            token: tokenReducer.token,
+                            commentId: id
+                          })
+                        }
+                        setActionMenuToggle(false)
+                      }
+                    : () => {}
+                }
               />
               <div
                 className={`${

@@ -38,8 +38,16 @@ interface SingleIssueParams extends QueryParams {
   issueId: string
 }
 
-interface CommentParams extends QueryParams {
+interface UpdateCommentParams extends QueryParams {
   commentId: number
+  body: { body: string }
+}
+interface DeleteCommentParams extends QueryParams {
+  commentId: number
+}
+
+interface CreateCommentParams extends QueryParams {
+  issueNumber: string
   body: { body: string }
 }
 
@@ -117,7 +125,19 @@ export const issueApiSlice = apiSlice.injectEndpoints({
       },
       invalidatesTags: ['issue_id']
     }),
-    updateComment: builder.mutation<Comment, CommentParams>({
+    createComment: builder.mutation<Comment, CreateCommentParams>({
+      query: ({ name, repo, body, token, issueNumber }) => ({
+        url: `/${name}/${repo}/issues/${issueNumber}/comments`,
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `token ${token}`
+        }),
+        body: body
+      }),
+      invalidatesTags: ['timeline']
+    }),
+    updateComment: builder.mutation<Comment, UpdateCommentParams>({
       query: ({ name, repo, token, commentId, body }) => {
         return {
           url: `/${name}/${repo}/issues/comments/${commentId}`,
@@ -130,6 +150,17 @@ export const issueApiSlice = apiSlice.injectEndpoints({
         }
       },
       invalidatesTags: ['timeline']
+    }),
+    deleteComment: builder.mutation<null, DeleteCommentParams>({
+      query: ({ name, repo, commentId, token }) => ({
+        url: `/${name}/${repo}/issues/comments/${commentId}`,
+        method: 'DELETE',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `token ${token}`
+        })
+      }),
+      invalidatesTags: ['timeline']
     })
   })
 })
@@ -141,5 +172,7 @@ export const {
   useGetIssueQuery,
   useGetTimelineQuery,
   useUpdateCommentMutation,
-  useUpdateIssueMutation
+  useUpdateIssueMutation,
+  useCreateCommentMutation,
+  useDeleteCommentMutation
 } = issueApiSlice
