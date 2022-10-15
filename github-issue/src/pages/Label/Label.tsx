@@ -1,6 +1,8 @@
 //Libraries
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { SearchIcon } from '@primer/octicons-react'
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
@@ -13,7 +15,6 @@ import {
   useGetLabelQuery,
   useCreateLabelMutation
 } from '../../redux/labelApiSlice'
-import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 
 type LabelControlerType = {
@@ -95,15 +96,28 @@ export const NotLogin = styled.div`
 `
 
 function Label() {
-  const { tokenReducer } = useSelector((store: RootState) => store)
+  const repo = localStorage.getItem('repo')
+  const userName = localStorage.getItem('userName')
+  const navigate = useNavigate()
+  const { userReducer } = useSelector((store: RootState) => store)
   const [handleLabelOpen, setHandleLabelOpen] = useState(false)
   const [createLabel] = useCreateLabelMutation()
-  const { data, isLoading } = useGetLabelQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token
+  const { data, isLoading, isError } = useGetLabelQuery({
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token
   })
-  if (!tokenReducer.token) return <NotLogin>你尚未登入</NotLogin>
+  if (!userReducer.token) return <NotLogin>你尚未登入</NotLogin>
+  if (isError) {
+    if (!repo) {
+      alert('你尚未選擇repo,即將跳轉頁面')
+      navigate('/')
+      return <>errro</>
+    } else {
+      return <>Error</>
+    }
+  }
+
   if (isLoading) {
     return <>Loading...</>
   }
@@ -144,9 +158,9 @@ function Label() {
             labelDescription: string
           ) =>
             createLabel({
-              name: 'd1074181068',
-              repo: 'webdesign',
-              token: tokenReducer.token,
+              name: userName ? userName : '',
+              repo: repo ? repo : '',
+              token: userReducer.token,
               body: {
                 name: labelName,
                 color: labelColor,

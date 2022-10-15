@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import {
   CodeIcon,
   IssueOpenedIcon,
@@ -25,6 +24,7 @@ import {
 import PageHeaderAction from './PageHeaderAction'
 import RepoNavbar from './RepoNavbar'
 import { RootState } from '../../redux/store'
+import { useNavigate } from 'react-router-dom'
 
 type FontType = {
   fontBold: boolean
@@ -94,8 +94,10 @@ const pageActionArr = [
   [<StarIcon />, 'Star', 0, <TriangleDownIcon />]
 ]
 function MainHeader() {
+  const repo = localStorage.getItem('repo')
+  const userName = localStorage.getItem('userName')
   const [clickItem, setClickItem] = useState('Issues')
-  const { tokenReducer } = useSelector((store: RootState) => store)
+  const { userReducer } = useSelector((store: RootState) => store)
   const navigate = useNavigate()
   function isClick(event: EventTarget) {
     if ((event as HTMLElement).tagName === 'svg') {
@@ -110,7 +112,7 @@ function MainHeader() {
     setClickItem((event as HTMLLIElement).textContent as string)
   }
 
-  if (!tokenReducer.token) {
+  if (!userReducer.token || !repo) {
     return <></>
   }
   return (
@@ -118,8 +120,13 @@ function MainHeader() {
       <RepoWrapper>
         <RepoTitleWrapper>
           <RepoBookIcon />
-          <RepoTag fontBold={false}>d1074181068</RepoTag>/
-          <RepoTag fontBold>Personal_Project</RepoTag>
+          <RepoTag fontBold={false} onClick={() => navigate('/')}>
+            {userName}
+          </RepoTag>
+          /
+          <RepoTag fontBold onClick={() => navigate('/issueList')}>
+            {repo}
+          </RepoTag>
         </RepoTitleWrapper>
         <ActionWrapper>
           {pageActionArr.map((item, index) => {
@@ -147,6 +154,7 @@ function MainHeader() {
         {repoNavArr.map((item, index) => {
           return (
             <RepoNavbar
+              index={index}
               key={index}
               iconComponent={item[0] as JSX.Element}
               $text={item[1] as string}

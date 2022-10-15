@@ -1,12 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-
+import { resetIssueContent } from '../../redux/issueSlice'
+import { useDispatch } from 'react-redux'
 type NavbarButton = {
   iconComponent: JSX.Element
   $text: string
   isClick: (event: EventTarget) => void
   $isActive: boolean
+  index: number
 }
 type TypeActive = {
   $isActive: boolean
@@ -36,17 +38,22 @@ const BtnWrapper = styled.div`
   }
 `
 function RepoNavbar({
+  index,
   iconComponent,
   $text,
   isClick,
   $isActive
 }: NavbarButton) {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   return (
     <RepoNavbarItem
       onClick={(event) => {
         isClick(event.target)
-        navigate('/')
+        if (index === 1) {
+          dispatch(resetIssueContent())
+          navigate('/issueList')
+        }
       }}
       $isActive={$isActive}>
       <BtnWrapper>

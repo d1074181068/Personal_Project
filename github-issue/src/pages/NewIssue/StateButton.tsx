@@ -11,7 +11,10 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 //custom
-import { useUpdateIssueMutation } from '../../redux/issueApiSlice'
+import {
+  useUpdateIssueMutation,
+  useCreateCommentMutation
+} from '../../redux/issueApiSlice'
 import { RootState } from '../../redux/store'
 
 type PropsType = {
@@ -20,12 +23,13 @@ type PropsType = {
 }
 
 function StateButton({ state, stateReason }: PropsType) {
+  const repo = localStorage.getItem('repo')
+  const userName = localStorage.getItem('userName')
   const [statusButtonDropdown, setStatusButtonDropdown] = useState(false)
-  const { issueReducer, tokenReducer } = useSelector(
-    (store: RootState) => store
-  )
+  const { issueReducer, userReducer } = useSelector((store: RootState) => store)
   const { issueId } = useParams()
   const [updateIssue] = useUpdateIssueMutation()
+  const [createComment] = useCreateCommentMutation()
   const [clickStateButton, setClickStateButton] = useState('top')
   const [currentState, setCurrentState] = useState({
     state: state === 'open' ? 'closed' : 'open',
@@ -46,18 +50,29 @@ function StateButton({ state, stateReason }: PropsType) {
         <div className='relative mr-1'>
           <button
             className='rounded-tl rounded-bl border border-r-0 border-solid border-borderGray px-[16px] py-[6px] hover:bg-commonBgGray'
-            onClick={() =>
-              updateIssue({
-                name: 'd1074181068',
-                repo: 'webdesign',
-                token: tokenReducer.token,
+            onClick={async () => {
+              if (issueReducer.content.body !== '') {
+                await createComment({
+                  name: userName ? userName : '',
+                  repo: repo ? repo : '',
+                  token: userReducer.token,
+                  issueNumber: issueId as string,
+                  body: {
+                    body: issueReducer.content.body
+                  }
+                })
+              }
+              await updateIssue({
+                name: userName ? userName : '',
+                repo: repo ? repo : '',
+                token: userReducer.token,
                 issueNumber: issueId as string,
                 body: {
                   state: currentState.state,
                   state_reason: currentState.stateReason
                 }
               })
-            }>
+            }}>
             <span
               className={`mr-1 ${
                 currentState.state === 'closed'

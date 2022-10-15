@@ -25,9 +25,9 @@ import { NotLogin } from '../Label/Label'
 import { useNavigate } from 'react-router-dom'
 
 function NewIssue() {
-  const { tokenReducer, issueReducer } = useSelector(
-    (store: RootState) => store
-  )
+  const repo = localStorage.getItem('repo')
+  const userName = localStorage.getItem('userName')
+  const { userReducer, issueReducer } = useSelector((store: RootState) => store)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
   const [createIssue] = useCreateIssueMutation()
   const dispatch = useDispatch()
@@ -40,18 +40,18 @@ function NewIssue() {
     isLoading: labelLoading,
     isError: labelError
   } = useGetLabelQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token
   })
   const {
     data: assigneeData,
     isLoading: assigneeLoading,
     isError: assignError
   } = useGetAllAssigneesQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token
   })
 
   function organizeLabelData() {
@@ -99,8 +99,16 @@ function NewIssue() {
   if (labelLoading || assigneeLoading) {
     return <>Loading...</>
   }
-  if (assignError || labelError || !tokenReducer.token)
-    return <NotLogin>你尚未登入</NotLogin>
+  if (!userReducer.token) return <NotLogin>你尚未登入</NotLogin>
+  if (assignError || labelError) {
+    if (!repo) {
+      alert('你尚未選擇repo,即將跳轉頁面')
+      navigate('/')
+      return <>error</>
+    } else {
+      return <>Error</>
+    }
+  }
 
   return (
     <div className='mx-auto mt-2 mb-[100px] flex max-w-[1280px] flex-col px-2 pt-2 md:flex-row md:items-start'>
@@ -120,9 +128,9 @@ function NewIssue() {
           widthFull: '100%',
           clickFn: () => {
             createIssue({
-              name: 'd1074181068',
-              repo: 'webdesign',
-              token: tokenReducer.token,
+              name: userName ? userName : '',
+              repo: repo ? repo : '',
+              token: userReducer.token,
               body: {
                 title: issueReducer.content.title,
                 body: issueReducer.content.body,
@@ -131,7 +139,7 @@ function NewIssue() {
               }
             })
             dispatch(resetIssueContent())
-            navigate('/')
+            navigate('/issueList')
           }
         }}
       />
@@ -163,9 +171,9 @@ function NewIssue() {
             widthFull={'100%'}
             clickFn={() => {
               createIssue({
-                name: 'd1074181068',
-                repo: 'webdesign',
-                token: tokenReducer.token,
+                name: userName ? userName : '',
+                repo: repo ? repo : '',
+                token: userReducer.token,
                 body: {
                   title: issueReducer.content.title,
                   body: issueReducer.content.body,

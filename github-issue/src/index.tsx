@@ -7,6 +7,7 @@ import { Provider } from 'react-redux'
 import './index.css'
 //components
 import App from './App'
+import Home from './pages/Home/Home'
 import IssueList from './pages/IssueList/IssueList'
 import Label from './pages/Label/Label'
 import NewIssue from './pages/NewIssue/NewIssue'
@@ -21,7 +22,8 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<App />}>
-          <Route index element={<IssueList />} />
+          <Route index element={<Home />} />
+          <Route path='issueList' element={<IssueList />} />
           <Route path='label' element={<Label />} />
           <Route path='newIssue' element={<NewIssue />} />
           <Route path='issue/:issueId' element={<Issue />} />

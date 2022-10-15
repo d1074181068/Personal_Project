@@ -32,7 +32,7 @@ export const labelApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getLabel: builder.query<LabelsType[], QueryParams>({
       query: ({ name, repo, token }) => ({
-        url: `/${name}/${repo}/labels`,
+        url: `/repos/${name}/${repo}/labels`,
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export const labelApiSlice = apiSlice.injectEndpoints({
     }),
     createLabel: builder.mutation<LabelsType, CreateQueryParams>({
       query: ({ name, repo, body, token }) => ({
-        url: `/${name}/${repo}/labels`,
+        url: `/repos/${name}/${repo}/labels`,
         method: 'POST',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const labelApiSlice = apiSlice.injectEndpoints({
     }),
     updateLabel: builder.mutation<LabelsType, CreateQueryParams>({
       query: ({ name, repo, labelName, body, token }) => ({
-        url: `/${name}/${repo}/labels/${labelName}`,
+        url: `/repos/${name}/${repo}/labels/${labelName}`,
         method: 'PATCH',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export const labelApiSlice = apiSlice.injectEndpoints({
     }),
     deleteLabel: builder.mutation<null, DeleteQueryparams>({
       query: ({ name, repo, labelName, token }) => ({
-        url: `/${name}/${repo}/labels/${labelName}`,
+        url: `/repos/${name}/${repo}/labels/${labelName}`,
         method: 'DELETE',
         headers: new Headers({
           'Content-Type': 'application/json',

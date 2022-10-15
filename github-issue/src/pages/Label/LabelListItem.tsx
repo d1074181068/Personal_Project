@@ -12,6 +12,8 @@ import LabelItem from './LabelItem'
 import HandleLabel from './HandleLabel'
 import ActionBtn from './ActionBtn'
 import MobileAction from './MobileAction'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
 
 type PropsType = {
   labelName: string
@@ -90,11 +92,13 @@ function LabelListItem({
   useLabelIssueQty,
   colorCode
 }: PropsType) {
+  const repo = localStorage.getItem('repo')
+  const userName = localStorage.getItem('userName')
   const [areaOfEditLabel, setAreaOfEditLabel] = useState(false)
   const textColor = lightOrDark(colorCode)
   const [updateLabel] = useUpdateLabelMutation()
   const [deleteLabel] = useDeleteLabelMutation()
-  const userToken = localStorage.getItem('userToken') as string
+  const { userReducer } = useSelector((store: RootState) => store)
   const tagName = useRef('')
   tagName.current = labelName
   return (
@@ -128,10 +132,10 @@ function LabelListItem({
                 btnText={'Delete'}
                 clickFn={() => {
                   deleteLabel({
-                    name: 'd1074181068',
-                    repo: 'webdesign',
+                    name: userName ? userName : '',
+                    repo: repo ? repo : '',
                     labelName: tagName.current,
-                    token: userToken
+                    token: userReducer.token
                   })
                 }}
               />
@@ -144,10 +148,10 @@ function LabelListItem({
                 () => setAreaOfEditLabel((prev) => !prev),
                 () => {
                   deleteLabel({
-                    name: 'd1074181068',
-                    repo: 'webdesign',
+                    name: userName ? userName : '',
+                    repo: repo ? repo : '',
                     labelName: tagName.current,
-                    token: userToken
+                    token: userReducer.token
                   })
                 }
               ]}
@@ -170,10 +174,10 @@ function LabelListItem({
           cancelClickFn={() => setAreaOfEditLabel(false)}
           deleteClickFn={() =>
             deleteLabel({
-              name: 'd1074181068',
-              repo: 'webdesign',
+              name: userName ? userName : '',
+              repo: repo ? repo : '',
               labelName: tagName.current,
-              token: userToken
+              token: userReducer.token
             })
           }
           updatelabelFn={(
@@ -182,10 +186,10 @@ function LabelListItem({
             labelDescription: string
           ) => {
             updateLabel({
-              name: 'd1074181068',
-              repo: 'webdesign',
+              name: userName ? userName : '',
+              repo: repo ? repo : '',
               labelName: tagName.current,
-              token: userToken,
+              token: userReducer.token,
               body: {
                 name: labelName,
                 color: labelColor,

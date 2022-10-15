@@ -51,6 +51,8 @@ export interface ContentType {
 const headerTextArr = ['Label', 'Assignee', 'Sort']
 
 function IssueList() {
+  const repo = localStorage.getItem('repo')
+  const userName = localStorage.getItem('userName')
   const [menuOpenStatus, setMenuOpenStatus] = useState(false)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
   const [filterInputText, setFilterInputText] = useState('')
@@ -61,9 +63,7 @@ function IssueList() {
   })
   const [page, setPage] = useState(1)
   const dispatch = useDispatch()
-  const { queryReducer, tokenReducer } = useSelector(
-    (store: RootState) => store
-  )
+  const { queryReducer, userReducer } = useSelector((store: RootState) => store)
   let inputText = 'is:issue '
   for (const key in queryReducer) {
     if (key === 'issueState') {
@@ -138,9 +138,9 @@ function IssueList() {
     isLoading: issueLoading,
     isError: issueError
   } = useGetAllIssueQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token,
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token,
     page: queryReducer.page,
     query: query()
   })
@@ -149,9 +149,9 @@ function IssueList() {
     isLoading: labelLoading,
     isError: labelError
   } = useGetLabelQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token
   })
 
   const {
@@ -159,17 +159,24 @@ function IssueList() {
     isLoading: assigneeLoading,
     isError: assignError
   } = useGetAllAssigneesQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token
   })
 
   if (issueLoading || labelLoading || assigneeLoading) {
     return <>Loading...</>
   }
-  if (assignError || issueError || labelError || !tokenReducer.token)
-    return <NotLogin>你尚未登入</NotLogin>
-
+  if (!userReducer.token) return <NotLogin>你尚未登入</NotLogin>
+  if (assignError || issueError || labelError) {
+    if (!repo) {
+      alert('你尚未選擇repo,即將跳轉頁面')
+      navigate('/')
+      return <>error</>
+    } else {
+      return <>error</>
+    }
+  }
   const renderData = issueData?.filter((item) => {
     return !('pull_request' in item)
   })
@@ -334,6 +341,7 @@ function IssueList() {
           })}
 
           <PopupMenu
+            withDismissButton={true}
             menuOpenStatus={menuOpenStatus}
             setMenuStatusFn={setMenuOpenStatus}
             menuContent={popMenuData}

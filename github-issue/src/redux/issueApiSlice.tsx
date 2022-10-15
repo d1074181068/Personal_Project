@@ -57,7 +57,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllIssue: builder.query<issueList, GetIssueQueryParams>({
       query: ({ name, repo, token, query }) => ({
-        url: `/${name}/${repo}/issues?${query}`,
+        url: `/repos/${name}/${repo}/issues?${query}`,
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
     }),
     getIssue: builder.query<issueItem, SingleIssueParams>({
       query: ({ name, repo, token, issueId }) => ({
-        url: `/${name}/${repo}/issues/${issueId}`,
+        url: `/repos/${name}/${repo}/issues/${issueId}`,
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
     }),
     getTimeline: builder.query<Timeline[], SingleIssueParams>({
       query: ({ name, repo, token, issueId }) => ({
-        url: `/${name}/${repo}/issues/${issueId}/timeline`,
+        url: `/repos/${name}/${repo}/issues/${issueId}/timeline`,
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
     }),
     getAllAssignees: builder.query<Assignee[], QueryParams>({
       query: ({ name, repo, token }) => ({
-        url: `/${name}/${repo}/assignees`,
+        url: `/repos/${name}/${repo}/assignees`,
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
     }),
     createIssue: builder.mutation<issueItem, CreateIssueParams>({
       query: ({ name, repo, body, token }) => ({
-        url: `/${name}/${repo}/issues`,
+        url: `/repos/${name}/${repo}/issues`,
         method: 'POST',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
     updateIssue: builder.mutation<issueItem, UpdateIssueParams>({
       query: ({ name, repo, token, issueNumber, body }) => {
         return {
-          url: `/${name}/${repo}/issues/${issueNumber}`,
+          url: `/repos/${name}/${repo}/issues/${issueNumber}`,
           method: 'PATCH',
           headers: new Headers({
             'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
     }),
     createComment: builder.mutation<Comment, CreateCommentParams>({
       query: ({ name, repo, body, token, issueNumber }) => ({
-        url: `/${name}/${repo}/issues/${issueNumber}/comments`,
+        url: `/repos/${name}/${repo}/issues/${issueNumber}/comments`,
         method: 'POST',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
     updateComment: builder.mutation<Comment, UpdateCommentParams>({
       query: ({ name, repo, token, commentId, body }) => {
         return {
-          url: `/${name}/${repo}/issues/comments/${commentId}`,
+          url: `/repos/${name}/${repo}/issues/comments/${commentId}`,
           method: 'PATCH',
           headers: new Headers({
             'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
     }),
     deleteComment: builder.mutation<null, DeleteCommentParams>({
       query: ({ name, repo, commentId, token }) => ({
-        url: `/${name}/${repo}/issues/comments/${commentId}`,
+        url: `/repos/${name}/${repo}/issues/comments/${commentId}`,
         method: 'DELETE',
         headers: new Headers({
           'Content-Type': 'application/json',

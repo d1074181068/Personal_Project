@@ -21,7 +21,7 @@ import { RootState } from '../../redux/store'
 import { Reactions } from '../../types/issueType'
 import { turnReactionsToArray } from '../../utils/transformReactions'
 
-type PropsType = {
+export type PropsType = {
   id: number
   body: string
   user: string
@@ -49,14 +49,16 @@ function Comment({
   reactions,
   type
 }: PropsType) {
+  const repo = localStorage.getItem('repo')
   const [actionMenuToggle, setActionMenuToggle] = useState(false)
+  const userName = localStorage.getItem('userName')
   const [editTextareaToggle, setEditTexrareaToggle] = useState(false)
   const initBodyText = useRef(body)
   const { issueId } = useParams()
   const [updateComment] = useUpdateCommentMutation()
   const [deleteComment] = useDeleteCommentMutation()
   const [updateIssue] = useUpdateIssueMutation()
-  const { tokenReducer } = useSelector((store: RootState) => store)
+  const { userReducer } = useSelector((store: RootState) => store)
   const [textAreaText, setTextAreaText] = useState(initBodyText.current)
   useEffect(() => {
     initBodyText.current = body
@@ -134,9 +136,9 @@ function Comment({
                         )
                         if (confirmDelete) {
                           deleteComment({
-                            name: 'd1074181068',
-                            repo: 'webdesign',
-                            token: tokenReducer.token,
+                            name: userName ? userName : '',
+                            repo: repo ? repo : '',
+                            token: userReducer.token,
                             commentId: id
                           })
                         }
@@ -206,9 +208,9 @@ function Comment({
             clickFn: () => {
               if (type === 'comment') {
                 updateComment({
-                  name: 'd1074181068',
-                  repo: 'webdesign',
-                  token: tokenReducer.token,
+                  name: userName ? userName : '',
+                  repo: repo ? repo : '',
+                  token: userReducer.token,
                   commentId: id,
                   body: {
                     body: textAreaText
@@ -216,9 +218,9 @@ function Comment({
                 })
               } else {
                 updateIssue({
-                  name: 'd1074181068',
-                  repo: 'webdesign',
-                  token: tokenReducer.token,
+                  name: userName ? userName : '',
+                  repo: repo ? repo : '',
+                  token: userReducer.token,
                   issueNumber: issueId as string,
                   body: {
                     body: textAreaText

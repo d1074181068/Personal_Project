@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import MobileLink from './MobileLink'
 
 //custom
-import { storeToken } from '../../redux/tokenSlice'
+import { storeToken } from '../../redux/userSlice'
 import { supabase } from '../../utils/client'
 import { UserType, Session } from '../../types/supabaseType'
 import { RootState } from '../../redux/store'
@@ -53,6 +53,8 @@ const HumbergerBtnSVG = styled(ThreeBarsIcon)`
     cursor: pointer;
   }
 `
+
+const Logo = styled.div``
 const Icon = styled(MarkGithubIcon)`
   width: 32px;
   height: 32px;
@@ -176,9 +178,8 @@ const navBarTxt: string[] = ['Pull', 'Issues', 'Marketplace', 'Explore']
 function Header() {
   const [searchBarStyle, setSearchBarStyle] = useState(false)
   const [listActive, setListActive] = useState(false)
-  const { tokenReducer } = useSelector((store: RootState) => store)
+  const { userReducer } = useSelector((store: RootState) => store)
   const dispatch = useDispatch()
-
   const navigate = useNavigate()
   useEffect(() => {
     checkUser()
@@ -193,11 +194,12 @@ function Header() {
         localStorage.getItem('supabase.auth.token') as string
       )
       if (userLoginObj) {
-        localStorage.setItem(
-          'userToken',
-          userLoginObj.currentSession.provider_token
-        )
         dispatch(storeToken(userLoginObj.currentSession.provider_token))
+        localStorage.setItem(
+          'userName',
+          userLoginObj.currentSession.user.identities[0].identity_data
+            .preferred_username
+        )
       }
     }
   }
@@ -227,7 +229,10 @@ function Header() {
             }}>
             <HumbergerBtnSVG />
           </HumbergerBtn>
-          <Icon />
+          <Logo onClick={() => navigate('/')}>
+            <Icon />
+          </Logo>
+
           <SearchWrapper $isFocus={searchBarStyle}>
             <SearchBar
               $isFocus={searchBarStyle}
@@ -263,7 +268,7 @@ function Header() {
             <DropDown />
           </MoreActionButton>
 
-          {tokenReducer.token ? (
+          {userReducer.token ? (
             <SignBtn onClick={() => signOut()}>signOut</SignBtn>
           ) : (
             <SignBtn onClick={() => signInGithub()}>signIn</SignBtn>
@@ -273,7 +278,7 @@ function Header() {
       <MobileLink
         listActive={listActive}
         searchBarStyle={searchBarStyle}
-        userToken={tokenReducer.token}
+        userToken={userReducer.token}
         setSearchBarStyle={setSearchBarStyle}
         signOut={signOut}
         signInGithub={signInGithub}

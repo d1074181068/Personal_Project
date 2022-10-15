@@ -1,8 +1,8 @@
 //libraries
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { GearIcon } from '@primer/octicons-react'
 import { useDispatch, useSelector } from 'react-redux'
-
+import _ from 'lodash'
 //components
 import LabelItem from '../Label/LabelItem'
 import PopupMenu from '../IssueList/PopupMenu'
@@ -11,7 +11,7 @@ import PopupMenu from '../IssueList/PopupMenu'
 import { lightOrDark } from '../Label/HandleLabel'
 import { MenuContentType } from '../IssueList/PopupMenu'
 import { RootState } from '../../redux/store'
-import { handleAssignee, handleIssueBody } from '../../redux/issueSlice'
+import { handleAssignee } from '../../redux/issueSlice'
 import { useUpdateIssueMutation } from '../../redux/issueApiSlice'
 import { useParams } from 'react-router-dom'
 
@@ -22,6 +22,7 @@ type PropsType = {
   menuContent?: MenuContentType
   menuPos?: string
   updateOrigin: boolean
+  checked?: boolean
 }
 
 function FeatureMenu({
@@ -30,13 +31,16 @@ function FeatureMenu({
   organizeDataFn,
   menuContent,
   menuPos,
-  updateOrigin
+  updateOrigin,
+  checked
 }: PropsType) {
+  const repo = localStorage.getItem('repo')
+  const userName = localStorage.getItem('userName')
   const [featureMenuOpen, setFeatureMenuOpen] = useState(false)
-  const { issueReducer, tokenReducer } = useSelector(
-    (store: RootState) => store
-  )
+  const { issueReducer, userReducer } = useSelector((store: RootState) => store)
   const [updateIssue] = useUpdateIssueMutation()
+  const previousAssigneesArr = useRef<{ text: string; imageUrl: string }[]>()
+  const previousLabelsArr = useRef<{ text: string; colorCode: string }[]>()
   const { issueId } = useParams()
   const dispatch = useDispatch()
   return (
@@ -49,16 +53,31 @@ function FeatureMenu({
           type === 'other'
             ? () => {}
             : () => {
-                updateIssue({
-                  name: 'd1074181068',
-                  repo: 'webdesign',
-                  token: tokenReducer.token,
-                  issueNumber: issueId as string,
-                  body: {
-                    assignees: issueReducer.assignees.map(({ text }) => text),
-                    labels: issueReducer.labelName.map(({ text }) => text)
+                if (updateOrigin) {
+                  if (
+                    !_.isEqual(
+                      issueReducer.assignees,
+                      previousAssigneesArr.current
+                    ) ||
+                    !_.isEqual(
+                      issueReducer.labelName,
+                      previousLabelsArr.current
+                    )
+                  ) {
+                    updateIssue({
+                      name: userName ? userName : '',
+                      repo: repo ? repo : '',
+                      token: userReducer.token,
+                      issueNumber: issueId as string,
+                      body: {
+                        assignees: issueReducer.assignees.map(
+                          ({ text }) => text
+                        ),
+                        labels: issueReducer.labelName.map(({ text }) => text)
+                      }
+                    })
                   }
-                })
+                }
                 setFeatureMenuOpen(false)
               }
         }></div>
@@ -69,6 +88,8 @@ function FeatureMenu({
             ? () => {}
             : () => {
                 organizeDataFn()
+                previousAssigneesArr.current = issueReducer.assignees
+                previousLabelsArr.current = issueReducer.labelName
                 setFeatureMenuOpen(true)
               }
         }>
@@ -82,10 +103,12 @@ function FeatureMenu({
           <></>
         ) : (
           <PopupMenu
+            withDismissButton={false}
             menuOpenStatus={featureMenuOpen}
             setMenuStatusFn={setFeatureMenuOpen}
             menuContent={menuContent}
             left={menuPos}
+            checked={checked}
             breakPoint={'md'}
           />
         )}
@@ -110,9 +133,9 @@ function FeatureMenu({
                   )
                   if (updateOrigin) {
                     updateIssue({
-                      name: 'd1074181068',
-                      repo: 'webdesign',
-                      token: tokenReducer.token,
+                      name: userName ? userName : '',
+                      repo: repo ? repo : '',
+                      token: userReducer.token,
                       issueNumber: issueId as string,
                       body: {
                         assignees: ['d1074181068']

@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { XIcon, CheckIcon } from '@primer/octicons-react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  addLabelFilterText,
-  deleteLabelFilterText,
   updateAssigneeUser,
   resetLabelFilterText,
   sortIssue
@@ -39,19 +37,23 @@ type PropsType = {
   bottom?: string
   breakPoint?: string
   menuOpenStatus: boolean
+  withDismissButton: boolean
   setMenuStatusFn: React.Dispatch<React.SetStateAction<boolean>>
   menuContent?: MenuContentType
+  checked?: boolean
 }
 
 function PopupMenu({
   menuOpenStatus,
   setMenuStatusFn,
+  withDismissButton,
   breakPoint,
   top,
   left,
   right,
   bottom,
-  menuContent
+  menuContent,
+  checked
 }: PropsType) {
   const dispatch = useDispatch()
   const { queryReducer, issueReducer } = useSelector(
@@ -67,12 +69,13 @@ function PopupMenu({
             breakPoint === 'md' ? 'md:absolute' : 'sm:absolute'
           } ${
             menuOpenStatus ? 'block' : 'hidden'
-          } ${top} ${left} ${right} ${bottom} top-[20px] right-1 left-1 z-[400] max-h-[480px] overflow-y-auto rounded-lg border border-solid border-borderGray bg-white ${
+          } ${top} ${left} ${right} ${bottom} top-[20px] right-1 left-1 z-[400] rounded-lg border border-solid border-borderGray bg-white ${
             breakPoint === 'md' ? 'md:w-[300px]' : 'sm:w-[300px]'
           }`}>
           <div className='flex items-center justify-between rounded-tl-lg rounded-tr-lg border-b border-solid border-borderGray px-3 py-2'>
             <h3 className='text-[12px] font-medium'>{menuContent.title}</h3>
             <button
+              className={`${withDismissButton ? 'block' : 'hidden'}`}
               onClick={(e) => {
                 e.stopPropagation()
                 setMenuStatusFn(false)
@@ -130,80 +133,99 @@ function PopupMenu({
                 </div>
               )
             })}
-          {menuContent.content &&
-            menuContent.content.map(
-              ({ icon, text, desc, userImage, userName }, index) => {
-                return (
-                  <div className='relative' key={index}>
-                    <button
-                      className={`${
-                        searchInputText?.trim() === ''
-                          ? 'flex'
-                          : text
-                              ?.toUpperCase()
-                              ?.includes(searchInputText.toUpperCase()) ||
-                            desc
-                              ?.toUpperCase()
-                              ?.includes(searchInputText.toUpperCase()) ||
-                            userName
-                              ?.toUpperCase()
-                              ?.includes(searchInputText.toUpperCase())
-                          ? 'flex'
-                          : 'hidden'
-                      }  w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray`}
-                      onClick={(e) => {
-                        if (menuContent.clickFn) {
-                          e.stopPropagation()
-                          let argObj = {}
-                          if (text) {
-                            argObj = { text, colorCode: icon }
-                          } else {
-                            argObj = { imageUrl: userImage, text: userName }
-                          }
-                          menuContent.clickFn(argObj)
-                        }
-                      }}>
-                      <div
+          <div className='max-h-[480px] overflow-y-auto'>
+            {menuContent.content &&
+              menuContent.content.map(
+                ({ icon, text, desc, userImage, userName }, index) => {
+                  return (
+                    <div className='relative' key={index}>
+                      <button
                         className={`${
-                          queryReducer.labelName.includes(text as string)
-                            ? 'block'
-                            : queryReducer.assigneeUser === userName
-                            ? 'block'
-                            : issueReducer.labelName.find(
-                                (item) => item.text === text
-                              )
-                            ? 'block'
-                            : issueReducer.assignees.find(
-                                (item) => item.text === userName
-                              )
-                            ? 'blcok'
+                          searchInputText?.trim() === ''
+                            ? 'flex'
+                            : text
+                                ?.toUpperCase()
+                                ?.includes(searchInputText.toUpperCase()) ||
+                              desc
+                                ?.toUpperCase()
+                                ?.includes(searchInputText.toUpperCase()) ||
+                              userName
+                                ?.toUpperCase()
+                                ?.includes(searchInputText.toUpperCase())
+                            ? 'flex'
                             : 'hidden'
-                        } absolute left-[10px] top-[13px]`}>
-                        <CheckIcon />
-                      </div>
-                      {icon && (
-                        <span
-                          style={{ backgroundColor: icon }}
-                          className={`mr-1 block h-[14px] w-[14px] rounded-circle ${icon}`}></span>
-                      )}
-                      {userImage && (
-                        <img
-                          src={userImage}
-                          alt='userImage'
-                          className={`mr-1 block h-[14px] w-[14px] rounded-circle `}
-                        />
-                      )}
-                      <span className='font-medium'>
-                        {text ? text : userName}
-                        {desc && (
-                          <span className='mt-1 block font-normal'>{desc}</span>
+                        }  w-full border-0 border-b ${
+                          index ===
+                          (((
+                            menuContent.content as {
+                              icon?: string
+                              text?: string
+                              desc?: string
+                              userName?: string
+                              userImage?: string
+                            }[]
+                          ).length - 1) as number)
+                            ? 'border-b-0'
+                            : ''
+                        } border-solid border-borderGray py-2 pl-4 text-left hover:bg-commonBgGray`}
+                        onClick={(e) => {
+                          if (menuContent.clickFn) {
+                            e.stopPropagation()
+                            let argObj = {}
+                            if (text) {
+                              argObj = { text, colorCode: icon }
+                            } else {
+                              argObj = { imageUrl: userImage, text: userName }
+                            }
+                            menuContent.clickFn(argObj)
+                          }
+                        }}>
+                        <div
+                          className={`${
+                            queryReducer.labelName.includes(text as string)
+                              ? 'block'
+                              : queryReducer.assigneeUser === userName
+                              ? 'block'
+                              : issueReducer.labelName.find(
+                                  (item) => item.text === text
+                                )
+                              ? 'block'
+                              : issueReducer.assignees.find(
+                                  (item) => item.text === userName
+                                )
+                              ? 'block'
+                              : checked
+                              ? 'block'
+                              : 'hidden'
+                          }  absolute left-[10px] top-[13px]`}>
+                          <CheckIcon />
+                        </div>
+                        {icon && (
+                          <span
+                            style={{ backgroundColor: icon }}
+                            className={`mr-1 block h-[14px] w-[14px] rounded-circle ${icon}`}></span>
                         )}
-                      </span>
-                    </button>
-                  </div>
-                )
-              }
-            )}
+                        {userImage && (
+                          <img
+                            src={userImage}
+                            alt='userImage'
+                            className={`mr-1 block h-[14px] w-[14px] rounded-circle `}
+                          />
+                        )}
+                        <span className='font-medium'>
+                          {text ? text : userName}
+                          {desc && (
+                            <span className='mt-1 block font-normal'>
+                              {desc}
+                            </span>
+                          )}
+                        </span>
+                      </button>
+                    </div>
+                  )
+                }
+              )}
+          </div>
         </div>
       )}
     </>

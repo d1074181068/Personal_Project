@@ -7,7 +7,7 @@ const initialState: {
   token: ''
 }
 
-export const tokenSlice = createSlice({
+export const userSlice = createSlice({
   name: 'query',
   initialState: initialState,
   reducers: {
@@ -17,5 +17,5 @@ export const tokenSlice = createSlice({
   }
 })
 
-export const { storeToken } = tokenSlice.actions
-export default tokenSlice.reducer
+export const { storeToken } = userSlice.actions
+export default userSlice.reducer

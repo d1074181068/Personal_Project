@@ -38,10 +38,10 @@ import { RootState } from '../../redux/store'
 import { calculateTime } from '../IssueList/IssueItem'
 
 function Issue() {
+  const repo = localStorage.getItem('repo')
   const navigate = useNavigate()
-  const { tokenReducer, issueReducer } = useSelector(
-    (store: RootState) => store
-  )
+  const userName = localStorage.getItem('userName')
+  const { userReducer, issueReducer } = useSelector((store: RootState) => store)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
   const [fixedHeaderStatus, setFixedHeaderStatus] = useState(false)
   const [editTitle, setEditTitle] = useState(false)
@@ -62,9 +62,9 @@ function Issue() {
     isLoading: issueLoading,
     isError: issueError
   } = useGetIssueQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token,
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token,
     issueId: issueId ? issueId : ''
   })
   const {
@@ -72,9 +72,9 @@ function Issue() {
     isLoading: timelineLoading,
     isError: timelineError
   } = useGetTimelineQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token,
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token,
     issueId: issueId ? issueId : ''
   })
   const {
@@ -82,18 +82,18 @@ function Issue() {
     isLoading: labelLoading,
     isError: labelError
   } = useGetLabelQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token
   })
   const {
     data: assigneeData,
     isLoading: assigneeLoading,
     isError: assignError
   } = useGetAllAssigneesQuery({
-    name: 'd1074181068',
-    repo: 'webdesign',
-    token: tokenReducer.token
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token
   })
   const commentsData = timelineData?.filter(
     (item) => item.event === 'commented'
@@ -228,14 +228,18 @@ function Issue() {
   if (issueLoading || labelLoading || assigneeLoading || timelineLoading) {
     return <>Loading...</>
   }
-  if (
-    assignError ||
-    issueError ||
-    labelError ||
-    timelineError ||
-    !tokenReducer.token
-  )
-    return <NotLogin>你尚未登入</NotLogin>
+  if (!userReducer.token) return <NotLogin>你尚未登入</NotLogin>
+
+  if (assignError || issueError || labelError || timelineError) {
+    if (!repo) {
+      alert('你尚未選擇repo,即將跳轉頁面')
+      navigate('/')
+      return <>error</>
+    } else {
+      return <>Error</>
+    }
+  }
+
   if (issueSuccess) {
     initTitleText.current = issueData.title
   }
@@ -304,9 +308,9 @@ function Issue() {
                   clickFn={async () => {
                     setUpdateTitleLoading(true)
                     await updateIssue({
-                      name: 'd1074181068',
-                      repo: 'webdesign',
-                      token: tokenReducer.token,
+                      name: userName ? userName : '',
+                      repo: repo ? repo : '',
+                      token: userReducer.token,
                       issueNumber: issueId as string,
                       body: {
                         title: editTitleText
@@ -514,9 +518,9 @@ function Issue() {
                       hoverColor: '#2c974b',
                       clickFn: async () => {
                         await createComment({
-                          name: 'd1074181068',
-                          repo: 'webdesign',
-                          token: tokenReducer.token,
+                          name: userName ? userName : '',
+                          repo: repo ? repo : '',
+                          token: userReducer.token,
                           issueNumber: issueId as string,
                           body: {
                             body: issueReducer.content.body
