@@ -5,14 +5,16 @@ import {
   IssueOpenedIcon,
   SkipIcon
 } from '@primer/octicons-react'
-import LabelItem from '../Label/LabelItem'
+import { useNavigate } from 'react-router-dom'
 
 //components
 import HoverTitleEffect from './HoverTitleEffect'
+import LabelItem from '../Label/LabelItem'
 
 //custom
 import { lightOrDark } from '../Label/HandleLabel'
-import { useNavigate } from 'react-router-dom'
+import { resetAllFilter } from '../../redux/querySlice'
+import { useDispatch } from 'react-redux'
 
 type PropsType = {
   title: string
@@ -67,6 +69,7 @@ function IssueItem({
   ownerImg
 }: PropsType) {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   return (
     <li className=' relative z-[24px] flex cursor-pointer border-b border-solid border-borderGray bg-white p-2 last:rounded-br last:rounded-bl hover:bg-commonBgGray sm:border sm:border-t-0'>
       {state === 'open' ? (
@@ -79,7 +82,10 @@ function IssueItem({
       <div className='ml-2 flex grow flex-col items-start md:flex-row md:flex-wrap '>
         <button
           className='group mb-1 text-[16px] font-medium hover:text-hoverBlue md:mr-1'
-          onClick={() => navigate(`/issue/${number}`)}>
+          onClick={() => {
+            dispatch(resetAllFilter())
+            navigate(`/issue/${number}`)
+          }}>
           {title}
           {
             //TODO : fix hoverItem bug

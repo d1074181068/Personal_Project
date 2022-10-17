@@ -1,5 +1,5 @@
 //Libraries
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   MarkdownIcon,
   InfoIcon,
@@ -17,18 +17,12 @@ import {
   ItalicIcon,
   ListUnorderedIcon,
   ListOrderedIcon,
-  TasklistIcon,
-  TriangleDownIcon,
-  IssueReopenedIcon,
-  IssueClosedIcon,
-  SkipIcon,
-  CheckIcon
+  TasklistIcon
 } from '@primer/octicons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { marked } from 'marked'
 import TextareaMarkdown, { TextareaMarkdownRef } from 'textarea-markdown-editor'
 import hljs from 'highlight.js'
-import { useParams } from 'react-router-dom'
 
 //components
 import GithubBtn from '../../components/Content/GithubBtn'
@@ -40,7 +34,6 @@ import {
   handleIssueBody,
   githubAction
 } from '../../redux/issueSlice'
-import { useUpdateIssueMutation } from '../../redux/issueApiSlice'
 import '../../utils/markdownStyle.css'
 import 'highlight.js/styles/github.css'
 
@@ -293,8 +286,8 @@ function UserControlIssue({
         <TextareaMarkdown.Wrapper ref={ref}>
           <textarea
             placeholder='Leave a comment'
-            className=' mb-[-2px] min-h-[200px] w-full resize-y rounded border-b border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] md:rounded-b-none md:border-dashed'
-            value={textAreaText ? textAreaText : issueReducer.content.body}
+            className='mb-[-2px] min-h-[200px] w-full resize-y rounded border-b border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] focus-visible:outline-hoverBlue md:rounded-b-none md:border-dashed'
+            value={setTextAreaText ? textAreaText : issueReducer.content.body}
             onChange={(e) => {
               if (setTextAreaText) {
                 setTextAreaText(e.target.value)
@@ -348,7 +341,7 @@ function UserControlIssue({
       <div
         className={`${
           mobileExist ? 'block' : 'hidden'
-        } mt-2 items-center justify-between md:flex`}>
+        } mt-2 items-center justify-between md:flex md:flex-wrap`}>
         <a
           href='https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax'
           className='hidden items-center text-[#57606a] hover:text-hoverBlue md:flex'>
@@ -357,7 +350,7 @@ function UserControlIssue({
           </div>
           Styling with Markdown is supported
         </a>
-        <div className='flex justify-end text-[12px] '>
+        <div className='flex justify-end text-[12px] md:ml-auto md:mt-1 '>
           {cancelBtn && (
             <div className='mr-1'>
               <GithubBtn
@@ -385,7 +378,13 @@ function UserControlIssue({
               textColor={actionBtn.textColor}
               hoverColor={actionBtn?.hoverColor}
               widthFull={actionBtn?.widthFull}
-              $disabled={issueReducer.content.body === '' ? true : false}
+              $disabled={
+                issueReducer.content.body === ''
+                  ? textAreaText === ''
+                    ? true
+                    : false
+                  : false
+              }
               clickFn={actionBtn?.clickFn}
             />
           )}

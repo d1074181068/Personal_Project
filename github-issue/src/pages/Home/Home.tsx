@@ -45,7 +45,7 @@ function Home() {
             return (
               <li
                 onClick={() => {
-                  localStorage.setItem('repo', name)
+                  sessionStorage.setItem('repo', name)
                   navigate(`/issueList`)
                 }}
                 key={name}

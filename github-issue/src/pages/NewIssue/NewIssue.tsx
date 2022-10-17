@@ -169,6 +169,7 @@ function NewIssue() {
             textColor={'white'}
             hoverColor={'#2c974b'}
             widthFull={'100%'}
+            $disabled={issueReducer.content.body === '' ? true : false}
             clickFn={() => {
               createIssue({
                 name: userName ? userName : '',
@@ -182,7 +183,7 @@ function NewIssue() {
                 }
               })
               dispatch(resetIssueContent())
-              navigate('/')
+              navigate('/issueList')
             }}
           />
         </div>

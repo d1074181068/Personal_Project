@@ -32,8 +32,7 @@ import {
   resetAllFilter,
   addLabelFilterText,
   deleteLabelFilterText,
-  updateAssigneeUser,
-  resetLabelFilterText
+  updateAssigneeUser
 } from '../../redux/querySlice'
 import { LabelType, Assignee } from '../../types/issueType'
 import { MenuContentType } from './PopupMenu'
@@ -64,6 +63,7 @@ function IssueList() {
   const [page, setPage] = useState(1)
   const dispatch = useDispatch()
   const { queryReducer, userReducer } = useSelector((store: RootState) => store)
+
   let inputText = 'is:issue '
   for (const key in queryReducer) {
     if (key === 'issueState') {

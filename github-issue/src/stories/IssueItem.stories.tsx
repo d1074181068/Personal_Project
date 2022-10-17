@@ -3,8 +3,8 @@ import { Meta, Story } from '@storybook/react'
 import IssueItem from '../pages/IssueList/IssueItem'
 import { Provider } from 'react-redux'
 import { store } from '../redux/store'
-import '../../index.css'
-import '../../../.storybook/globalstyle.css'
+import '../index.css'
+import '../../.storybook/globalstyle.css'
 
 type StorybookType = {
   title: string

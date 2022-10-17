@@ -125,7 +125,7 @@ export const issueApiSlice = apiSlice.injectEndpoints({
           body: body
         }
       },
-      invalidatesTags: ['issue_id']
+      invalidatesTags: ['issue_id', 'issue']
     }),
     createComment: builder.mutation<Comment, CreateCommentParams>({
       query: ({ name, repo, body, token, issueNumber }) => ({
