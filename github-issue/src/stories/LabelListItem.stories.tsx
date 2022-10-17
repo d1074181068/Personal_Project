@@ -8,6 +8,7 @@ type StorybookType = {
   labelDesc: string
   useLabelIssueQty: number
   colorCode: string
+  labelData: string[]
 }
 
 export default {
@@ -34,6 +35,7 @@ const Template: Story<StorybookType> = (args: StorybookType) => (
 export const Default = Template.bind({})
 Default.args = {
   labelName: 'Frank',
+  labelData: [''],
   labelDesc: 'Frank is coming',
   useLabelIssueQty: 2,
   colorCode: '#FF0000'

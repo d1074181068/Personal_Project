@@ -1,5 +1,5 @@
 //Libraries
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { SyncIcon } from '@primer/octicons-react'
 
@@ -15,6 +15,7 @@ type PropsType = {
   initLabelColorCode?: string
   initDesctext: string
   moreBtnTextList?: string[]
+  labelData: string[]
   mainTitle: string
   subTitle: string
   confirmButtonText: string
@@ -282,6 +283,7 @@ function HandleLabel({
   initDesctext,
   initLabelColorCode,
   moreBtnTextList,
+  labelData,
   mainTitle,
   mainPlaceholder,
   subTitle,
@@ -309,7 +311,7 @@ function HandleLabel({
   )
   const [colorPickerShow, setColorPickerShow] = useState(false)
   const [description, setDescription] = useState(initDesctext)
-  const currentColorCode = useRef<string>(colorCode)
+
   function checkAndSetColorCode(eventTarget: HTMLInputElement) {
     let inputValue = eventTarget.value
     let colorMode = ''
@@ -340,7 +342,7 @@ function HandleLabel({
         setColorCode(inputValue)
         return
       }
-      currentColorCode.current = inputValue
+      setColorCode(inputValue)
     } else {
       setErrorColorCodeStatus(true)
     }
@@ -351,7 +353,7 @@ function HandleLabel({
       <LabelWrapper>
         <LabelItem
           labelName={labelText === '' ? 'Label preview' : labelText}
-          colorCode={currentColorCode.current}
+          colorCode={colorCode}
           textColor={textColor}
         />
         {moreBtnTextList &&
@@ -374,6 +376,9 @@ function HandleLabel({
             onChange={(e) => {
               if (e.target.value.length === 0) {
                 setInputEmptyStatus(true)
+              } else if (e.target.value.length > 30) {
+                setInputEmptyStatus(true)
+                return
               } else {
                 setInputEmptyStatus(false)
               }
@@ -386,22 +391,27 @@ function HandleLabel({
           <SubInput
             value={description}
             placeholder={subPlaceholder}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length > 50) {
+                setInputEmptyStatus(false)
+                return
+              }
+              setDescription(e.target.value)
+            }}
           />
         </SubInputWrapper>
         <ColorSelectWrapper>
           <Title>ColorCode</Title>
           <RandomWrapper>
             <RandomColorBtn
-              colorCode={currentColorCode.current}
+              colorCode={colorCode}
               onClick={() => {
                 const colorCode = randomHexColor()
                 const textColor = lightOrDark(colorCode)
-                currentColorCode.current = colorCode
+                setErrorColorCodeStatus(false)
                 setColorCode(colorCode)
                 setTextcolor(textColor)
-              }}
-            >
+              }}>
               <RandomColorBtnIcon fillColor={textColor} />
             </RandomColorBtn>
             <RandomColorInput
@@ -422,7 +432,6 @@ function HandleLabel({
                         colorCode={color}
                         onClick={() => {
                           setColorCode(color)
-                          currentColorCode.current = color
                           setTextcolor(lightOrDark(color))
                           setColorPickerShow(false)
                           setErrorColorCodeStatus(false)
@@ -440,7 +449,6 @@ function HandleLabel({
                         colorCode={color}
                         onClick={() => {
                           setColorCode(color)
-                          currentColorCode.current = color
                           setTextcolor(lightOrDark(color))
                           setColorPickerShow(false)
                         }}
@@ -468,14 +476,8 @@ function HandleLabel({
                 cancelClickFn
                   ? () => {
                       setLabelText(initLabelText)
-                      setColorCode(
-                        (initLabelColorCode as string)
-                          ? (initLabelColorCode as string)
-                          : randomHexColor()
-                      )
-                      currentColorCode.current = initLabelColorCode
-                        ? initLabelColorCode
-                        : randomHexColor()
+                      setDescription(initDesctext)
+                      setColorCode(initLabelColorCode || randomHexColor())
                       setErrorColorCodeStatus(false)
                       setInputEmptyStatus(initLabelText ? false : true)
                       cancelClickFn()
@@ -495,16 +497,19 @@ function HandleLabel({
               clickFn={
                 createlabelFn
                   ? () => {
+                      if (labelData.includes(labelText)) {
+                        window.alert('Label已存在')
+                        return
+                      }
                       if (cancelClickFn) cancelClickFn()
                       setLabelText(initLabelText)
+                      setDescription('')
+
                       setColorCode(
                         (initLabelColorCode as string)
                           ? (initLabelColorCode as string)
                           : randomHexColor()
                       )
-                      currentColorCode.current = initLabelColorCode
-                        ? initLabelColorCode
-                        : randomHexColor()
                       createlabelFn(
                         labelText,
                         colorCode.split('#')[1],
@@ -513,6 +518,13 @@ function HandleLabel({
                     }
                   : updatelabelFn
                   ? () => {
+                      if (
+                        labelText !== initLabelText &&
+                        labelData.includes(labelText)
+                      ) {
+                        window.alert('Label已存在')
+                        return
+                      }
                       if (cancelClickFn) cancelClickFn()
                       updatelabelFn(
                         labelText,

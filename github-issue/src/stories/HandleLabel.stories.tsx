@@ -14,6 +14,7 @@ type StorybookType = {
   subPlaceholder: string
   confirmButtonText: string
   undoButtonText: string
+  labelData: string[]
   cancelClickFn: () => void
 }
 
@@ -37,6 +38,7 @@ Default.args = {
   initLabelColorCode: '#FF0000',
   initDesctext: 'hello',
   moreBtnTextList: ['Delete'],
+  labelData: [''],
   mainTitle: 'Label name',
   mainPlaceholder: 'Label name',
   subTitle: 'Description',

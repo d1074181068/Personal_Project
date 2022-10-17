@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { TagIcon, MilestoneIcon } from '@primer/octicons-react'
-import { click } from '@testing-library/user-event/dist/click'
 
 type SubNavType = {
   $isAcitve: boolean
@@ -17,6 +16,10 @@ const SubNavLabelBtn = styled.button<SubNavType>`
   background-color: ${(props) =>
     props.$isAcitve ? 'rgb(9,105,218)' : 'white'};
   color: ${(props) => (props.$isAcitve ? 'white' : 'black')};
+  :hover {
+    background-color: ${(props) =>
+      props.$isAcitve ? 'rgb(9,105,218)' : '#f6f8fa'};
+  }
 `
 const LabelBtnIcon = styled(TagIcon)`
   margin-right: 5px;
@@ -34,6 +37,10 @@ const SubNavMilestonesBtn = styled.button<SubNavType>`
   background-color: ${(props) =>
     props.$isAcitve ? 'rgb(9,105,218)' : 'white'};
   color: ${(props) => (props.$isAcitve ? 'white' : 'black')};
+  :hover {
+    background-color: ${(props) =>
+      props.$isAcitve ? 'rgb(9,105,218)' : '#f6f8fa'};
+  }
 `
 const MilestonesBtnIcon = styled(MilestoneIcon)`
   margin-right: 5px;

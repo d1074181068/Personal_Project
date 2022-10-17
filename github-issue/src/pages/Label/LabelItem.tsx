@@ -41,7 +41,7 @@ function LabelItem({
     <Label
       colorCode={colorCode}
       textColor={textColor}
-      border={border}
+      border={colorCode === '#FFFFFF' ? '1px solid rgb(191,191,191)' : border}
       padding={padding}>
       {icon && <LabelIcon>{icon}</LabelIcon>}
       {labelName}

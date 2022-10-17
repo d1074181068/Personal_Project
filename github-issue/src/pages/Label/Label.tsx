@@ -117,10 +117,10 @@ function Label() {
       return <>Error</>
     }
   }
-
   if (isLoading) {
     return <>Loading...</>
   }
+  const labelData = data?.map(({ name }: { name: string }) => name)
   return (
     <Wrapper>
       <Navbar>
@@ -145,6 +145,7 @@ function Label() {
         <HandleLabel
           initLabelText={''}
           initDesctext={''}
+          labelData={labelData || ['']}
           mainTitle={'Label name'}
           mainPlaceholder={'Label name'}
           subTitle={'Description'}
@@ -193,6 +194,7 @@ function Label() {
               return (
                 <LabelListItem
                   labelName={name}
+                  labelData={labelData || ['']}
                   labelDesc={description ? description : ''}
                   useLabelIssueQty={2}
                   colorCode={`#${color}`}

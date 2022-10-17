@@ -20,6 +20,7 @@ type PropsType = {
   labelDesc: string
   useLabelIssueQty: number
   colorCode: string
+  labelData: string[]
 }
 
 type Display = {
@@ -90,7 +91,8 @@ function LabelListItem({
   labelName,
   labelDesc,
   useLabelIssueQty,
-  colorCode
+  colorCode,
+  labelData
 }: PropsType) {
   const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
@@ -131,12 +133,16 @@ function LabelListItem({
               <ActionBtn
                 btnText={'Delete'}
                 clickFn={() => {
-                  deleteLabel({
-                    name: userName ? userName : '',
-                    repo: repo ? repo : '',
-                    labelName: tagName.current,
-                    token: userReducer.token
-                  })
+                  const confirmDelete = window.confirm(
+                    'Are you sure? Deleting a label will remove it from all issues and pull requests.'
+                  )
+                  if (confirmDelete)
+                    deleteLabel({
+                      name: userName ? userName : '',
+                      repo: repo ? repo : '',
+                      labelName: tagName.current,
+                      token: userReducer.token
+                    })
                 }}
               />
             </MarginWrapper>
@@ -164,6 +170,7 @@ function LabelListItem({
           initLabelText={labelName}
           initDesctext={labelDesc}
           initLabelColorCode={colorCode}
+          labelData={labelData}
           moreBtnTextList={['Delete']}
           mainTitle={'Label name'}
           mainPlaceholder={'Label name'}
