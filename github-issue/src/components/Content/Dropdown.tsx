@@ -1,0 +1,119 @@
+//Libraries
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import { TriangleDownIcon, CheckIcon } from '@primer/octicons-react'
+
+//components
+type PropType = {
+  text: string
+  dropdownText: string[]
+  top?: string
+  left?: string
+  right?: string
+}
+type IconPropsType = {
+  isClick: string
+}
+export type DropdownPropsType = {
+  open: string
+  top?: string
+  left?: string
+  right?: string
+}
+const Wrapper = styled.div`
+  position: relative;
+`
+const Btn = styled.button`
+  color: rgb(87, 96, 106);
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+`
+
+const DropdownList = styled.ul<DropdownPropsType>`
+  display: ${(props) => props.open};
+  width: 300px;
+  background-color: white;
+  position: absolute;
+  top: ${(props) => (props.top ? props.top : 'unset')};
+  right: ${(props) => (props.right ? props.right : 'unset')};
+  left: ${(props) => (props.left ? props.left : 'unset')};
+  border: 1px solid rgb(208, 215, 222);
+  border-radius: 6px;
+  list-style: none;
+  padding-left: 0px;
+  z-index: 199;
+`
+const DropdownItem = styled.li`
+  position: relative;
+  padding: 10px 30px;
+  border-bottom: 1px solid rgb(208, 215, 222);
+  text-align: left;
+  cursor: pointer;
+  :hover {
+    background-color: rgb(246, 248, 250);
+  }
+  :first-child {
+    padding-left: 10px;
+    font-weight: 500;
+  }
+  :last-child {
+    border-bottom: none;
+  }
+`
+const DropdownCheckIcon = styled(CheckIcon)<IconPropsType>`
+  display: ${(props) => props.isClick}!important;
+  position: absolute;
+  left: 8px;
+  top: 9px;
+`
+export const OutSideWrapper = styled.div<DropdownPropsType>`
+  display: ${(props) => props.open};
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 99;
+`
+
+function Dropdown({ text, dropdownText, top, left, right }: PropType) {
+  const [currentClickItem, setCurrentClickItem] = useState(1)
+  const [dropdownStatus, setDropdownStatus] = useState(false)
+  return (
+    <Wrapper>
+      <Btn onClick={() => setDropdownStatus((prev) => !prev)}>
+        {text}
+        <TriangleDownIcon />
+      </Btn>
+      <OutSideWrapper
+        open={dropdownStatus ? 'block' : 'none'}
+        onClick={() => setDropdownStatus((prev) => !prev)}
+      />
+      <DropdownList
+        open={dropdownStatus ? 'block' : 'none'}
+        top={top}
+        right={right}
+        left={left}>
+        {dropdownText.map((item, index) => {
+          return index === 0 ? (
+            <DropdownItem key={index}>{text}</DropdownItem>
+          ) : (
+            <DropdownItem
+              key={index}
+              onClick={() => setCurrentClickItem(index)}>
+              <DropdownCheckIcon
+                isClick={index === currentClickItem ? 'block' : 'none'}
+              />
+              {item}
+            </DropdownItem>
+          )
+        })}
+      </DropdownList>
+    </Wrapper>
+  )
+}
+
+export default Dropdown
