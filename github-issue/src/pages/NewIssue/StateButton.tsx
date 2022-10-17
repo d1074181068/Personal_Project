@@ -23,7 +23,7 @@ type PropsType = {
 }
 
 function StateButton({ state, stateReason }: PropsType) {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
   const [statusButtonDropdown, setStatusButtonDropdown] = useState(false)
   const { issueReducer, userReducer } = useSelector((store: RootState) => store)

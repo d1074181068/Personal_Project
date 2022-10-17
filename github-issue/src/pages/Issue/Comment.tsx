@@ -49,7 +49,7 @@ function Comment({
   reactions,
   type
 }: PropsType) {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const [actionMenuToggle, setActionMenuToggle] = useState(false)
   const userName = localStorage.getItem('userName')
   const [editTextareaToggle, setEditTexrareaToggle] = useState(false)

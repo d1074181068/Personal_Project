@@ -25,7 +25,7 @@ import { NotLogin } from '../Label/Label'
 import { useNavigate } from 'react-router-dom'
 
 function NewIssue() {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
   const { userReducer, issueReducer } = useSelector((store: RootState) => store)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()

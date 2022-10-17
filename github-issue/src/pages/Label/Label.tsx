@@ -96,7 +96,7 @@ export const NotLogin = styled.div`
 `
 
 function Label() {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
   const navigate = useNavigate()
   const { userReducer } = useSelector((store: RootState) => store)

@@ -34,7 +34,7 @@ function FeatureMenu({
   updateOrigin,
   checked
 }: PropsType) {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
   const [featureMenuOpen, setFeatureMenuOpen] = useState(false)
   const { issueReducer, userReducer } = useSelector((store: RootState) => store)

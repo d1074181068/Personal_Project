@@ -50,7 +50,7 @@ export interface ContentType {
 const headerTextArr = ['Label', 'Assignee', 'Sort']
 
 function IssueList() {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
   const [menuOpenStatus, setMenuOpenStatus] = useState(false)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()

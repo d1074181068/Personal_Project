@@ -38,7 +38,7 @@ import { RootState } from '../../redux/store'
 import { calculateTime } from '../IssueList/IssueItem'
 
 function Issue() {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const navigate = useNavigate()
   const userName = localStorage.getItem('userName')
   const { userReducer, issueReducer } = useSelector((store: RootState) => store)
@@ -225,9 +225,10 @@ function Issue() {
       observer.current.observe(node)
     }
   }, [])
-  if (issueLoading || labelLoading || assigneeLoading || timelineLoading) {
-    return <>Loading...</>
-  }
+  if (issueSuccess)
+    if (issueLoading || labelLoading || assigneeLoading || timelineLoading) {
+      return <>Loading...</>
+    }
   if (!userReducer.token) return <NotLogin>你尚未登入</NotLogin>
 
   if (assignError || issueError || labelError || timelineError) {

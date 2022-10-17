@@ -92,7 +92,7 @@ function LabelListItem({
   useLabelIssueQty,
   colorCode
 }: PropsType) {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
   const [areaOfEditLabel, setAreaOfEditLabel] = useState(false)
   const textColor = lightOrDark(colorCode)
