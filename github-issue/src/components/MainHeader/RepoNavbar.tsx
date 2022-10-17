@@ -9,11 +9,13 @@ type NavbarButton = {
   isClick: (event: EventTarget) => void
   $isActive: boolean
   index: number
+  issueDataLength: number
 }
 type TypeActive = {
   $isActive: boolean
 }
 const RepoNavbarItem = styled.li<TypeActive>`
+  color: rgb(36, 41, 47);
   min-height: 40px;
   border-bottom: ${(props) => (props.$isActive ? '2px solid #FD8C73' : 'none')};
   font-weight: ${(props) => (props.$isActive ? 'bolder' : 'normal')};
@@ -32,17 +34,30 @@ const BtnWrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 0px 10px;
+  :nth-child(1) {
+    padding-left: 8px;
+  }
   border-radius: 6px;
   :hover {
     background-color: rgba(208, 215, 222, 0.32);
   }
 `
+const Count = styled.span`
+  margin-left: 5px;
+  padding: 4px 6px;
+  border-radius: 24px;
+  font-weight: normal;
+  font-size: 12px;
+  background-color: rgba(175, 184, 193, 0.2);
+`
+
 function RepoNavbar({
   index,
   iconComponent,
   $text,
   isClick,
-  $isActive
+  $isActive,
+  issueDataLength
 }: NavbarButton) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -65,6 +80,7 @@ function RepoNavbar({
         </IconWrapper>
 
         <NavbarBtn>{$text}</NavbarBtn>
+        {index === 1 && <Count>{issueDataLength}</Count>}
       </BtnWrapper>
     </RepoNavbarItem>
   )

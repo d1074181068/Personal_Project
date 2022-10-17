@@ -19,12 +19,15 @@ import {
   StarIcon,
   TriangleDownIcon
 } from '@primer/octicons-react'
+import { useNavigate } from 'react-router-dom'
 
 //components
 import PageHeaderAction from './PageHeaderAction'
 import RepoNavbar from './RepoNavbar'
+
+//custom
 import { RootState } from '../../redux/store'
-import { useNavigate } from 'react-router-dom'
+import { useGetAllIssueQuery } from '../../redux/issueApiSlice'
 
 type FontType = {
   fontBold: boolean
@@ -71,7 +74,6 @@ const RepoNavbarList = styled.ul`
   display: flex;
   gap: 8px;
   align-items: center;
-  margin-left: 10px;
   overflow-x: auto;
 `
 
@@ -94,10 +96,10 @@ const pageActionArr = [
   [<StarIcon />, 'Star', 0, <TriangleDownIcon />]
 ]
 function MainHeader() {
-  const repo = localStorage.getItem('repo')
+  const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
   const [clickItem, setClickItem] = useState('Issues')
-  const { userReducer } = useSelector((store: RootState) => store)
+  const { userReducer, queryReducer } = useSelector((store: RootState) => store)
   const navigate = useNavigate()
   function isClick(event: EventTarget) {
     if ((event as HTMLElement).tagName === 'svg') {
@@ -111,6 +113,13 @@ function MainHeader() {
     }
     setClickItem((event as HTMLLIElement).textContent as string)
   }
+  const { data: issueData } = useGetAllIssueQuery({
+    name: userName ? userName : '',
+    repo: repo ? repo : '',
+    token: userReducer.token,
+    page: queryReducer.page,
+    query: ''
+  })
 
   if (!userReducer.token || !repo) {
     return <></>
@@ -160,6 +169,7 @@ function MainHeader() {
               $text={item[1] as string}
               isClick={isClick}
               $isActive={clickItem === item[1] ? true : false}
+              issueDataLength={issueData ? issueData.length : 0}
             />
           )
         })}

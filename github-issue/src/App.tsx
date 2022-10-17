@@ -1,6 +1,6 @@
 //Libraries
 import React from 'react'
-import { Outlet, useLoaderData } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 //reset
 import { ResetStyle, GlobalStyle } from './globalStyle'
