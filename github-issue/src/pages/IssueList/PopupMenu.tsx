@@ -8,6 +8,7 @@ import {
   sortIssue
 } from '../../redux/querySlice'
 import { RootState } from '../../redux/store'
+import { resetAssignees } from '../../redux/issueSlice'
 
 export type MenuContentType = {
   type?: string
@@ -41,6 +42,7 @@ type PropsType = {
   setMenuStatusFn: React.Dispatch<React.SetStateAction<boolean>>
   menuContent?: MenuContentType
   checked?: boolean
+  clearAssignee?: boolean
 }
 
 function PopupMenu({
@@ -53,7 +55,8 @@ function PopupMenu({
   right,
   bottom,
   menuContent,
-  checked
+  checked,
+  clearAssignee
 }: PropsType) {
   const dispatch = useDispatch()
   const { queryReducer, issueReducer } = useSelector(
@@ -99,7 +102,16 @@ function PopupMenu({
               />
             </div>
           )}
-
+          {clearAssignee && (
+            <button
+              className='flex w-full items-center border-0 border-b border-solid border-borderGray py-1 pl-4 text-left text-[12px] font-medium hover:bg-commonBgGray'
+              onClick={() => dispatch(resetAssignees())}>
+              <div className='mr-1'>
+                <XIcon />
+              </div>
+              Clear assignees
+            </button>
+          )}
           {menuContent.commonAction && (
             <button
               className='w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left font-medium hover:bg-commonBgGray'
@@ -209,8 +221,14 @@ function PopupMenu({
                         </div>
                         {icon && (
                           <span
-                            style={{ backgroundColor: icon }}
-                            className={`mr-1 block h-[14px] w-[14px] rounded-circle ${icon}`}></span>
+                            style={{
+                              backgroundColor: icon,
+                              border:
+                                icon.toUpperCase() === '#FFFFFF'
+                                  ? '1px solid rgb(191,191,191)'
+                                  : 'none'
+                            }}
+                            className={`mr-1 block min-h-[14px] min-w-[14px] rounded-circle`}></span>
                         )}
                         {userImage && (
                           <img

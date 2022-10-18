@@ -23,6 +23,7 @@ type PropsType = {
   menuPos?: string
   updateOrigin: boolean
   checked?: boolean
+  clearAssignee?: boolean
 }
 
 function FeatureMenu({
@@ -32,10 +33,14 @@ function FeatureMenu({
   menuContent,
   menuPos,
   updateOrigin,
-  checked
+  checked,
+  clearAssignee
 }: PropsType) {
   const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
+  const userPhoto = JSON.parse(
+    localStorage.getItem('supabase.auth.token') as string
+  )?.currentSession.user.identities[0].identity_data.avatar_url
   const [featureMenuOpen, setFeatureMenuOpen] = useState(false)
   const { issueReducer, userReducer } = useSelector((store: RootState) => store)
   const [updateIssue] = useUpdateIssueMutation()
@@ -103,6 +108,7 @@ function FeatureMenu({
           <></>
         ) : (
           <PopupMenu
+            clearAssignee={clearAssignee}
             withDismissButton={false}
             menuOpenStatus={featureMenuOpen}
             setMenuStatusFn={setFeatureMenuOpen}
@@ -126,9 +132,8 @@ function FeatureMenu({
                 onClick={() => {
                   dispatch(
                     handleAssignee({
-                      text: 'd1074181068',
-                      imageUrl:
-                        'https://avatars.githubusercontent.com/u/71813522?v=4'
+                      text: userName || '',
+                      imageUrl: userPhoto
                     })
                   )
                   if (updateOrigin) {
@@ -138,7 +143,7 @@ function FeatureMenu({
                       token: userReducer.token,
                       issueNumber: issueId as string,
                       body: {
-                        assignees: ['d1074181068']
+                        assignees: [`${userName || ''}`]
                       }
                     })
                   }

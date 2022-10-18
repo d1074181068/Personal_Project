@@ -27,6 +27,9 @@ import { useNavigate } from 'react-router-dom'
 function NewIssue() {
   const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
+  const userPhoto = JSON.parse(
+    localStorage.getItem('supabase.auth.token') as string
+  )?.currentSession.user.identities[0].identity_data.avatar_url
   const { userReducer, issueReducer } = useSelector((store: RootState) => store)
   const [popMenuData, setPopMenuData] = useState<MenuContentType>()
   const [createIssue] = useCreateIssueMutation()
@@ -60,7 +63,7 @@ function NewIssue() {
       return { icon: `#${item.color}`, text: item.name, desc: item.description }
     })
     const menuContent = {
-      title: 'Assign up to 10 people to this',
+      title: 'Apply labels to this issue',
       inputPlaceholder: 'Filter labels',
       clickFn: ({ text, colorCode }: ClickFnType) => {
         dispatch(
@@ -113,7 +116,7 @@ function NewIssue() {
   return (
     <div className='mx-auto mt-2 mb-[100px] flex max-w-[1280px] flex-col px-2 pt-2 md:flex-row md:items-start'>
       <img
-        src='https://avatars.githubusercontent.com/u/71813522?v=4'
+        src={userPhoto}
         alt='ownerImage'
         className='mr-2 hidden h-[40px] w-[40px] rounded-circle md:block'
       />
@@ -146,6 +149,7 @@ function NewIssue() {
       <div className='md:ml-2 md:w-[240px]'>
         <div className='mt-5 md:mt-0'>
           <FeatureMenu
+            clearAssignee={true}
             type={'Assignees'}
             title={'Assignees'}
             organizeDataFn={organizeAssigneeData}

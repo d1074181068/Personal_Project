@@ -86,7 +86,7 @@ const iconArr = [
     { icon: <MentionIcon />, trigger: '@' },
     { icon: <ImageIcon />, trigger: 'image' },
     { icon: <CrossReferenceIcon />, trigger: '#' },
-    { icon: <ReplyIcon />, trigger: 'bold' }
+    { icon: <ReplyIcon />, trigger: '' }
   ]
 ]
 
@@ -240,6 +240,8 @@ function UserControlIssue({
                           ? () => {
                               dispatch(githubAction('#'))
                             }
+                          : trigger === ''
+                          ? () => {}
                           : () => ref.current?.trigger(trigger)
                       }>
                       {icon}
@@ -286,7 +288,9 @@ function UserControlIssue({
         <TextareaMarkdown.Wrapper ref={ref}>
           <textarea
             placeholder='Leave a comment'
-            className='mb-[-2px] min-h-[200px] w-full resize-y rounded border-b border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] focus-visible:outline-hoverBlue md:rounded-b-none md:border-dashed'
+            className={`mb-[-2px] min-h-[200px] w-full resize-y rounded ${
+              mobileExist ? 'border-b' : 'border-b-0'
+            } border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] focus-visible:outline-hoverBlue md:rounded-b-none md:border-dashed`}
             value={setTextAreaText ? textAreaText : issueReducer.content.body}
             onChange={(e) => {
               if (setTextAreaText) {

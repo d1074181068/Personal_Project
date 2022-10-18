@@ -544,6 +544,7 @@ function Issue() {
                 ) => {
                   return (
                     <FeatureMenu
+                      clearAssignee={true}
                       type={type}
                       title={title}
                       organizeDataFn={organizeDataFn}

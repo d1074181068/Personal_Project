@@ -67,6 +67,9 @@ export const issueSlice = createSlice({
         body: (state.content.body += ' ' + action.payload)
       }
     },
+    resetAssignees: (state) => {
+      state.assignees = []
+    },
     resetIssueContent: () => initialState
   }
 })
@@ -77,6 +80,7 @@ export const {
   handleTitle,
   handleIssueBody,
   resetIssueContent,
-  githubAction
+  githubAction,
+  resetAssignees
 } = issueSlice.actions
 export default issueSlice.reducer
