@@ -286,20 +286,23 @@ function UserControlIssue({
           navBarToggleStatus ? 'block' : 'hidden'
         } rounded border border-solid border-borderGray`}>
         <TextareaMarkdown.Wrapper ref={ref}>
-          <textarea
-            placeholder='Leave a comment'
-            className={`mb-[-2px] min-h-[200px] w-full resize-y rounded ${
-              mobileExist ? 'border-b' : 'border-b-0'
-            } border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] focus-visible:outline-hoverBlue md:rounded-b-none md:border-dashed`}
-            value={setTextAreaText ? textAreaText : issueReducer.content.body}
-            onChange={(e) => {
-              if (setTextAreaText) {
-                setTextAreaText(e.target.value)
-                return
-              }
-              dispatch(handleIssueBody(e.target.value))
-            }}
-          />
+          <>
+            <textarea
+              placeholder='Leave a comment'
+              className={`mb-[-2px] min-h-[200px] w-full resize-y rounded ${
+                mobileExist ? 'border-b' : 'border-b-0'
+              } border-solid border-borderGray bg-commonBgGray p-1 pt-[10px] leading-[1.5] focus-visible:outline-hoverBlue md:rounded-b-none md:border-dashed`}
+              value={setTextAreaText ? textAreaText : issueReducer.content.body}
+              onChange={(e) => {
+                if (setTextAreaText) {
+                  setTextAreaText(e.target.value)
+                  return
+                }
+                dispatch(handleIssueBody(e.target.value))
+              }}
+            />
+            {console.log(issueReducer.content.body)}
+          </>
         </TextareaMarkdown.Wrapper>
 
         <label
@@ -383,11 +386,15 @@ function UserControlIssue({
               hoverColor={actionBtn?.hoverColor}
               widthFull={actionBtn?.widthFull}
               $disabled={
-                issueReducer.content.body === ''
-                  ? textAreaText === ''
-                    ? true
-                    : false
-                  : false
+                titleInputPlaceholder
+                  ? issueReducer.content.title
+                    ? false
+                    : true
+                  : textAreaText
+                  ? false
+                  : issueReducer.content.body
+                  ? false
+                  : true
               }
               clickFn={actionBtn?.clickFn}
             />

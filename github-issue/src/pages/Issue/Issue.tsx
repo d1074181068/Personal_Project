@@ -279,9 +279,11 @@ function Issue() {
                 />
               </div>
             </div>
-            <button className='text-hoverBlue hover:underline md:hidden'>
+            <a
+              href='#bottom'
+              className='text-hoverBlue hover:underline md:hidden'>
               Jump to bottom
-            </button>
+            </a>
             <h1 className='md:order-0 mt-2 w-full text-[26px] leading-[1.3] md:mt-0 md:w-[unset]'>
               {issueData.title}{' '}
               <span className='text-textGray'>#{issueId}</span>
@@ -502,7 +504,9 @@ function Issue() {
                   <div className='absolute top-0 left-[15px] right-0 bottom-0 z-[-10] border-l-[2px] border-solid border-borderGray md:left-[70px]'></div>
                 </div>
 
-                <div className='flex border-t-[2px] border-solid border-borderGray pt-4'>
+                <div
+                  id='bottom'
+                  className='flex border-t-[2px] border-solid border-borderGray pt-4'>
                   <img
                     src={userPhoto}
                     alt='userImage'
