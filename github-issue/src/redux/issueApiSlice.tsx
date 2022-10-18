@@ -56,7 +56,7 @@ interface CreateCommentParams extends QueryParams {
 export const issueApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllIssue: builder.query<issueList, GetIssueQueryParams>({
-      query: ({ name, repo, token, query }) => ({
+      query: ({ name, repo, token, query, page }) => ({
         url: `/repos/${name}/${repo}/issues?${query}`,
         method: 'GET',
         headers: new Headers({

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { XIcon, CheckIcon } from '@primer/octicons-react'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -60,6 +60,11 @@ function PopupMenu({
     (store: RootState) => store
   )
   const [searchInputText, setSearchInputText] = useState('')
+  useEffect(() => {
+    if (menuOpenStatus) {
+      setSearchInputText('')
+    }
+  }, [menuOpenStatus])
 
   return (
     <>
@@ -88,6 +93,7 @@ function PopupMenu({
               <input
                 type='text'
                 placeholder={menuContent.inputPlaceholder}
+                value={menuOpenStatus ? searchInputText : ''}
                 className='h-[32px] w-full rounded border border-solid border-borderGray pl-2'
                 onChange={(e) => setSearchInputText(e.target.value)}
               />
@@ -96,12 +102,12 @@ function PopupMenu({
 
           {menuContent.commonAction && (
             <button
-              className='w-full border-0 border-b border-solid border-borderGray py-3 pl-4 text-left font-medium hover:bg-commonBgGray'
+              className='w-full border-0 border-b border-solid border-borderGray py-2 pl-4 text-left font-medium hover:bg-commonBgGray'
               onClick={() => {
                 dispatch(
                   menuContent.type === 'labels'
                     ? resetLabelFilterText()
-                    : updateAssigneeUser('')
+                    : dispatch(updateAssigneeUser(''))
                 )
                 setMenuStatusFn(false)
               }}>
@@ -178,6 +184,7 @@ function PopupMenu({
                               argObj = { imageUrl: userImage, text: userName }
                             }
                             menuContent.clickFn(argObj)
+                            setSearchInputText('')
                           }
                         }}>
                         <div

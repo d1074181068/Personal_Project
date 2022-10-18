@@ -127,7 +127,7 @@ function IssueItem({
               <button
                 key={index}
                 style={{ order: assignees.length - index }}
-                className='mr-[-8px] h-[20px] w-[20px] transition-all group-hover:mr-[0px]'>
+                className='mr-[-8px] h-[20px] w-[20px] transition-all group-hover:mr-[0px] first:group-hover:mr-[-8px]'>
                 <img
                   src={userImage}
                   alt='userImage'
@@ -137,10 +137,12 @@ function IssueItem({
             )
           })}
       </div>
-      <button className='ml-2 hidden h-[20px] w-[30px] items-center pt-[2px] text-center sm:flex'>
-        <CommentIcon />
-        <span className='ml-1'>{commentsQty}</span>
-      </button>
+      {commentsQty !== 0 && (
+        <button className='ml-2 hidden h-[20px] w-[30px] items-center pt-[2px] text-center sm:flex'>
+          <CommentIcon />
+          <span className='ml-1'>{commentsQty}</span>
+        </button>
+      )}
     </li>
   )
 }

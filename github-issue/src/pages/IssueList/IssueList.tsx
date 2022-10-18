@@ -60,7 +60,6 @@ function IssueList() {
     top: 'top-[100px]',
     left: 'left-[16px]'
   })
-  const [page, setPage] = useState(1)
   const dispatch = useDispatch()
   const { queryReducer, userReducer } = useSelector((store: RootState) => store)
 
@@ -93,6 +92,15 @@ function IssueList() {
   useEffect(() => {
     setFilterInputText(inputText)
   }, [inputText])
+  useEffect(() => {
+    dispatch(handlePage(1))
+  }, [
+    queryReducer.labelName.length,
+    queryReducer.assigneeUser,
+    queryReducer.filters,
+    queryReducer.issueState,
+    queryReducer.sortIssue
+  ])
 
   const query = () => {
     let queryStr = ''
@@ -117,9 +125,10 @@ function IssueList() {
     if (queryReducer.sortIssue !== '') {
       queryStr += `&sort=${queryReducer.sortIssue}`
     }
-    queryStr += `&per_page=10&page=${page}`
+    queryStr += `&per_page=10&page=${queryReducer.page}`
     return queryStr
   }
+
   const clearStatus =
     queryReducer.labelName.length !== 0
       ? true
@@ -127,7 +136,7 @@ function IssueList() {
       ? true
       : queryReducer.filters !== ''
       ? true
-      : queryReducer.sortIssue !== ''
+      : queryReducer.sortIssue !== 'created-desc'
       ? true
       : queryReducer.issueState !== 'open'
       ? true
@@ -358,7 +367,13 @@ function IssueList() {
       <ul>
         {renderData ? (
           renderData.length === 0 ? (
-            <NoIssue />
+            <NoIssue
+              title={
+                clearStatus
+                  ? 'No results matched your search.'
+                  : 'Welcome to issues!'
+              }
+            />
           ) : (
             renderData.map(
               ({
@@ -414,21 +429,27 @@ function IssueList() {
           <></>
         )}
       </ul>
-      <div className='flex items-center justify-center p-3'>
+      <div
+        className={`${
+          renderData?.length === 0 ? 'hidden' : 'flex'
+        } items-center justify-center p-3`}>
         <button
           className={`item-center mr-3  flex rounded border border-solid border-[transparent] py-1 px-[10px] transition-all ${
-            page === 1
+            queryReducer.page === 1
               ? 'cursor-no-drop hover:border-[transparent]'
               : 'hover:border-borderGray'
           } `}
           onClick={() => {
-            dispatch(handlePage(page <= 1 ? 1 : page - 1))
-            setPage((prev) => (prev <= 1 ? 1 : prev - 1))
+            dispatch(
+              handlePage(queryReducer.page <= 1 ? 1 : queryReducer.page - 1)
+            )
           }}>
-          <ChevronLeftIcon fill={page === 1 ? '#57606a' : '#0969da'} />
+          <ChevronLeftIcon
+            fill={queryReducer.page === 1 ? '#57606a' : '#0969da'}
+          />
           <span
             className={`ml-1 leading-[16px] ${
-              page === 1 ? 'text-textGray' : 'text-hoverBlue'
+              queryReducer.page === 1 ? 'text-textGray' : 'text-hoverBlue'
             } `}>
             Previous
           </span>
@@ -443,8 +464,7 @@ function IssueList() {
           }`}
           disabled={renderData ? (renderData.length < 10 ? true : false) : true}
           onClick={() => {
-            dispatch(handlePage(page + 1))
-            setPage((prev) => prev + 1)
+            dispatch(handlePage(queryReducer.page + 1))
           }}>
           <span
             className={`mr-1 leading-[16px] ${

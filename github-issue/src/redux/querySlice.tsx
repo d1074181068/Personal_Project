@@ -16,7 +16,7 @@ const initialState: InitStateType = {
   assigneeUser: '',
   issueState: 'open',
   filters: '',
-  sortIssue: '',
+  sortIssue: 'created-desc',
   page: 1
 }
 
