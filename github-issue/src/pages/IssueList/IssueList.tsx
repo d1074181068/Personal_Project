@@ -1,43 +1,43 @@
 //Libraries
-import React, { useEffect, useState } from 'react'
 import {
-  XIcon,
-  IssueOpenedIcon,
   CheckIcon,
-  TriangleDownIcon,
+  ChevronLeftIcon,
   ChevronRightIcon,
-  ChevronLeftIcon
+  IssueOpenedIcon,
+  TriangleDownIcon,
+  XIcon
 } from '@primer/octicons-react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 //components
-import Filters from './Filters'
+import GithubBtn from '../../components/Common/GithubBtn'
+import Loading from '../../components/Common/Loading'
+import { NotLogin } from '../Label/LabelList'
 import SubNavButton from '../Label/SubNavButtonWrapper'
-import GithubBtn from '../../components/Content/GithubBtn'
-import StatusButton from './StatusButton'
-import PopupMenu from './PopupMenu'
+import Filters from './Filters'
 import IssueItem from './IssueItem'
-import { NotLogin } from '../Label/Label'
 import NoIssue from './NoIssue'
+import PopupMenu from './PopupMenu'
+import StatusButton from './StatusButton'
 
 //custom
+import {
+  useGetAllAssigneesQuery,
+  useGetAllIssueQuery
+} from '../../redux/issueApiSlice'
 import { useGetLabelQuery } from '../../redux/labelApiSlice'
 import {
-  useGetAllIssueQuery,
-  useGetAllAssigneesQuery
-} from '../../redux/issueApiSlice'
-import {
-  handlePage,
-  resetAllFilter,
   addLabelFilterText,
   deleteLabelFilterText,
+  handlePage,
+  resetAllFilter,
   updateAssigneeUser
 } from '../../redux/querySlice'
-import { LabelType, Assignee } from '../../types/issueType'
-import { MenuContentType } from './PopupMenu'
 import { RootState } from '../../redux/store'
-import { ClickFnType } from '../../types/issueType'
+import { Assignee, ClickFnType, LabelType } from '../../types/issueType'
+import { MenuContentType } from './PopupMenu'
 
 export interface ContentType {
   icon?: string
@@ -149,7 +149,6 @@ function IssueList() {
   } = useGetAllIssueQuery({
     name: userName ? userName : '',
     repo: repo ? repo : '',
-    token: userReducer.token,
     page: queryReducer.page,
     query: query()
   })
@@ -159,8 +158,7 @@ function IssueList() {
     isError: labelError
   } = useGetLabelQuery({
     name: userName ? userName : '',
-    repo: repo ? repo : '',
-    token: userReducer.token
+    repo: repo ? repo : ''
   })
 
   const {
@@ -169,12 +167,11 @@ function IssueList() {
     isError: assignError
   } = useGetAllAssigneesQuery({
     name: userName ? userName : '',
-    repo: repo ? repo : '',
-    token: userReducer.token
+    repo: repo ? repo : ''
   })
 
   if (issueLoading || labelLoading || assigneeLoading) {
-    return <>Loading...</>
+    return <Loading />
   }
   if (!userReducer.token) return <NotLogin>你尚未登入</NotLogin>
   if (assignError || issueError || labelError) {

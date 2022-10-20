@@ -1,5 +1,5 @@
 //libraries
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 //custom
@@ -7,22 +7,23 @@ import {
   useCreateIssueMutation,
   useGetAllAssigneesQuery
 } from '../../redux/issueApiSlice'
-import { useGetLabelQuery } from '../../redux/labelApiSlice'
 import {
   handleAssignee,
   handleLabelTag,
   resetIssueContent
 } from '../../redux/issueSlice'
+import { useGetLabelQuery } from '../../redux/labelApiSlice'
 import { RootState } from '../../redux/store'
 import { Assignee, ClickFnType, LabelType } from '../../types/issueType'
 import { MenuContentType } from '../IssueList/PopupMenu'
 
 //components
-import GithubBtn from '../../components/Content/GithubBtn'
+import { useNavigate } from 'react-router-dom'
+import GithubBtn from '../../components/Common/GithubBtn'
+import Loading from '../../components/Common/Loading'
+import { NotLogin } from '../Label/LabelList'
 import FeatureMenu from './FeatureMenu'
 import UserControlIssue from './UserControlIssue'
-import { NotLogin } from '../Label/Label'
-import { useNavigate } from 'react-router-dom'
 
 function NewIssue() {
   const repo = sessionStorage.getItem('repo')
@@ -44,8 +45,7 @@ function NewIssue() {
     isError: labelError
   } = useGetLabelQuery({
     name: userName ? userName : '',
-    repo: repo ? repo : '',
-    token: userReducer.token
+    repo: repo ? repo : ''
   })
   const {
     data: assigneeData,
@@ -53,8 +53,7 @@ function NewIssue() {
     isError: assignError
   } = useGetAllAssigneesQuery({
     name: userName ? userName : '',
-    repo: repo ? repo : '',
-    token: userReducer.token
+    repo: repo ? repo : ''
   })
 
   function organizeLabelData() {
@@ -100,7 +99,7 @@ function NewIssue() {
   }
 
   if (labelLoading || assigneeLoading) {
-    return <>Loading...</>
+    return <Loading />
   }
   if (!userReducer.token) return <NotLogin>你尚未登入</NotLogin>
   if (assignError || labelError) {
@@ -133,7 +132,6 @@ function NewIssue() {
             createIssue({
               name: userName ? userName : '',
               repo: repo ? repo : '',
-              token: userReducer.token,
               body: {
                 title: issueReducer.content.title,
                 body: issueReducer.content.body,
@@ -178,7 +176,6 @@ function NewIssue() {
               createIssue({
                 name: userName ? userName : '',
                 repo: repo ? repo : '',
-                token: userReducer.token,
                 body: {
                   title: issueReducer.content.title,
                   body: issueReducer.content.body,

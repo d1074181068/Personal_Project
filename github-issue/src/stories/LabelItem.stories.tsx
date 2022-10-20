@@ -1,6 +1,5 @@
-import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import LabelItem from '../pages/Label/LabelItem'
+import LabelItem from '../pages/Label/Label'
 
 type StorybookType = {
   labelName: string

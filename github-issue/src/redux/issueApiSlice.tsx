@@ -1,16 +1,15 @@
-import { apiSlice } from './apiSlice'
 import {
-  issueList,
-  issueItem,
   Assignee,
-  Timeline,
-  Comment
+  Comment,
+  issueItem,
+  issueList,
+  Timeline
 } from '../types/issueType'
+import { apiSlice } from './apiSlice'
 
 interface QueryParams {
   name: string
   repo: string
-  token: string
 }
 
 interface CreateIssueParams extends QueryParams {
@@ -56,111 +55,72 @@ interface CreateCommentParams extends QueryParams {
 export const issueApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllIssue: builder.query<issueList, GetIssueQueryParams>({
-      query: ({ name, repo, token, query, page }) => ({
+      query: ({ name, repo, query, page }) => ({
         url: `/repos/${name}/${repo}/issues?${query}`,
-        method: 'GET',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`,
-          'if-none-match': ''
-        })
+        method: 'GET'
       }),
       providesTags: ['issue']
     }),
     getIssue: builder.query<issueItem, SingleIssueParams>({
-      query: ({ name, repo, token, issueId }) => ({
+      query: ({ name, repo, issueId }) => ({
         url: `/repos/${name}/${repo}/issues/${issueId}`,
-        method: 'GET',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`,
-          'if-none-match': ''
-        })
+        method: 'GET'
       }),
       providesTags: ['issue_id']
     }),
     getTimeline: builder.query<Timeline[], SingleIssueParams>({
-      query: ({ name, repo, token, issueId }) => ({
+      query: ({ name, repo, issueId }) => ({
         url: `/repos/${name}/${repo}/issues/${issueId}/timeline`,
-        method: 'GET',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`,
-          'if-none-match': ''
-        })
+        method: 'GET'
       }),
       providesTags: ['timeline']
     }),
     getAllAssignees: builder.query<Assignee[], QueryParams>({
-      query: ({ name, repo, token }) => ({
+      query: ({ name, repo }) => ({
         url: `/repos/${name}/${repo}/assignees`,
-        method: 'GET',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`
-        })
+        method: 'GET'
       })
     }),
     createIssue: builder.mutation<issueItem, CreateIssueParams>({
-      query: ({ name, repo, body, token }) => ({
+      query: ({ name, repo, body }) => ({
         url: `/repos/${name}/${repo}/issues`,
         method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`
-        }),
         body: body
       }),
       invalidatesTags: ['issue']
     }),
     updateIssue: builder.mutation<issueItem, UpdateIssueParams>({
-      query: ({ name, repo, token, issueNumber, body }) => {
+      query: ({ name, repo, issueNumber, body }) => {
         return {
           url: `/repos/${name}/${repo}/issues/${issueNumber}`,
           method: 'PATCH',
-          headers: new Headers({
-            'Content-Type': 'application/json',
-            Authorization: `token ${token}`
-          }),
           body: body
         }
       },
       invalidatesTags: ['issue_id', 'issue']
     }),
     createComment: builder.mutation<Comment, CreateCommentParams>({
-      query: ({ name, repo, body, token, issueNumber }) => ({
+      query: ({ name, repo, body, issueNumber }) => ({
         url: `/repos/${name}/${repo}/issues/${issueNumber}/comments`,
         method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`
-        }),
         body: body
       }),
       invalidatesTags: ['timeline']
     }),
     updateComment: builder.mutation<Comment, UpdateCommentParams>({
-      query: ({ name, repo, token, commentId, body }) => {
+      query: ({ name, repo, commentId, body }) => {
         return {
           url: `/repos/${name}/${repo}/issues/comments/${commentId}`,
           method: 'PATCH',
-          headers: new Headers({
-            'Content-Type': 'application/json',
-            Authorization: `token ${token}`
-          }),
           body: body
         }
       },
       invalidatesTags: ['timeline']
     }),
     deleteComment: builder.mutation<null, DeleteCommentParams>({
-      query: ({ name, repo, commentId, token }) => ({
+      query: ({ name, repo, commentId }) => ({
         url: `/repos/${name}/${repo}/issues/comments/${commentId}`,
-        method: 'DELETE',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: `token ${token}`
-        })
+        method: 'DELETE'
       }),
       invalidatesTags: ['timeline']
     })

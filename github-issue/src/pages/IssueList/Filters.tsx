@@ -1,9 +1,9 @@
 //Library
+import { SearchIcon, TriangleDownIcon, XIcon } from '@primer/octicons-react'
 import React, { useState } from 'react'
-import { SearchIcon, XIcon, TriangleDownIcon } from '@primer/octicons-react'
 
 //components
-import FilterDown from './FilterDown'
+import FilterDropDown from './FilterDropDown'
 
 type PropsType = {
   headerText: string
@@ -42,7 +42,7 @@ function Filters({ headerText, inputText, setFilterInputText }: PropsType) {
 
           {filterDropdownText.map((text, index) => {
             return (
-              <FilterDown
+              <FilterDropDown
                 text={text}
                 index={index}
                 display={

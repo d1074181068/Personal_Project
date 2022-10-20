@@ -1,17 +1,16 @@
 //Librariess
-import React from 'react'
 import ReactDOM from 'react-dom/client'
-import reportWebVitals from './reportWebVitals'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './index.css'
+import reportWebVitals from './reportWebVitals'
 //components
 import App from './App'
 import Home from './pages/Home/Home'
-import IssueList from './pages/IssueList/IssueList'
-import Label from './pages/Label/Label'
-import NewIssue from './pages/NewIssue/NewIssue'
 import Issue from './pages/Issue/Issue'
+import IssueList from './pages/IssueList/IssueList'
+import Label from './pages/Label/LabelList'
+import NewIssue from './pages/NewIssue/NewIssue'
 
 //custom
 import { store } from './redux/store'

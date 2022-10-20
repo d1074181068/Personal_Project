@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
 import { KebabHorizontalIcon } from '@primer/octicons-react'
+import { useState } from 'react'
+import styled from 'styled-components'
 
 //custom
-import { OutSideWrapper } from '../../components/Content/Dropdown'
+import { OutSideWrapper } from '../../components/Common/Dropdown'
 
 type PropsType = {
   btnTextList: string[]
@@ -76,8 +76,7 @@ function MobileAction({ btnTextList, btnFn }: PropsType) {
       <MobileMoreActionBtn
         onClick={() => setMoreActionBtnActive((prev) => !prev)}
         bgColor={moreActionBtnActive ? '#0969da' : 'white'}
-        fillColor={moreActionBtnActive ? 'white' : 'black'}
-      >
+        fillColor={moreActionBtnActive ? 'white' : 'black'}>
         <MobileActionBtnIcon />
       </MobileMoreActionBtn>
       <MobileActionBtnWrapper display={moreActionBtnActive ? 'block' : 'none'}>
@@ -89,8 +88,7 @@ function MobileAction({ btnTextList, btnFn }: PropsType) {
                 onClick={() => {
                   btnFn[index]()
                   setMoreActionBtnActive(false)
-                }}
-              >
+                }}>
                 {item}
               </MobileActionBtn>
             )

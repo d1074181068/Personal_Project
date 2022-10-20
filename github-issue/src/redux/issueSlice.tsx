@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import _ from 'lodash'
 
 type InitStateType = {
@@ -42,7 +42,7 @@ export const issueSlice = createSlice({
         )
         return
       }
-      state.labelName = [...state.labelName, action.payload]
+      state.labelName.push(action.payload)
     },
     handleAssignee: (state, action: PayloadAction<AssigneeActionType>) => {
       const { text } = action.payload
@@ -53,19 +53,16 @@ export const issueSlice = createSlice({
         )
         return
       }
-      state.assignees = [...state.assignees, action.payload]
+      state.assignees.push(action.payload)
     },
     handleTitle: (state, action: PayloadAction<string>) => {
-      state.content = { ...state.content, title: action.payload }
+      state.content.title = action.payload
     },
     handleIssueBody: (state, action: PayloadAction<string>) => {
-      state.content = { ...state.content, body: action.payload }
+      state.content.body = action.payload
     },
     githubAction: (state, action: PayloadAction<string>) => {
-      state.content = {
-        ...state.content,
-        body: (state.content.body += ' ' + action.payload)
-      }
+      state.content.body += ' ' + action.payload
     },
     resetAssignees: (state) => {
       state.assignees = []

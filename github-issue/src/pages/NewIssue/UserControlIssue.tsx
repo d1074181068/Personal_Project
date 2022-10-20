@@ -1,41 +1,41 @@
 //Libraries
-import React, { useRef, useState } from 'react'
 import {
-  MarkdownIcon,
-  InfoIcon,
-  ChevronUpIcon,
-  ChevronDownIcon,
-  QuoteIcon,
-  CodeIcon,
-  LinkIcon,
-  MentionIcon,
-  ImageIcon,
-  CrossReferenceIcon,
-  ReplyIcon,
-  HeadingIcon,
   BoldIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CodeIcon,
+  CrossReferenceIcon,
+  HeadingIcon,
+  ImageIcon,
+  InfoIcon,
   ItalicIcon,
-  ListUnorderedIcon,
+  LinkIcon,
   ListOrderedIcon,
+  ListUnorderedIcon,
+  MarkdownIcon,
+  MentionIcon,
+  QuoteIcon,
+  ReplyIcon,
   TasklistIcon
 } from '@primer/octicons-react'
-import { useDispatch, useSelector } from 'react-redux'
-import { marked } from 'marked'
-import TextareaMarkdown, { TextareaMarkdownRef } from 'textarea-markdown-editor'
 import hljs from 'highlight.js'
+import { marked } from 'marked'
+import React, { useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import TextareaMarkdown, { TextareaMarkdownRef } from 'textarea-markdown-editor'
 
 //components
-import GithubBtn from '../../components/Content/GithubBtn'
+import GithubBtn from '../../components/Common/GithubBtn'
 import StateButton from './StateButton'
 //custom
-import { RootState } from '../../redux/store'
-import {
-  handleTitle,
-  handleIssueBody,
-  githubAction
-} from '../../redux/issueSlice'
-import '../../utils/markdownStyle.css'
 import 'highlight.js/styles/github.css'
+import {
+  githubAction,
+  handleIssueBody,
+  handleTitle
+} from '../../redux/issueSlice'
+import { RootState } from '../../redux/store'
+import '../../utils/markdownStyle.css'
 
 type PropsType = {
   titleInputPlaceholder: string
@@ -301,7 +301,6 @@ function UserControlIssue({
                 dispatch(handleIssueBody(e.target.value))
               }}
             />
-            {console.log(issueReducer.content.body)}
           </>
         </TextareaMarkdown.Wrapper>
 

@@ -1,14 +1,14 @@
+import { CheckIcon, XIcon } from '@primer/octicons-react'
 import React, { useEffect, useState } from 'react'
-import { XIcon, CheckIcon } from '@primer/octicons-react'
 
 import { useDispatch, useSelector } from 'react-redux'
+import { resetAssignees } from '../../redux/issueSlice'
 import {
-  updateAssigneeUser,
   resetLabelFilterText,
-  sortIssue
+  sortIssue,
+  updateAssigneeUser
 } from '../../redux/querySlice'
 import { RootState } from '../../redux/store'
-import { resetAssignees } from '../../redux/issueSlice'
 
 export type MenuContentType = {
   type?: string
@@ -228,7 +228,7 @@ function PopupMenu({
                                   ? '1px solid rgb(191,191,191)'
                                   : 'none'
                             }}
-                            className={`mr-1 block min-h-[14px] min-w-[14px] rounded-circle`}></span>
+                            className={`mr-1 block max-h-[14px] min-w-[14px] rounded-circle`}></span>
                         )}
                         {userImage && (
                           <img

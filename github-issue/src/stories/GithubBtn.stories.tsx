@@ -1,6 +1,5 @@
-import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import GithubBtn from './GithubBtn'
+import GithubBtn from '../components/Common/GithubBtn'
 
 type StorybookType = {
   bgcolor: string

@@ -1,13 +1,11 @@
-import React from 'react'
 import {
   IssueClosedIcon,
   IssueOpenedIcon,
   SkipIcon
 } from '@primer/octicons-react'
 
-import LabelItem from '../Label/LabelItem'
-
 import { lightOrDark } from '../Label/HandleLabel'
+import Label from '../Label/Label'
 
 type PropsType = {
   title: string
@@ -57,7 +55,7 @@ function HoverTitleEffect({
             labels.map(({ name, bgColor, id }) => {
               return (
                 <div className='mr-[5px] flex' key={id}>
-                  <LabelItem
+                  <Label
                     labelName={name}
                     colorCode={`#${bgColor}`}
                     textColor={lightOrDark(bgColor)}

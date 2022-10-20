@@ -1,19 +1,19 @@
 //Libraries
-import React, { useState, useRef } from 'react'
+import { useRef, useState } from 'react'
 import styled from 'styled-components'
 //custom
-import { lightOrDark } from './HandleLabel'
 import {
-  useUpdateLabelMutation,
-  useDeleteLabelMutation
+  useDeleteLabelMutation,
+  useUpdateLabelMutation
 } from '../../redux/labelApiSlice'
+import { lightOrDark } from './HandleLabel'
 //components
-import LabelItem from './LabelItem'
-import HandleLabel from './HandleLabel'
-import ActionBtn from './ActionBtn'
-import MobileAction from './MobileAction'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
+import ActionBtn from './ActionBtn'
+import HandleLabel from './HandleLabel'
+import LabelItem from './Label'
+import MobileAction from './MobileAction'
 
 type PropsType = {
   labelName: string
@@ -116,11 +116,7 @@ function LabelListItem({
         <FixedRapper>
           <LabelDesc>{labelDesc}</LabelDesc>
         </FixedRapper>
-        <FixedRapper>
-          <LabelUserStatus>
-            {useLabelIssueQty} open issue or pull request
-          </LabelUserStatus>
-        </FixedRapper>
+        <FixedRapper></FixedRapper>
         <FixedRapper>
           <ActionBtnWrapper>
             <MarginWrapper>
@@ -140,8 +136,7 @@ function LabelListItem({
                     deleteLabel({
                       name: userName ? userName : '',
                       repo: repo ? repo : '',
-                      labelName: tagName.current,
-                      token: userReducer.token
+                      labelName: tagName.current
                     })
                 }}
               />
@@ -153,12 +148,15 @@ function LabelListItem({
               btnFn={[
                 () => setAreaOfEditLabel((prev) => !prev),
                 () => {
-                  deleteLabel({
-                    name: userName ? userName : '',
-                    repo: repo ? repo : '',
-                    labelName: tagName.current,
-                    token: userReducer.token
-                  })
+                  const confirmDelete = window.confirm(
+                    'Are you sure? Deleting a label will remove it from all issues and pull requests.'
+                  )
+                  if (confirmDelete)
+                    deleteLabel({
+                      name: userName ? userName : '',
+                      repo: repo ? repo : '',
+                      labelName: tagName.current
+                    })
                 }
               ]}
             />
@@ -183,8 +181,7 @@ function LabelListItem({
             deleteLabel({
               name: userName ? userName : '',
               repo: repo ? repo : '',
-              labelName: tagName.current,
-              token: userReducer.token
+              labelName: tagName.current
             })
           }
           updatelabelFn={(
@@ -196,7 +193,6 @@ function LabelListItem({
               name: userName ? userName : '',
               repo: repo ? repo : '',
               labelName: tagName.current,
-              token: userReducer.token,
               body: {
                 name: labelName,
                 color: labelColor,

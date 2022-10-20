@@ -1,20 +1,18 @@
-import React from 'react'
 import {
   CommentIcon,
   IssueClosedIcon,
   IssueOpenedIcon,
   SkipIcon
 } from '@primer/octicons-react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 //components
-import HoverTitleEffect from './HoverTitleEffect'
-import LabelItem from '../Label/LabelItem'
+import Label from '../Label/Label'
 
 //custom
-import { lightOrDark } from '../Label/HandleLabel'
 import { resetAllFilter } from '../../redux/querySlice'
-import { useDispatch } from 'react-redux'
+import { lightOrDark } from '../Label/HandleLabel'
 
 type PropsType = {
   title: string
@@ -107,7 +105,7 @@ function IssueItem({
             labels.map(({ name, bgColor, id }) => {
               return (
                 <div className='mr-1 flex' key={id}>
-                  <LabelItem
+                  <Label
                     labelName={name}
                     colorCode={`#${bgColor}`}
                     textColor={lightOrDark(bgColor)}

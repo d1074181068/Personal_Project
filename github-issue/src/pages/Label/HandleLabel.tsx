@@ -1,14 +1,14 @@
 //Libraries
-import React, { useState } from 'react'
-import styled from 'styled-components'
 import { SyncIcon } from '@primer/octicons-react'
+import { useState } from 'react'
+import styled from 'styled-components'
 
 //components
-import GithubBtn from '../../components/Content/GithubBtn'
-import LabelItem from './LabelItem'
-import MobileAction from './MobileAction'
+import { OutSideWrapper } from '../../components/Common/Dropdown'
+import GithubBtn from '../../components/Common/GithubBtn'
 import ActionBtn from './ActionBtn'
-import { OutSideWrapper } from '../../components/Content/Dropdown'
+import LabelItem from './Label'
+import MobileAction from './MobileAction'
 
 type PropsType = {
   initLabelText: string
@@ -339,13 +339,14 @@ function HandleLabel({
       }
       if (colorMode === 'error') {
         setErrorColorCodeStatus(true)
-        setColorCode(inputValue)
+        setColorCode(eventTarget.value)
         return
       }
       setColorCode(inputValue)
     } else {
       setErrorColorCodeStatus(true)
     }
+    setTextcolor(colorMode)
     setColorCode(eventTarget.value)
   }
   return (
@@ -377,7 +378,6 @@ function HandleLabel({
               if (e.target.value.length === 0) {
                 setInputEmptyStatus(true)
               } else if (e.target.value.length > 30) {
-                setInputEmptyStatus(true)
                 return
               } else {
                 setInputEmptyStatus(false)
@@ -393,7 +393,6 @@ function HandleLabel({
             placeholder={subPlaceholder}
             onChange={(e) => {
               if (e.target.value.length > 50) {
-                setInputEmptyStatus(false)
                 return
               }
               setDescription(e.target.value)

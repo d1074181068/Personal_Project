@@ -1,19 +1,19 @@
 //libraries
-import React, { useRef, useState } from 'react'
 import { GearIcon } from '@primer/octicons-react'
-import { useDispatch, useSelector } from 'react-redux'
 import _ from 'lodash'
+import { useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 //components
-import LabelItem from '../Label/LabelItem'
 import PopupMenu from '../IssueList/PopupMenu'
+import Label from '../Label/Label'
 
 //custom
-import { lightOrDark } from '../Label/HandleLabel'
-import { MenuContentType } from '../IssueList/PopupMenu'
-import { RootState } from '../../redux/store'
-import { handleAssignee } from '../../redux/issueSlice'
-import { useUpdateIssueMutation } from '../../redux/issueApiSlice'
 import { useParams } from 'react-router-dom'
+import { useUpdateIssueMutation } from '../../redux/issueApiSlice'
+import { handleAssignee } from '../../redux/issueSlice'
+import { RootState } from '../../redux/store'
+import { MenuContentType } from '../IssueList/PopupMenu'
+import { lightOrDark } from '../Label/HandleLabel'
 
 type PropsType = {
   type: string
@@ -72,7 +72,6 @@ function FeatureMenu({
                     updateIssue({
                       name: userName ? userName : '',
                       repo: repo ? repo : '',
-                      token: userReducer.token,
                       issueNumber: issueId as string,
                       body: {
                         assignees: issueReducer.assignees.map(
@@ -140,7 +139,6 @@ function FeatureMenu({
                     updateIssue({
                       name: userName ? userName : '',
                       repo: repo ? repo : '',
-                      token: userReducer.token,
                       issueNumber: issueId as string,
                       body: {
                         assignees: [`${userName || ''}`]
@@ -177,7 +175,7 @@ function FeatureMenu({
             issueReducer.labelName.map(({ text, colorCode }, index) => {
               return (
                 <div className='mr-[2px] flex' key={index}>
-                  <LabelItem
+                  <Label
                     labelName={text}
                     colorCode={colorCode}
                     textColor={lightOrDark(colorCode)}

@@ -1,13 +1,14 @@
 //libraries
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 //components
-import { NotLogin } from '../Label/Label'
+import Loading from '../../components/Common/Loading'
+import { NotLogin } from '../Label/LabelList'
+
 //custom
-import { RootState } from '../../redux/store'
 import { useGetAllRepoQuery } from '../../redux/repoApiSlice'
+import { RootState } from '../../redux/store'
 
 function Home() {
   const { userReducer } = useSelector((store: RootState) => store)
@@ -20,11 +21,10 @@ function Home() {
     localStorage.getItem('supabase.auth.token') as string
   )?.currentSession.user.identities[0].identity_data.name
   const { data, isLoading, isError } = useGetAllRepoQuery({
-    name: userName ? userName : '',
-    token: userReducer.token
+    name: userName ? userName : ''
   })
   if (isError || !userReducer.token) return <NotLogin>你尚未登入</NotLogin>
-  if (isLoading) return <>Loading...</>
+  if (isLoading) return <Loading />
 
   return (
     <div className='mx-auto mt-2 flex max-w-[1280px] flex-col items-stretch p-2 md:flex-row md:items-start'>

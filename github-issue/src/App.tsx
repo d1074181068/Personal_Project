@@ -1,13 +1,12 @@
 //Libraries
-import React from 'react'
 import { Outlet } from 'react-router-dom'
 
 //reset
-import { ResetStyle, GlobalStyle } from './globalStyle'
 import { useLocation } from 'react-router-dom'
+import { GlobalStyle, ResetStyle } from './globalStyle'
 //components
+import Footer from './components/Footer/Footer'
 import Header from './components/Header/Header'
-import Footer from './components/Foorter/Footer'
 import MainHeader from './components/MainHeader/MainHeader'
 
 function App() {

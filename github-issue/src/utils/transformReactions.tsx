@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Emoji from '../components/Content/Emoji'
+import Emoji from '../components/Common/Emoji'
 import { Reactions } from '../types/issueType'
 
 export const turnReactionsToArray = (obj: Reactions) => {

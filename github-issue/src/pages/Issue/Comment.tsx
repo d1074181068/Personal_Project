@@ -1,25 +1,25 @@
 //libraries
-import React, { useEffect, useRef, useState } from 'react'
-import { SmileyIcon, KebabHorizontalIcon } from '@primer/octicons-react'
-import { useSelector } from 'react-redux'
+import { KebabHorizontalIcon, SmileyIcon } from '@primer/octicons-react'
 import { marked } from 'marked'
+import { useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 //components
-import LabelItem from '../Label/LabelItem'
-import CommentMenu from './CommentMenu'
+import Label from '../Label/Label'
 import UserControlIssue from '../NewIssue/UserControlIssue'
+import CommentMenu from './CommentMenu'
 
 //custom
-import { calculateTime } from '../IssueList/IssueItem'
 import {
+  useDeleteCommentMutation,
   useUpdateCommentMutation,
-  useUpdateIssueMutation,
-  useDeleteCommentMutation
+  useUpdateIssueMutation
 } from '../../redux/issueApiSlice'
 import { RootState } from '../../redux/store'
 import { Reactions } from '../../types/issueType'
 import { turnReactionsToArray } from '../../utils/transformReactions'
+import { calculateTime } from '../IssueList/IssueItem'
 
 export type PropsType = {
   id: number
@@ -91,7 +91,7 @@ function Comment({
               <></>
             ) : (
               <div className='mr-[5px] hidden sm:block'>
-                <LabelItem
+                <Label
                   labelName={
                     (authorAssociation?.[0] as string) +
                     authorAssociation?.slice(1).toLowerCase()
@@ -138,7 +138,6 @@ function Comment({
                           deleteComment({
                             name: userName ? userName : '',
                             repo: repo ? repo : '',
-                            token: userReducer.token,
                             commentId: id
                           })
                         }
@@ -210,7 +209,6 @@ function Comment({
                 updateComment({
                   name: userName ? userName : '',
                   repo: repo ? repo : '',
-                  token: userReducer.token,
                   commentId: id,
                   body: {
                     body: textAreaText
@@ -220,7 +218,6 @@ function Comment({
                 updateIssue({
                   name: userName ? userName : '',
                   repo: repo ? repo : '',
-                  token: userReducer.token,
                   issueNumber: issueId as string,
                   body: {
                     body: textAreaText

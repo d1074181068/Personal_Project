@@ -1,11 +1,11 @@
 //Library
-import React from 'react'
 import { CheckIcon } from '@primer/octicons-react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 //custom
-import { RootState } from '../../redux/store'
 import { handleFilters } from '../../redux/querySlice'
+import { RootState } from '../../redux/store'
 
 type PropsType = {
   text: string
@@ -16,7 +16,7 @@ type PropsType = {
   setFilterListOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function MobileFilterDown({
+function FilterDown({
   text,
   index,
   currentCheck,
@@ -61,4 +61,4 @@ function MobileFilterDown({
   )
 }
 
-export default MobileFilterDown
+export default FilterDown

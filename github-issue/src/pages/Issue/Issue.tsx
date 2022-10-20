@@ -1,24 +1,30 @@
 //libraries
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
 import {
   IssueClosedIcon,
   IssueOpenedIcon,
   SkipIcon
 } from '@primer/octicons-react'
 import _ from 'lodash'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 //components
-import GithubBtn from '../../components/Content/GithubBtn'
-import LabelItem from '../Label/LabelItem'
-import Comment from './Comment'
+import GithubBtn from '../../components/Common/GithubBtn'
+import Loading from '../../components/Common/Loading'
+import Label from '../Label/Label'
+import { NotLogin } from '../Label/LabelList'
 import FeatureMenu from '../NewIssue/FeatureMenu'
 import UserControlIssue from '../NewIssue/UserControlIssue'
-import { NotLogin } from '../Label/Label'
+import Comment from './Comment'
 
 //custom
-import { lightOrDark } from '../Label/HandleLabel'
-import { ClickFnType, LabelType } from '../../types/issueType'
+import {
+  useCreateCommentMutation,
+  useGetAllAssigneesQuery,
+  useGetIssueQuery,
+  useGetTimelineQuery,
+  useUpdateIssueMutation
+} from '../../redux/issueApiSlice'
 import {
   handleAssignee,
   handleIssueBody,
@@ -26,16 +32,11 @@ import {
   resetIssueContent
 } from '../../redux/issueSlice'
 import { useGetLabelQuery } from '../../redux/labelApiSlice'
-import {
-  useGetAllAssigneesQuery,
-  useGetIssueQuery,
-  useGetTimelineQuery,
-  useUpdateIssueMutation,
-  useCreateCommentMutation
-} from '../../redux/issueApiSlice'
-import { MenuContentType } from '../IssueList/PopupMenu'
 import { RootState } from '../../redux/store'
+import { ClickFnType, LabelType } from '../../types/issueType'
 import { calculateTime } from '../IssueList/IssueItem'
+import { MenuContentType } from '../IssueList/PopupMenu'
+import { lightOrDark } from '../Label/HandleLabel'
 
 function Issue() {
   const repo = sessionStorage.getItem('repo')
@@ -64,7 +65,6 @@ function Issue() {
   } = useGetIssueQuery({
     name: userName ? userName : '',
     repo: repo ? repo : '',
-    token: userReducer.token,
     issueId: issueId ? issueId : ''
   })
   const {
@@ -74,7 +74,6 @@ function Issue() {
   } = useGetTimelineQuery({
     name: userName ? userName : '',
     repo: repo ? repo : '',
-    token: userReducer.token,
     issueId: issueId ? issueId : ''
   })
   const {
@@ -83,8 +82,7 @@ function Issue() {
     isError: labelError
   } = useGetLabelQuery({
     name: userName ? userName : '',
-    repo: repo ? repo : '',
-    token: userReducer.token
+    repo: repo ? repo : ''
   })
   const {
     data: assigneeData,
@@ -92,8 +90,7 @@ function Issue() {
     isError: assignError
   } = useGetAllAssigneesQuery({
     name: userName ? userName : '',
-    repo: repo ? repo : '',
-    token: userReducer.token
+    repo: repo ? repo : ''
   })
   const commentsData = timelineData?.filter(
     (item) => item.event === 'commented'
@@ -225,10 +222,9 @@ function Issue() {
       observer.current.observe(node)
     }
   }, [])
-  if (issueSuccess)
-    if (issueLoading || labelLoading || assigneeLoading || timelineLoading) {
-      return <>Loading...</>
-    }
+  if (issueLoading || labelLoading || assigneeLoading || timelineLoading) {
+    return <Loading />
+  }
   if (!userReducer.token) return <NotLogin>你尚未登入</NotLogin>
 
   if (assignError || issueError || labelError || timelineError) {
@@ -313,7 +309,6 @@ function Issue() {
                     await updateIssue({
                       name: userName ? userName : '',
                       repo: repo ? repo : '',
-                      token: userReducer.token,
                       issueNumber: issueId as string,
                       body: {
                         title: editTitleText
@@ -339,7 +334,7 @@ function Issue() {
               fixedHeaderStatus ? 'block' : 'hidden'
             } fixed top-0 left-0 right-0 z-[200] flex border-b border-solid border-borderGray bg-white px-2 py-1`}>
             <div className='mr-1 flex whitespace-nowrap'>
-              <LabelItem
+              <Label
                 labelName={issueData.state === 'open' ? 'Open' : 'Closed'}
                 colorCode={
                   issueData.state === 'open'
@@ -381,7 +376,7 @@ function Issue() {
             className='mt-1 flex flex-wrap items-center md:mb-4 md:border-b md:border-solid md:border-borderGray'
             ref={listenerTarget}>
             <div className='mb-1 mr-1 flex'>
-              <LabelItem
+              <Label
                 labelName={issueData.state === 'open' ? 'Open' : 'Closed'}
                 colorCode={
                   issueData.state === 'open'
@@ -436,7 +431,7 @@ function Issue() {
                 {issueReducer.labelName.map(({ text, colorCode }, index) => {
                   return (
                     <li key={index} className='flex'>
-                      <LabelItem
+                      <Label
                         labelName={text}
                         colorCode={colorCode}
                         textColor={lightOrDark(colorCode)}
@@ -525,7 +520,6 @@ function Issue() {
                         await createComment({
                           name: userName ? userName : '',
                           repo: repo ? repo : '',
-                          token: userReducer.token,
                           issueNumber: issueId as string,
                           body: {
                             body: issueReducer.content.body
@@ -548,7 +542,7 @@ function Issue() {
                 ) => {
                   return (
                     <FeatureMenu
-                      clearAssignee={true}
+                      clearAssignee={index === 0 ? true : false}
                       type={type}
                       title={title}
                       organizeDataFn={organizeDataFn}

@@ -1,19 +1,19 @@
 //libraries
 import {
+  CheckIcon,
   IssueClosedIcon,
-  SkipIcon,
   IssueReopenedIcon,
-  TriangleDownIcon,
-  CheckIcon
+  SkipIcon,
+  TriangleDownIcon
 } from '@primer/octicons-react'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 //custom
 import {
-  useUpdateIssueMutation,
-  useCreateCommentMutation
+  useCreateCommentMutation,
+  useUpdateIssueMutation
 } from '../../redux/issueApiSlice'
 import { RootState } from '../../redux/store'
 
@@ -55,7 +55,6 @@ function StateButton({ state, stateReason }: PropsType) {
                 await createComment({
                   name: userName ? userName : '',
                   repo: repo ? repo : '',
-                  token: userReducer.token,
                   issueNumber: issueId as string,
                   body: {
                     body: issueReducer.content.body
@@ -65,7 +64,6 @@ function StateButton({ state, stateReason }: PropsType) {
               await updateIssue({
                 name: userName ? userName : '',
                 repo: repo ? repo : '',
-                token: userReducer.token,
                 issueNumber: issueId as string,
                 body: {
                   state: currentState.state,

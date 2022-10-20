@@ -1,33 +1,33 @@
 //Libraries
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { useSelector } from 'react-redux'
 import {
-  CodeIcon,
-  IssueOpenedIcon,
-  GitPullRequestIcon,
-  PlayIcon,
-  TableIcon,
   BookIcon,
-  ShieldLockIcon,
-  GraphIcon,
-  GearIcon,
-  RepoIcon,
-  PinIcon,
+  CodeIcon,
   EyeIcon,
+  GearIcon,
+  GitPullRequestIcon,
+  GraphIcon,
+  IssueOpenedIcon,
+  PinIcon,
+  PlayIcon,
   RepoForkedIcon,
+  RepoIcon,
+  ShieldLockIcon,
   StarIcon,
+  TableIcon,
   TriangleDownIcon
 } from '@primer/octicons-react'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 
 //components
 import PageHeaderAction from './PageHeaderAction'
 import RepoNavbar from './RepoNavbar'
 
 //custom
-import { RootState } from '../../redux/store'
 import { useGetAllIssueQuery } from '../../redux/issueApiSlice'
+import { RootState } from '../../redux/store'
 
 type FontType = {
   fontBold: boolean
@@ -116,7 +116,6 @@ function MainHeader() {
   const { data: issueData } = useGetAllIssueQuery({
     name: userName ? userName : '',
     repo: repo ? repo : '',
-    token: userReducer.token,
     page: queryReducer.page,
     query: ''
   })

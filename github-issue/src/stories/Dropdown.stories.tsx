@@ -1,6 +1,5 @@
-import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import Dropdown from './Dropdown'
+import Dropdown from '../components/Common/Dropdown'
 
 type StorybookType = {
   text: string
@@ -17,8 +16,11 @@ export default {
 
 const Template: Story<StorybookType> = (args: StorybookType) => (
   <div
-    style={{ margin: '20px', display: 'flex', justifyContent: 'space-between' }}
-  >
+    style={{
+      margin: '20px',
+      display: 'flex',
+      justifyContent: 'space-between'
+    }}>
     the component is in the upper right , click it to open dropdown
     <Dropdown {...args} />
   </div>
