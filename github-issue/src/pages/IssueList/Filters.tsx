@@ -21,7 +21,7 @@ function Filters({ headerText, inputText, setFilterInputText }: PropsType) {
 
   return (
     <div className='mt-3 w-full md:mt-0'>
-      <div className='relative mb-3 flex md:mb-0'>
+      <div className='relative flex'>
         <button
           className=' h-[35px] whitespace-nowrap rounded rounded-tr-none rounded-br-none border border-solid border-borderGray bg-commonBgGray py-[5px] px-2'
           onClick={() => setFilterListOpen(true)}>

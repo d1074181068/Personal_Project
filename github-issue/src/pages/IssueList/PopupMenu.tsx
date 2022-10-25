@@ -228,7 +228,7 @@ function PopupMenu({
                                   ? '1px solid rgb(191,191,191)'
                                   : 'none'
                             }}
-                            className={`mr-1 block max-h-[14px] min-w-[14px] rounded-circle`}></span>
+                            className={`mr-1 block h-[14px] min-w-[14px] rounded-circle`}></span>
                         )}
                         {userImage && (
                           <img

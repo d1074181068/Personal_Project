@@ -26,7 +26,7 @@ function StateButton({ state, stateReason }: PropsType) {
   const repo = sessionStorage.getItem('repo')
   const userName = localStorage.getItem('userName')
   const [statusButtonDropdown, setStatusButtonDropdown] = useState(false)
-  const { issueReducer, userReducer } = useSelector((store: RootState) => store)
+  const { issueReducer } = useSelector((store: RootState) => store)
   const { issueId } = useParams()
   const [updateIssue] = useUpdateIssueMutation()
   const [createComment] = useCreateCommentMutation()
@@ -47,7 +47,7 @@ function StateButton({ state, stateReason }: PropsType) {
   return (
     <>
       {state && (
-        <div className='relative mr-1'>
+        <div className='relative'>
           <button
             className='rounded-tl rounded-bl border border-r-0 border-solid border-borderGray px-[16px] py-[6px] hover:bg-commonBgGray'
             onClick={async () => {

@@ -1,6 +1,5 @@
 .prose {
   max-width: 100%;
-  color: #24292f;
 }
 .prose h1 {
   font-size: 28px;
@@ -42,6 +41,9 @@
 .prose blockquote {
   color: rgb(87, 96, 106);
   border-left: 3.5px solid #d0d7de;
+}
+.prose p {
+  word-break: break-all;
 }
 .prose p code {
   background-color: rgba(175, 184, 193, 0.2);

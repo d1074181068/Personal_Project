@@ -4,24 +4,23 @@ import Dropdown from '../components/Common/Dropdown'
 type StorybookType = {
   text: string
   dropdownText: string[]
+  top: string
+  right: string
 }
 
 export default {
   title: 'Example/common_contents/Dropdown',
   component: Dropdown,
   parameters: {
-    layout: 'fullscreen'
+    layout: 'centered'
   }
 } as Meta
 
 const Template: Story<StorybookType> = (args: StorybookType) => (
   <div
     style={{
-      margin: '20px',
-      display: 'flex',
-      justifyContent: 'space-between'
+      margin: '20px'
     }}>
-    the component is in the upper right , click it to open dropdown
     <Dropdown {...args} />
   </div>
 )
@@ -29,5 +28,7 @@ const Template: Story<StorybookType> = (args: StorybookType) => (
 export const Default = Template.bind({})
 Default.args = {
   text: "I'm title",
-  dropdownText: ['', 'test1', 'test2']
+  dropdownText: ['', 'test1', 'test2'],
+  top: '20px',
+  right: '0px'
 }

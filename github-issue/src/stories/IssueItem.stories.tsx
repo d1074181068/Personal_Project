@@ -1,10 +1,10 @@
-import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import IssueItem from '../pages/IssueList/IssueItem'
 import { Provider } from 'react-redux'
-import { store } from '../redux/store'
-import '../index.css'
+import { BrowserRouter } from 'react-router-dom'
 import '../../.storybook/globalstyle.css'
+import '../index.css'
+import IssueItem from '../pages/IssueList/IssueItem'
+import { store } from '../redux/store'
 
 type StorybookType = {
   title: string
@@ -33,14 +33,16 @@ export default {
 
 const Template: Story<StorybookType> = (args: StorybookType) => (
   <Provider store={store}>
-    <div
-      style={{
-        margin: '50px',
-        borderTop: '1px solid rgb(208 ,215 ,222)',
-        borderRadius: '6px'
-      }}>
-      <IssueItem {...args} />
-    </div>
+    <BrowserRouter>
+      <div
+        style={{
+          margin: '50px',
+          borderTop: '1px solid rgb(208 ,215 ,222)',
+          borderRadius: '6px'
+        }}>
+        <IssueItem {...args} />
+      </div>
+    </BrowserRouter>
   </Provider>
 )
 

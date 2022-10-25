@@ -85,26 +85,12 @@ function IssueItem({
             navigate(`/issue/${number}`)
           }}>
           {title}
-          {
-            //TODO : fix hoverItem bug
-            /* <div className='hidden group-hover:block'>
-            <HoverTitleEffect
-              title={title}
-              labels={labels}
-              number={number}
-              createTime={createTime}
-              body={body}
-              stateReason={stateReason}
-              ownerImg={ownerImg}
-            />
-          </div> */
-          }
         </button>
-        <div className='mb-1 flex flex-wrap gap-[3px]'>
+        <div className='mb-1 flex flex-wrap'>
           {labels.length !== 0 &&
             labels.map(({ name, bgColor, id }) => {
               return (
-                <div className='mr-1 flex' key={id}>
+                <div className='mr-[4px] mb-[4px] flex' key={id}>
                   <Label
                     labelName={name}
                     colorCode={`#${bgColor}`}
@@ -135,12 +121,13 @@ function IssueItem({
             )
           })}
       </div>
-      {commentsQty !== 0 && (
-        <button className='ml-2 hidden h-[20px] w-[30px] items-center pt-[2px] text-center sm:flex'>
-          <CommentIcon />
-          <span className='ml-1'>{commentsQty}</span>
-        </button>
-      )}
+      <button
+        className={`ml-2 hidden h-[20px] w-[30px] items-center pt-[2px] text-center ${
+          commentsQty === 0 ? 'sm:invisible sm:block' : 'sm:flex'
+        }`}>
+        <CommentIcon />
+        <span className='ml-1'>{commentsQty}</span>
+      </button>
     </li>
   )
 }

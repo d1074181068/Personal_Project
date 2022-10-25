@@ -1,7 +1,6 @@
-import React from 'react'
 import { Meta, Story } from '@storybook/react'
-import HandleLabel from '../pages/Label/HandleLabel'
 import '../../.storybook/globalstyle.css'
+import HandleLabel from '../pages/Label/HandleLabel'
 
 type StorybookType = {
   initLabelText: string
@@ -27,7 +26,7 @@ export default {
 } as Meta
 
 const Template: Story<StorybookType> = (args: StorybookType) => (
-  <div style={{ margin: '20px' }}>
+  <div style={{ margin: '20px', border: '1px solid #CCC' }}>
     <HandleLabel {...args} />
   </div>
 )

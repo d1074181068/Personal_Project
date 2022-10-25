@@ -156,7 +156,7 @@ function Comment({
         </header>
         <main className='m-2'>
           <div
-            className={`prose ${body || 'text-[textGray]'}`}
+            className={`prose ${body ? 'text-textBlack' : 'text-textGray'}`}
             dangerouslySetInnerHTML={{
               __html: marked(body || '*No description provided.*')
             }}></div>

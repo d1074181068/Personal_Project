@@ -356,7 +356,7 @@ function UserControlIssue({
           </div>
           Styling with Markdown is supported
         </a>
-        <div className='flex justify-end text-[12px] md:ml-auto md:mt-1 '>
+        <div className='flex flex-wrap justify-end gap-1 text-[12px] md:ml-auto md:mt-1 '>
           {cancelBtn && (
             <div className='mr-1'>
               <GithubBtn

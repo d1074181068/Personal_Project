@@ -534,7 +534,7 @@ function Issue() {
               </div>
             </div>
 
-            <div className='mt-3 md:mt-0 md:ml-2 md:w-[240px]'>
+            <div className='mt-3 md:mt-0 md:ml-2 md:min-w-[240px]'>
               {featureMenuContent.map(
                 (
                   { type, title, organizeDataFn, menuContent, menuPos },

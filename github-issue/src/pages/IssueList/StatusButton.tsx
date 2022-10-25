@@ -1,4 +1,3 @@
-import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 //custom
@@ -16,7 +15,9 @@ function StatusButton({ icon, text }: PropsType) {
   return (
     <button
       className={`${
-        queryReducer.issueState === text ? 'font-medium' : 'font-normal'
+        queryReducer.issueState === text
+          ? 'font-medium'
+          : 'font-normal text-textGray'
       } mr-1 flex items-center`}
       onClick={() => dispatch(handleStateFilter(text))}>
       <span className='mr-[5px]'>{icon}</span>

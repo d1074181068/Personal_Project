@@ -250,8 +250,8 @@ function IssueList() {
 
   return (
     <div className='mx-auto my-3 sm:max-w-[1216px] sm:px-2 md:px-3 lg:px-4 '>
-      <div className='px-2 sm:px-0 md:mb-3'>
-        <div className='flex flex-wrap items-center justify-between'>
+      <div className='mb-2 px-2 sm:px-0'>
+        <div className='flex flex-wrap items-center justify-between gap-1'>
           <div className='order-3 w-full md:order-1 md:block md:w-[unset] md:grow'>
             <Filters
               headerText={'Filter Issues'}
@@ -426,10 +426,7 @@ function IssueList() {
           <></>
         )}
       </ul>
-      <div
-        className={`${
-          renderData?.length === 0 ? 'hidden' : 'flex'
-        } items-center justify-center p-3`}>
+      <div className={`flex items-center justify-center p-3`}>
         <button
           className={`item-center mr-3  flex rounded border border-solid border-[transparent] py-1 px-[10px] transition-all ${
             queryReducer.page === 1
